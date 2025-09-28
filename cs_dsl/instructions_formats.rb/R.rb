@@ -2,11 +2,11 @@ module SimInfra
     def self.format_r(opcode, funct3, funct7)
         return :R, [
             field(:rd, 11, 7, :reg),
-            field(:rs1, 0, 0, :reg),
-            field(:rs2, 0, 0, :reg),
-            field(:opcode, 0, 0, opcode),
-            field(:funct7, 0, 0, funct7),
-            field(:funct3, 0, 0, funct3)
+            field(:rs1, 15, 19, :reg),
+            field(:rs2, 20, 24, :reg),
+            field(:opcode, 0, 6, opcode),
+            field(:funct7, 25, 31, funct7),
+            field(:funct3, 12, 14, funct3)
         ]
     end
 

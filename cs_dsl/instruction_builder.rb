@@ -11,7 +11,7 @@ module SimInfra
         def encoding(frmt, fields); @info.fields = fields; @info.frmt = frmt; end
         attr_reader :info
 
-        def code(&block)
+        def code(block)
             @info.code = scope = Scope.new(nil) # root scope
             dst = nil
             @info.fields.each { |f|
@@ -20,7 +20,7 @@ module SimInfra
                 scope.stmt(:getreg, [f.name, f]) if [:rs1, :rs2].include?(f.name)
                 dst = f if [:rd].include?(f.name)
             }
-            scope.instance_eval &block
+            scope.instance_eval block
             scope.stmt(:setreg, [dst, dst.name]) if dst
         end
     end
