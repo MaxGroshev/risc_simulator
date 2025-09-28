@@ -1,0 +1,8 @@
+Layout/IndentationWidth:
+  Width: 4
+
+Style/SingleLineMethods:
+  Enabled: false
+
+# Style/ClassVars
+#   Enabled: false
