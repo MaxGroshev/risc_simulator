@@ -1,0 +1,9 @@
+project(decoder)
+
+#-----------------------------------------------------------------------------------------
+
+set(SOURCE
+    decoder.cpp
+)
+
+add_library(${PROJECT_NAME} ${SOURCE})

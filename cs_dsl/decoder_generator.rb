@@ -1,0 +1,303 @@
+require 'yaml'
+
+class DecoderGenerator
+  def initialize(yaml_file)
+    @data = YAML.load_file(yaml_file)
+    @output_dir = 'generated'
+    Dir.mkdir(@output_dir) unless Dir.exist?(@output_dir)
+  end
+
+  def generate_decoder
+    generate_header
+    generate_implementation
+  end
+
+  private
+
+  def generate_header
+    File.open(File.join(@output_dir, 'rv32i_decoder.h'), 'w') do |f|
+      f.puts <<~HEADER
+        #pragma once
+        #include <cstdint>
+        #include <string>
+        #include <unordered_map>
+
+        // Decoded instruction structure
+        struct DecodedInstruction {
+            std::string name;
+            std::string format;
+            uint8_t rd;
+            uint8_t rs1;
+            uint8_t rs2;
+            uint8_t funct3;
+            uint8_t funct7;
+            int32_t imm;
+            uint32_t raw_instruction;
+            
+            // Constructor
+            DecodedInstruction() : rd(0), rs1(0), rs2(0), funct3(0), funct7(0), imm(0), raw_instruction(0) {}
+        };
+
+        // RV32I Decoder class
+        class RV32IDecoder {
+        public:
+            static DecodedInstruction decode(uint32_t instruction);
+            static std::string disassemble(const DecodedInstruction& instr);
+            
+        private:
+            // Field extraction methods
+            static uint8_t get_rd(uint32_t instruction);
+            static uint8_t get_rs1(uint32_t instruction);
+            static uint8_t get_rs2(uint32_t instruction);
+            static uint8_t get_funct3(uint32_t instruction);
+            static uint8_t get_funct7(uint32_t instruction);
+            static int32_t get_imm_i(uint32_t instruction);
+            static int32_t get_imm_s(uint32_t instruction);
+            static int32_t get_imm_b(uint32_t instruction);
+            static int32_t get_imm_u(uint32_t instruction);
+            static int32_t get_imm_j(uint32_t instruction);
+            
+            // Instruction specific decoding
+            #{generate_decoding_methods}
+        };
+      HEADER
+    end
+  end
+
+  def generate_decoding_methods
+    methods = []
+    @data['instructions'].each do |name, instr|
+      methods << "static bool decode_#{name}(uint32_t instruction, DecodedInstruction& result);"
+    end
+    methods.join("\n    ")
+  end
+
+  def generate_implementation
+    File.open(File.join(@output_dir, 'rv32i_decoder.cpp'), 'w') do |f|
+      f.puts <<~CPP
+        #include "rv32i_decoder.h"
+        #include <iostream>
+        #include <sstream>
+
+        // Field extraction implementations
+        uint8_t RV32IDecoder::get_rd(uint32_t instruction) {
+            return (instruction >> 7) & 0x1F;
+        }
+
+        uint8_t RV32IDecoder::get_rs1(uint32_t instruction) {
+            return (instruction >> 15) & 0x1F;
+        }
+
+        uint8_t RV32IDecoder::get_rs2(uint32_t instruction) {
+            return (instruction >> 20) & 0x1F;
+        }
+
+        uint8_t RV32IDecoder::get_funct3(uint32_t instruction) {
+            return (instruction >> 12) & 0x7;
+        }
+
+        uint8_t RV32IDecoder::get_funct7(uint32_t instruction) {
+            return (instruction >> 25) & 0x7F;
+        }
+
+        int32_t RV32IDecoder::get_imm_i(uint32_t instruction) {
+            return static_cast<int32_t>(instruction) >> 20;
+        }
+
+        int32_t RV32IDecoder::get_imm_s(uint32_t instruction) {
+            int32_t imm = ((instruction >> 25) & 0x7F) << 5;
+            imm |= ((instruction >> 7) & 0x1F);
+            return static_cast<int32_t>(imm << 20) >> 20;
+        }
+
+        int32_t RV32IDecoder::get_imm_b(uint32_t instruction) {
+            int32_t imm = ((instruction >> 31) & 0x1) << 12;
+            imm |= ((instruction >> 25) & 0x3F) << 5;
+            imm |= ((instruction >> 8) & 0xF) << 1;
+            imm |= ((instruction >> 7) & 0x1) << 11;
+            return static_cast<int32_t>(imm << 19) >> 19;
+        }
+
+        int32_t RV32IDecoder::get_imm_u(uint32_t instruction) {
+            return instruction & 0xFFFFF000;
+        }
+
+        int32_t RV32IDecoder::get_imm_j(uint32_t instruction) {
+            int32_t imm = ((instruction >> 31) & 0x1) << 20;
+            imm |= ((instruction >> 21) & 0x3FF) << 1;
+            imm |= ((instruction >> 20) & 0x1) << 11;
+            imm |= ((instruction >> 12) & 0xFF) << 12;
+            return static_cast<int32_t>(imm << 11) >> 11;
+        }
+
+        // Instruction decoding methods
+        #{generate_instruction_decoders}
+
+        // Main decoding function
+        DecodedInstruction RV32IDecoder::decode(uint32_t instruction) {
+            DecodedInstruction result;
+            result.raw_instruction = instruction;
+            
+            uint8_t opcode = instruction & 0x7F;
+            uint8_t funct3 = get_funct3(instruction);
+            uint8_t funct7 = get_funct7(instruction);
+
+            // Decode based on opcode and function codes
+            switch (opcode) {
+                #{generate_opcode_dispatch}
+                default:
+                    result.name = "UNKNOWN";
+                    result.format = "UNKNOWN";
+            }
+            
+            return result;
+        }
+
+        // Disassembly function
+        std::string RV32IDecoder::disassemble(const DecodedInstruction& instr) {
+            std::stringstream ss;
+            ss << instr.name;
+            
+            if (instr.format == "R") {
+                ss << " x" << static_cast<int>(instr.rd) 
+                   << ", x" << static_cast<int>(instr.rs1) 
+                   << ", x" << static_cast<int>(instr.rs2);
+            } else if (instr.format == "I") {
+                if (instr.name == "jalr") {
+                    ss << " x" << static_cast<int>(instr.rd) 
+                       << ", " << instr.imm 
+                       << "(x" << static_cast<int>(instr.rs1) << ")";
+                } else if (instr.name.find("lw") != std::string::npos || 
+                           instr.name.find("lh") != std::string::npos ||
+                           instr.name.find("lb") != std::string::npos) {
+                    ss << " x" << static_cast<int>(instr.rd) 
+                       << ", " << instr.imm 
+                       << "(x" << static_cast<int>(instr.rs1) << ")";
+                } else {
+                    ss << " x" << static_cast<int>(instr.rd) 
+                       << ", x" << static_cast<int>(instr.rs1) 
+                       << ", " << instr.imm;
+                }
+            } else if (instr.format == "S") {
+                ss << " x" << static_cast<int>(instr.rs2) 
+                   << ", " << instr.imm 
+                   << "(x" << static_cast<int>(instr.rs1) << ")";
+            } else if (instr.format == "B") {
+                ss << " x" << static_cast<int>(instr.rs1) 
+                   << ", x" << static_cast<int>(instr.rs2) 
+                   << ", " << instr.imm;
+            } else if (instr.format == "U") {
+                ss << " x" << static_cast<int>(instr.rd) 
+                   << ", " << instr.imm;
+            } else if (instr.format == "J") {
+                ss << " x" << static_cast<int>(instr.rd) 
+                   << ", " << instr.imm;
+            }
+            
+            return ss.str();
+        }
+      CPP
+    end
+  end
+
+  def generate_instruction_decoders
+    decoders = []
+    
+    @data['instructions'].each do |name, instr|
+      decoder = <<~CPP
+        bool RV32IDecoder::decode_#{name}(uint32_t instruction, DecodedInstruction& result) {
+            uint8_t opcode = instruction & 0x7F;
+            uint8_t funct3 = get_funct3(instruction);
+            #{instr['funct7'] ? "uint8_t funct7 = get_funct7(instruction);" : ""}
+            
+            // Check if this is the #{name} instruction
+            if (opcode == #{instr['opcode']} && funct3 == #{instr['funct3']}#{instr['funct7'] ? " && funct7 == #{instr['funct7']}" : ""}) {
+                result.name = "#{name}";
+                result.format = "#{instr['format']}";
+                #{generate_field_extraction(name, instr)}
+                return true;
+            }
+            return false;
+        }
+      CPP
+      decoders << decoder
+    end
+    
+    decoders.join("\n")
+  end
+
+  def generate_field_extraction(instr_name, instr_data)
+    fields = []
+    
+    # Always extract basic fields
+    fields << "result.rd = get_rd(instruction);" if instr_data['code'].include?('rd')
+    fields << "result.rs1 = get_rs1(instruction);" if instr_data['code'].include?('rs1')
+    fields << "result.rs2 = get_rs2(instruction);" if instr_data['code'].include?('rs2')
+    fields << "result.funct3 = get_funct3(instruction);"
+    fields << "result.funct7 = get_funct7(instruction);" if instr_data['funct7']
+    
+    # Extract immediate based on format
+    case instr_data['format']
+    when 'R'
+      fields << "result.imm = 0;"
+    when 'I'
+      fields << "result.imm = get_imm_i(instruction);"
+    when 'S'
+      fields << "result.imm = get_imm_s(instruction);"
+    when 'B'
+      fields << "result.imm = get_imm_b(instruction);"
+    when 'U'
+      fields << "result.imm = get_imm_u(instruction);"
+    when 'J'
+      fields << "result.imm = get_imm_j(instruction);"
+    end
+    
+    fields.join("\n                ")
+  end
+
+  def generate_opcode_dispatch
+    dispatch = []
+    opcode_groups = @data['instructions'].group_by { |name, instr| instr['opcode'] }
+    
+    opcode_groups.each do |opcode, instructions|
+      case_stmt = "case #{opcode}: // #{opcode.to_s(16)}"
+      
+      if instructions.size == 1
+        # Single instruction for this opcode
+        name = instructions.first[0]
+        case_stmt += "\n            if (decode_#{name}(instruction, result)) return result;"
+      else
+        # Multiple instructions - use funct3/funct7
+        case_stmt += "\n            switch (get_funct3(instruction)) {"
+        
+        funct3_groups = instructions.group_by { |name, instr| instr['funct3'] }
+        funct3_groups.each do |funct3, instrs|
+          case_stmt += "\n                case #{funct3}:"
+          
+          if instrs.size == 1
+            name = instrs.first[0]
+            case_stmt += "\n                    if (decode_#{name}(instruction, result)) return result;"
+          else
+            # Need to check funct7
+            case_stmt += "\n                    switch (get_funct7(instruction)) {"
+            instrs.each do |name, instr|
+              case_stmt += "\n                        case #{instr['funct7']}:"
+              case_stmt += "\n                            if (decode_#{name}(instruction, result)) return result;"
+              case_stmt += "\n                            break;"
+            end
+            case_stmt += "\n                    }"
+          end
+          
+          case_stmt += "\n                    break;"
+        end
+        
+        case_stmt += "\n            }"
+      end
+      
+      case_stmt += "\n            break;"
+      dispatch << case_stmt
+    end
+    
+    dispatch.join("\n\n            ")
+  end
+end

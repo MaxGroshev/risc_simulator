@@ -1,0 +1,44 @@
+#pragma once
+#include <cstdint>
+#include <string>
+#include <unordered_map>
+
+// Decoded instruction structure
+struct DecodedInstruction {
+    std::string name;
+    std::string format;
+    uint8_t rd;
+    uint8_t rs1;
+    uint8_t rs2;
+    uint8_t funct3;
+    uint8_t funct7;
+    int32_t imm;
+    uint32_t raw_instruction;
+    
+    // Constructor
+    DecodedInstruction() : rd(0), rs1(0), rs2(0), funct3(0), funct7(0), imm(0), raw_instruction(0) {}
+};
+
+// RV32I Decoder class
+class RV32IDecoder {
+public:
+    static DecodedInstruction decode(uint32_t instruction);
+    static std::string disassemble(const DecodedInstruction& instr);
+    
+private:
+    // Field extraction methods
+    static uint8_t get_rd(uint32_t instruction);
+    static uint8_t get_rs1(uint32_t instruction);
+    static uint8_t get_rs2(uint32_t instruction);
+    static uint8_t get_funct3(uint32_t instruction);
+    static uint8_t get_funct7(uint32_t instruction);
+    static int32_t get_imm_i(uint32_t instruction);
+    static int32_t get_imm_s(uint32_t instruction);
+    static int32_t get_imm_b(uint32_t instruction);
+    static int32_t get_imm_u(uint32_t instruction);
+    static int32_t get_imm_j(uint32_t instruction);
+    
+    // Instruction specific decoding
+    static bool decode_add(uint32_t instruction, DecodedInstruction& result);
+    static bool decode_sub(uint32_t instruction, DecodedInstruction& result);
+};

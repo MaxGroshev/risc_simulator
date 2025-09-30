@@ -4,7 +4,10 @@ require_relative 'instructions_formats.rb/R'
 module SimInfra
     def self.assert(condition, msg = nil); raise msg if !condition; end
 
-    @@instructions = [] # kind of static variable inside module
+    @@instructions = []   # kind of static variable inside module
+    def self.instructions # TODO(mgroshev): ugly getter think how to improve
+        @@instructions
+    end
     InstructionInfo = Struct.new(:name, :fields, :frmt, :code)
     class InstructionInfoBuilder
         def initialize(name); @info = InstructionInfo.new(name); end
