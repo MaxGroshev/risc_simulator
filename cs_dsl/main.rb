@@ -3,6 +3,7 @@ require_relative 'instruction_builder'
 require_relative 'constant'
 require_relative 'var'
 require_relative 'scope'
+require_relative 'pc'
 require_relative 'utils'
 require_relative 'decoder_generator'
 

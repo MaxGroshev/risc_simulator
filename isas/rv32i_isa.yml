@@ -28,6 +28,13 @@ instructions:
     funct3: 0b010
     code: !ruby/code |
       rd[]= memory_ld(rs1 + imm)
+  jalr:
+    format: "I"
+    opcode: 0b1100111
+    funct3: 0b000
+    code: !ruby/code |
+      rd = pc + 4; 
+      set_pc(rs1 + imm)
 
 # S-type instructions
   sw:
@@ -44,9 +51,3 @@ instructions:
     code: !ruby/code |
       rd = pc + 4; 
       set_pc(pc + imm)
-  jalr:
-    format: "J"
-    opcode: 0b1100111
-    code: !ruby/code |
-      rd = pc + 4; 
-      set_pc(rs1 + imm)

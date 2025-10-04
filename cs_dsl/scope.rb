@@ -44,9 +44,17 @@ module SimInfra
             stmt op, [address, src]
         end
 
+        def pcHandler(); # TODO(mgroshev): make singleton Object of PC
+            var(:pc, :i32)
+        end
+
         def setPc(value, op); 
             stmt op, [value]
         end
+
+        def immHandler(); # TODO(ngroshev): make class?
+            var(:imm, :i32)
+        end 
 
         # arithmetic
         def add(a, b); binOp(a, b, :add); end
@@ -55,7 +63,9 @@ module SimInfra
         def memory_ld(address); memoryLoad(address, :load_from_mem) end
         def memory_st(address, src); memoryStore(address, src, :store_to_mem) end
         # pc
-        # def get_pc()
+        def pc(); pcHandler end
         def set_pc(value); setPc(value, :setpc) end
+        # imm
+        def imm(); immHandler end
     end
 end

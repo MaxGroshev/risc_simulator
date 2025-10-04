@@ -131,6 +131,24 @@ bool RV32IDecoder::decode_lw(uint32_t instruction, DecodedInstruction& result) {
     return false;
 }
 
+bool RV32IDecoder::decode_jalr(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the jalr instruction
+    if (opcode == 103 && funct3 == 0) {
+        result.name = "jalr";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
 bool RV32IDecoder::decode_sw(uint32_t instruction, DecodedInstruction& result) {
     uint8_t opcode = instruction & 0x7F;
     uint8_t funct3 = get_funct3(instruction);
@@ -144,6 +162,23 @@ bool RV32IDecoder::decode_sw(uint32_t instruction, DecodedInstruction& result) {
                 result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_s(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_jal(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the jal instruction
+    if (opcode == 111 && funct3 == ) {
+        result.name = "jal";
+        result.format = "J";
+        result.rd = get_rd(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_j(instruction);
         return true;
     }
     return false;
@@ -184,8 +219,16 @@ DecodedInstruction RV32IDecoder::decode(uint32_t instruction) {
             if (decode_lw(instruction, result)) return result;
             break;
 
+            case 103: // 67
+            if (decode_jalr(instruction, result)) return result;
+            break;
+
             case 35: // 23
             if (decode_sw(instruction, result)) return result;
+            break;
+
+            case 111: // 6f
+            if (decode_jal(instruction, result)) return result;
             break;
         default:
             result.name = "UNKNOWN";

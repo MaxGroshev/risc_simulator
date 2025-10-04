@@ -23,7 +23,7 @@ module SimInfra
             @info.code = scope = Scope.new(nil) # root scope
             dst = nil
             @info.fields.each { |f|
-                scope.add_var(f.name, :i32) if [:rs1, :rs2, :rd, :imm, :immh, :imml, :imm].include?(f.name)
+                scope.add_var(f.name, :i32) if [:rs1, :rs2, :rd].include?(f.name)
                 # if field has source register we get register
                 scope.stmt(:getreg, [f.name, f]) if [:rs1, :rs2].include?(f.name)
                 dst = f if [:rd].include?(f.name)
