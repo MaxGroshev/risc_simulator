@@ -1,7 +1,0 @@
-
-
-namespace simInfra {
-    class instructionDecoder {
-        
-    }
-}

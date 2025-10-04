@@ -10,12 +10,13 @@ require 'yaml'
 
 if __FILE__ == $0
     # TODO(mgroshev) move isa_dir in config or .sh
-    isa_dir = "#{__dir__}/../isas/rv32i_isa.yml"
+    isa_dir      = "#{__dir__}/../isas/rv32i_isa.yml"
+    decoder_dir  = "#{__dir__}/../decode_execute_module/decoder/generated"
+    handlers_dir = "#{__dir__}/../decode_execute_module/executer/generated"
 
-    SimInfra.parse_isa(isa_dir)
-    # puts SimInfra.instructions.length
-    # instr = SimInfra.instructions
-    generator = DecoderGenerator.new(isa_dir)
-    generator.generate_decoder
+    parsed_isa = SimInfra.parse_isa(isa_dir)
+    generator = DecoderGenerator.new(parsed_isa, isa_dir, decoder_dir)
     SimInfra.siminfra_result
+    generator.generate_decoder
+    # puts SimInfra.instructions.length
 end

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 
 #-----------------------------------------------------------------------------------------
 
-project(decode_execute_module)
+project(decode_execute)
 
 #-----------------------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_include_directories(${PROJECT_NAME}  PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/../decoder/
+    ${CMAKE_CURRENT_SOURCE_DIR}/decode_execute_module
 )
 
 unset(TESTING_ENABLED CACHE)

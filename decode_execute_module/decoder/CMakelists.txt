@@ -1,0 +1,11 @@
+project(decoder)
+
+#-----------------------------------------------------------------------------------------
+
+set(SOURCE
+    generated/rv32i_decoder.cpp
+    decoder.cpp
+)
+
+add_library(${PROJECT_NAME} ${SOURCE})
+add_subdirectory(tests/)

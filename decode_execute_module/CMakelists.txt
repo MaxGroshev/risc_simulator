@@ -1,9 +1,2 @@
-project(decoder)
-
-#-----------------------------------------------------------------------------------------
-
-set(SOURCE
-    decoder.cpp
-)
-
-add_library(${PROJECT_NAME} ${SOURCE})
+add_subdirectory(decoder)
+# add_subdirectory(executer)

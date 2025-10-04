@@ -1,5 +1,8 @@
 require 'yaml'
 require_relative 'instructions_formats.rb/R'
+require_relative 'instructions_formats.rb/I'
+require_relative 'instructions_formats.rb/S'
+require_relative 'instructions_formats.rb/U'
 
 module SimInfra
     def self.assert(condition, msg = nil); raise msg if !condition; end
@@ -18,7 +21,7 @@ module SimInfra
             @info.code = scope = Scope.new(nil) # root scope
             dst = nil
             @info.fields.each { |f|
-                scope.add_var(f.name, :i32) if [:rs1, :rs2, :rd].include?(f.name)
+                scope.add_var(f.name, :i32) if [:rs1, :rs2, :rd, :imm].include?(f.name)
                 # if field has source register we get register
                 scope.stmt(:getreg, [f.name, f]) if [:rs1, :rs2].include?(f.name)
                 dst = f if [:rd].include?(f.name)
