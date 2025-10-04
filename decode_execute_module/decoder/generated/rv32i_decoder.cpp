@@ -95,6 +95,24 @@ bool RV32IDecoder::decode_sub(uint32_t instruction, DecodedInstruction& result) 
     return false;
 }
 
+bool RV32IDecoder::decode_addi(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the addi instruction
+    if (opcode == 19 && funct3 == 0) {
+        result.name = "addi";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
 bool RV32IDecoder::decode_lw(uint32_t instruction, DecodedInstruction& result) {
     uint8_t opcode = instruction & 0x7F;
     uint8_t funct3 = get_funct3(instruction);
@@ -108,6 +126,24 @@ bool RV32IDecoder::decode_lw(uint32_t instruction, DecodedInstruction& result) {
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_sw(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the sw instruction
+    if (opcode == 35 && funct3 == 2) {
+        result.name = "sw";
+        result.format = "S";
+        result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_s(instruction);
         return true;
     }
     return false;
@@ -140,8 +176,16 @@ DecodedInstruction RV32IDecoder::decode(uint32_t instruction) {
             }
             break;
 
+            case 19: // 13
+            if (decode_addi(instruction, result)) return result;
+            break;
+
             case 3: // 3
             if (decode_lw(instruction, result)) return result;
+            break;
+
+            case 35: // 23
+            if (decode_sw(instruction, result)) return result;
             break;
         default:
             result.name = "UNKNOWN";

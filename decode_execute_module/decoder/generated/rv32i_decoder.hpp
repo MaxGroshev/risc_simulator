@@ -42,5 +42,7 @@ private:
     // Instruction specific decoding
     static bool decode_add(uint32_t instruction, DecodedInstruction& result);
     static bool decode_sub(uint32_t instruction, DecodedInstruction& result);
+    static bool decode_addi(uint32_t instruction, DecodedInstruction& result);
     static bool decode_lw(uint32_t instruction, DecodedInstruction& result);
+    static bool decode_sw(uint32_t instruction, DecodedInstruction& result);
 };

@@ -35,8 +35,27 @@ module SimInfra
             stmt op, [tmpvar(a.type), a, b]
         end
 
-        # redefine! add & sub will never be the same
+        def memoryLoad(address, op); # NOTE(mgroshev): other is address in memory
+            var_for_val_in_mem = tmpvar(:i32)
+            stmt op, [var_for_val_in_mem]
+        end
+
+        def memoryStore(address, src, op);
+            stmt op, [address, src]
+        end
+
+        def setPc(value, op); 
+            stmt op, [value]
+        end
+
+        # arithmetic
         def add(a, b); binOp(a, b, :add); end
         def sub(a, b); binOp(a, b, :sub); end
+        # memory
+        def memory_ld(address); memoryLoad(address, :load_from_mem) end
+        def memory_st(address, src); memoryStore(address, src, :store_to_mem) end
+        # pc
+        # def get_pc()
+        def set_pc(value); setPc(value, :setpc) end
     end
 end

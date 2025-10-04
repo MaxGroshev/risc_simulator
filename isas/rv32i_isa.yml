@@ -1,4 +1,5 @@
 instructions:
+# R-type instructions
   add:
     format: "R"
     opcode: 0b0110011
@@ -13,9 +14,39 @@ instructions:
     funct7: 0b0100000
     code: !ruby/code |
       rd[]= rs1 - rs2
+
+# I-type instructions
+  addi:
+    format: "I"
+    opcode: 0b0010011
+    funct3: 0b000
+    code: !ruby/code |
+      rd[]= rs1 + imm
   lw:
     format: "I"
     opcode: 0b0000011
     funct3: 0b010
     code: !ruby/code |
-      rd[]= rs1 + imm
+      rd[]= memory_ld(rs1 + imm)
+
+# S-type instructions
+  sw:
+    format: "S"
+    opcode: 0b0100011
+    funct3: 0b010
+    code: !ruby/code |
+      memory_st(rs1 + imm, rs2) 
+
+# J-type instructions
+  jal:
+    format: "J"
+    opcode: 0b1101111
+    code: !ruby/code |
+      rd = pc + 4; 
+      set_pc(pc + imm)
+  jalr:
+    format: "J"
+    opcode: 0b1100111
+    code: !ruby/code |
+      rd = pc + 4; 
+      set_pc(rs1 + imm)

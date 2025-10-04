@@ -22,6 +22,23 @@ module SimInfra
                     encoding *SimInfra.format_i(opcode, funct3)
                     code instruction_data['code']
                 }
+            elsif(instruction_data["format"] == 'S')
+                inst_sym = instruction_name.to_sym
+                opcode = instruction_data["opcode"]
+                funct3 = instruction_data["funct3"]
+
+                SimInfra::Instruction(inst_sym) {
+                    encoding *SimInfra.format_s(opcode, funct3)
+                    code instruction_data['code']
+                }
+            elsif(instruction_data["format"] == 'J')
+                inst_sym = instruction_name.to_sym
+                opcode = instruction_data["opcode"]
+
+                SimInfra::Instruction(inst_sym) {
+                    encoding *SimInfra.format_j(opcode)
+                    code instruction_data['code']
+                }
             end
         end
         return isa_config
