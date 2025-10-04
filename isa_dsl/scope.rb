@@ -35,30 +35,42 @@ module SimInfra
             stmt op, [tmpvar(a.type), a, b]
         end
 
-        def memoryLoad(address, op); # NOTE(mgroshev): other is address in memory
+        # NOTE(mgroshev): other is address in memory
+        def memoryLoad(address, op); 
             var_for_val_in_mem = tmpvar(:i32)
             stmt op, [var_for_val_in_mem]
         end
 
-        def memoryStore(address, src, op);
+        def memoryStore(address, src, op)
             stmt op, [address, src]
         end
 
-        def pcHandler(); # TODO(mgroshev): make singleton Object of PC
+        # TODO(mgroshev): make singleton Object of PC
+        def pcHandler(); 
             var(:pc, :i32)
         end
 
         def setPc(value, op); 
             stmt op, [value]
         end
-
-        def immHandler(); # TODO(ngroshev): make class?
+        
+        # TODO(mgroshev): make class?
+        def immHandler(); 
             var(:imm, :i32)
         end 
+
+        def ifHandler(condition, op, &body);
+            body_scope = Scope.new(self)
+            body_scope.instance_eval &body
+            # NOTE(mgroshev): if consists of condition var and body        
+            stmt op, [condition, body_scope]
+            puts 52
+        end
 
         # arithmetic
         def add(a, b); binOp(a, b, :add); end
         def sub(a, b); binOp(a, b, :sub); end
+        def not_eq(a, b); binOp(a, b, :not_eq); end
         # memory
         def memory_ld(address); memoryLoad(address, :load_from_mem) end
         def memory_st(address, src); memoryStore(address, src, :store_to_mem) end
@@ -67,5 +79,7 @@ module SimInfra
         def set_pc(value); setPc(value, :setpc) end
         # imm
         def imm(); immHandler end
+        # if
+        def if_expr(condition, &body); ifHandler(condition, :if_expr, &body) end
     end
 end

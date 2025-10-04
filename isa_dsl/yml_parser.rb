@@ -42,9 +42,10 @@ module SimInfra
             elsif(instruction_data["format"] == 'B')
                 inst_sym = instruction_name.to_sym
                 opcode = instruction_data["opcode"]
+                funct3 = instruction_data["funct3"]
 
                 SimInfra::Instruction(inst_sym) {
-                    encoding *SimInfra.format_j(opcode)
+                    encoding *SimInfra.format_b(opcode, funct3)
                     code instruction_data['code']
                 }
             end

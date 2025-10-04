@@ -1,10 +1,10 @@
 require 'yaml'
-require_relative 'instructions_formats.rb/R'
-require_relative 'instructions_formats.rb/I'
-require_relative 'instructions_formats.rb/S'
-require_relative 'instructions_formats.rb/U'
-require_relative 'instructions_formats.rb/J'
-require_relative 'instructions_formats.rb/B'
+require_relative 'instructions_formats/R'
+require_relative 'instructions_formats/I'
+require_relative 'instructions_formats/S'
+require_relative 'instructions_formats/U'
+require_relative 'instructions_formats/J'
+require_relative 'instructions_formats/B'
 
 module SimInfra
     def self.assert(condition, msg = nil); raise msg if !condition; end

@@ -3,9 +3,9 @@ project(decoder)
 #-----------------------------------------------------------------------------------------
 
 set(SOURCE
-    generated/rv32i_decoder.cpp
-    decoder.cpp
+    rv32i_decoder_gen.cpp
 )
 
 add_library(${PROJECT_NAME} ${SOURCE})
+add_dependencies(${PROJECT_NAME} run_ruby_generation)
 add_subdirectory(tests/)
