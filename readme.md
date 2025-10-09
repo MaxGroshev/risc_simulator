@@ -1,5 +1,8 @@
 #How to build#
 ```bash
+#install dependencies
+sudo apt-get install ruby-full
+
 mkdr build
 cd ./build
 cmake ..
