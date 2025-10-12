@@ -3,7 +3,7 @@
 #install dependencies
 sudo apt-get install ruby-full
 
-mkdr build
+mkdir build
 cd ./build
 cmake ..
 make
