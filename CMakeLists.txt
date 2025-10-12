@@ -21,12 +21,20 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Building in Debug mode")
 endif ()
 
+# NEW: Add sources for hart, machine, memory
+set(SOURCES
+    src/main.cpp
+    src/hart.cpp
+    src/machine.cpp
+    src/memory.cpp
+)
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 add_subdirectory(decode_execute_module)
 
-target_link_libraries(${PROJECT_NAME} decoder)
+target_link_libraries(${PROJECT_NAME} decoder executer)
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/decode_execute_module
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
