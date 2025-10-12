@@ -18,7 +18,14 @@ module SimInfra
         def add_var(name, type); var(name, type); self; end
 
         private def tmpvar(type); var("_tmp#{next_counter}".to_sym, type); end
-        def stmt(name, operands, attrs = nil);
+        def stmt(name, operands, attrs = nil)
+            operands = operands.map do |o|
+                if o.is_a?(Numeric)
+                    resolve_const(o)
+                else
+                    o
+                end
+            end
             @tree << IrStmt.new(name, operands, attrs); operands[0];
         end
 
@@ -51,24 +58,39 @@ module SimInfra
 
         # TODO(mgroshev): make singleton Object of PC
         def pcHandler(); 
-            var(:pc, :i32)
+            unless @vars[:pc]
+                pc = var(:pc, :i32)
+                stmt(:getpc, [pc])
+            end
+            @vars[:pc]
         end
 
         def setPc(value, op); 
-            stmt op, [value]
+            stmt op, [resolve_const(value)]
         end
         
         # TODO(mgroshev): make class?
         def immHandler(); 
-            var(:imm, :i32)
-        end 
+            unless @vars[:imm]
+                imm = var(:imm, :i32)
+                stmt(:getimm, [imm])
+            end
+            @vars[:imm]
+        end
 
         def ifHandler(condition, op, &body);
             body_scope = Scope.new(self)
             body_scope.instance_eval &body
             # NOTE(mgroshev): if consists of condition var and body        
             stmt op, [condition, body_scope]
-            puts 52
+        end
+
+        def ecall
+            stmt(:ecall, [])
+        end
+
+        def ebreak
+            stmt(:ebreak, [])
         end
 
         # arithmetic

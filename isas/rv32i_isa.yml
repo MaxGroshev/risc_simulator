@@ -256,3 +256,8 @@ instructions:
     code: !ruby/code |
       rd[]= pc + 4; 
       set_pc(pc + imm)
+  ecall:
+    format: I
+    opcode: 0b1110011  # 0x73
+    funct3: 0b000
+    code: ecall

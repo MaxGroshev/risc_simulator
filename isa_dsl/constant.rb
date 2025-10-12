@@ -4,7 +4,7 @@ module SimInfra
 
         def initialize(scope, name, value);
             @const = value; @scope = scope; @type = :iconst; @value = value
-            @scope.stmt(:new_const, [@const])
+            @scope.stmt(:new_const, [self])
         end
 
         def let(other); raise "Assign to constant"; end
