@@ -70,6 +70,7 @@ bool RV32IDecoder::decode_add(uint32_t instruction, DecodedInstruction& result) 
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = 0;
+        // 
         return true;
     }
     return false;
@@ -90,6 +91,7 @@ bool RV32IDecoder::decode_sub(uint32_t instruction, DecodedInstruction& result) 
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = 0;
+        // 
         return true;
     }
     return false;
@@ -110,6 +112,7 @@ bool RV32IDecoder::decode_sll(uint32_t instruction, DecodedInstruction& result) 
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = 0;
+        // 
         return true;
     }
     return false;
@@ -130,6 +133,7 @@ bool RV32IDecoder::decode_slt(uint32_t instruction, DecodedInstruction& result) 
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = 0;
+        // 
         return true;
     }
     return false;
@@ -150,6 +154,7 @@ bool RV32IDecoder::decode_sltu(uint32_t instruction, DecodedInstruction& result)
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = 0;
+        // 
         return true;
     }
     return false;
@@ -170,6 +175,7 @@ bool RV32IDecoder::decode_xor(uint32_t instruction, DecodedInstruction& result) 
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = 0;
+        // 
         return true;
     }
     return false;
@@ -190,6 +196,7 @@ bool RV32IDecoder::decode_srl(uint32_t instruction, DecodedInstruction& result) 
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = 0;
+        // 
         return true;
     }
     return false;
@@ -210,6 +217,7 @@ bool RV32IDecoder::decode_sra(uint32_t instruction, DecodedInstruction& result) 
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = 0;
+        // 
         return true;
     }
     return false;
@@ -230,6 +238,7 @@ bool RV32IDecoder::decode_or(uint32_t instruction, DecodedInstruction& result) {
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = 0;
+        // 
         return true;
     }
     return false;
@@ -250,6 +259,7 @@ bool RV32IDecoder::decode_and(uint32_t instruction, DecodedInstruction& result) 
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = 0;
+        // 
         return true;
     }
     return false;
@@ -268,6 +278,7 @@ bool RV32IDecoder::decode_addi(uint32_t instruction, DecodedInstruction& result)
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -286,6 +297,7 @@ bool RV32IDecoder::decode_slti(uint32_t instruction, DecodedInstruction& result)
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -304,6 +316,7 @@ bool RV32IDecoder::decode_sltiu(uint32_t instruction, DecodedInstruction& result
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -322,6 +335,7 @@ bool RV32IDecoder::decode_xori(uint32_t instruction, DecodedInstruction& result)
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -340,6 +354,7 @@ bool RV32IDecoder::decode_ori(uint32_t instruction, DecodedInstruction& result) 
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -358,6 +373,7 @@ bool RV32IDecoder::decode_andi(uint32_t instruction, DecodedInstruction& result)
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -377,6 +393,7 @@ bool RV32IDecoder::decode_slli(uint32_t instruction, DecodedInstruction& result)
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -396,6 +413,7 @@ bool RV32IDecoder::decode_srli(uint32_t instruction, DecodedInstruction& result)
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -415,6 +433,7 @@ bool RV32IDecoder::decode_srai(uint32_t instruction, DecodedInstruction& result)
                 result.funct3 = get_funct3(instruction);
                 result.funct7 = get_funct7(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -433,6 +452,7 @@ bool RV32IDecoder::decode_lb(uint32_t instruction, DecodedInstruction& result) {
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -451,6 +471,7 @@ bool RV32IDecoder::decode_lh(uint32_t instruction, DecodedInstruction& result) {
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -469,6 +490,7 @@ bool RV32IDecoder::decode_lw(uint32_t instruction, DecodedInstruction& result) {
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -487,6 +509,7 @@ bool RV32IDecoder::decode_lbu(uint32_t instruction, DecodedInstruction& result) 
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -505,6 +528,7 @@ bool RV32IDecoder::decode_lhu(uint32_t instruction, DecodedInstruction& result) 
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -523,6 +547,7 @@ bool RV32IDecoder::decode_jalr(uint32_t instruction, DecodedInstruction& result)
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        // if (result.rs1 == 1 && result.rd == 0 && result.imm == 0) { result.name = "ret"; }
         return true;
     }
     return false;
@@ -541,6 +566,7 @@ bool RV32IDecoder::decode_sb(uint32_t instruction, DecodedInstruction& result) {
                 result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_s(instruction);
+        // 
         return true;
     }
     return false;
@@ -559,6 +585,7 @@ bool RV32IDecoder::decode_sh(uint32_t instruction, DecodedInstruction& result) {
                 result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_s(instruction);
+        // 
         return true;
     }
     return false;
@@ -577,6 +604,7 @@ bool RV32IDecoder::decode_sw(uint32_t instruction, DecodedInstruction& result) {
                 result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_s(instruction);
+        // 
         return true;
     }
     return false;
@@ -595,6 +623,7 @@ bool RV32IDecoder::decode_beq(uint32_t instruction, DecodedInstruction& result) 
                 result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
+        // 
         return true;
     }
     return false;
@@ -613,6 +642,7 @@ bool RV32IDecoder::decode_bne(uint32_t instruction, DecodedInstruction& result) 
                 result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
+        // 
         return true;
     }
     return false;
@@ -631,6 +661,7 @@ bool RV32IDecoder::decode_blt(uint32_t instruction, DecodedInstruction& result) 
                 result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
+        // 
         return true;
     }
     return false;
@@ -649,6 +680,7 @@ bool RV32IDecoder::decode_bge(uint32_t instruction, DecodedInstruction& result) 
                 result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
+        // 
         return true;
     }
     return false;
@@ -667,6 +699,7 @@ bool RV32IDecoder::decode_bltu(uint32_t instruction, DecodedInstruction& result)
                 result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
+        // 
         return true;
     }
     return false;
@@ -685,6 +718,7 @@ bool RV32IDecoder::decode_bgeu(uint32_t instruction, DecodedInstruction& result)
                 result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
+        // 
         return true;
     }
     return false;
@@ -702,6 +736,7 @@ bool RV32IDecoder::decode_lui(uint32_t instruction, DecodedInstruction& result) 
         result.rd = get_rd(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_u(instruction);
+        // 
         return true;
     }
     return false;
@@ -719,6 +754,7 @@ bool RV32IDecoder::decode_auipc(uint32_t instruction, DecodedInstruction& result
         result.rd = get_rd(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_u(instruction);
+        // 
         return true;
     }
     return false;
@@ -736,6 +772,24 @@ bool RV32IDecoder::decode_jal(uint32_t instruction, DecodedInstruction& result) 
         result.rd = get_rd(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_j(instruction);
+        // 
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_ecall(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the ecall instruction
+    if (opcode == 115 && funct3 == 0) {
+        result.name = "ecall";
+        result.format = "I";
+        result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        // 
         return true;
     }
     return false;
@@ -904,6 +958,10 @@ DecodedInstruction RV32IDecoder::decode(uint32_t instruction) {
             case 111: // 6f
             if (decode_jal(instruction, result)) return result;
             break;
+
+            case 115: // 73
+            if (decode_ecall(instruction, result)) return result;
+            break;
         default:
             result.name = "UNKNOWN";
             result.format = "UNKNOWN";
@@ -930,6 +988,8 @@ std::string RV32IDecoder::disassemble(const DecodedInstruction& instr) {
             ss << " x" << static_cast<int>(instr.rd) 
                << ", " << instr.imm 
                << "(x" << static_cast<int>(instr.rs1) << ")";
+        } else if (instr.name == "ecall" || instr.name == "ebreak") {
+            ss << "";  // No operands
         } else {
             ss << " x" << static_cast<int>(instr.rd) 
                << ", x" << static_cast<int>(instr.rs1) 

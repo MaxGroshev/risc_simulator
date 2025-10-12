@@ -12,7 +12,7 @@ module SimInfra
         # Syntax "var[]=value" is used to assign variable
         # it's similar to "var[hi:lo]=value" for partial assignment
         # dumps states and disables @scope dump
-        def []=(other); @scope.stmt(:let, [self, other]); end
+        def []=(other); @scope.stmt(:let, [self, @scope.resolve_const(other)]); end
         def !=(other);  @scope.not_eq(self, other); end
         def +(other);   @scope.add(self, other); end
         def -(other);   @scope.sub(self, other); end
