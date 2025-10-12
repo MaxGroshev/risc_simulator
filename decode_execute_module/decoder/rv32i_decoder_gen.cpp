@@ -95,6 +95,166 @@ bool RV32IDecoder::decode_sub(uint32_t instruction, DecodedInstruction& result) 
     return false;
 }
 
+bool RV32IDecoder::decode_sll(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    uint8_t funct7 = get_funct7(instruction);
+    
+    // Check if this is the sll instruction
+    if (opcode == 51 && funct3 == 1 && funct7 == 0) {
+        result.name = "sll";
+        result.format = "R";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.funct7 = get_funct7(instruction);
+                result.imm = 0;
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_slt(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    uint8_t funct7 = get_funct7(instruction);
+    
+    // Check if this is the slt instruction
+    if (opcode == 51 && funct3 == 2 && funct7 == 0) {
+        result.name = "slt";
+        result.format = "R";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.funct7 = get_funct7(instruction);
+                result.imm = 0;
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_sltu(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    uint8_t funct7 = get_funct7(instruction);
+    
+    // Check if this is the sltu instruction
+    if (opcode == 51 && funct3 == 3 && funct7 == 0) {
+        result.name = "sltu";
+        result.format = "R";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.funct7 = get_funct7(instruction);
+                result.imm = 0;
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_xor(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    uint8_t funct7 = get_funct7(instruction);
+    
+    // Check if this is the xor instruction
+    if (opcode == 51 && funct3 == 4 && funct7 == 0) {
+        result.name = "xor";
+        result.format = "R";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.funct7 = get_funct7(instruction);
+                result.imm = 0;
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_srl(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    uint8_t funct7 = get_funct7(instruction);
+    
+    // Check if this is the srl instruction
+    if (opcode == 51 && funct3 == 5 && funct7 == 0) {
+        result.name = "srl";
+        result.format = "R";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.funct7 = get_funct7(instruction);
+                result.imm = 0;
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_sra(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    uint8_t funct7 = get_funct7(instruction);
+    
+    // Check if this is the sra instruction
+    if (opcode == 51 && funct3 == 5 && funct7 == 32) {
+        result.name = "sra";
+        result.format = "R";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.funct7 = get_funct7(instruction);
+                result.imm = 0;
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_or(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    uint8_t funct7 = get_funct7(instruction);
+    
+    // Check if this is the or instruction
+    if (opcode == 51 && funct3 == 6 && funct7 == 0) {
+        result.name = "or";
+        result.format = "R";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.funct7 = get_funct7(instruction);
+                result.imm = 0;
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_and(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    uint8_t funct7 = get_funct7(instruction);
+    
+    // Check if this is the and instruction
+    if (opcode == 51 && funct3 == 7 && funct7 == 0) {
+        result.name = "and";
+        result.format = "R";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.funct7 = get_funct7(instruction);
+                result.imm = 0;
+        return true;
+    }
+    return false;
+}
+
 bool RV32IDecoder::decode_addi(uint32_t instruction, DecodedInstruction& result) {
     uint8_t opcode = instruction & 0x7F;
     uint8_t funct3 = get_funct3(instruction);
@@ -103,6 +263,189 @@ bool RV32IDecoder::decode_addi(uint32_t instruction, DecodedInstruction& result)
     // Check if this is the addi instruction
     if (opcode == 19 && funct3 == 0) {
         result.name = "addi";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_slti(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the slti instruction
+    if (opcode == 19 && funct3 == 2) {
+        result.name = "slti";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_sltiu(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the sltiu instruction
+    if (opcode == 19 && funct3 == 3) {
+        result.name = "sltiu";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_xori(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the xori instruction
+    if (opcode == 19 && funct3 == 4) {
+        result.name = "xori";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_ori(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the ori instruction
+    if (opcode == 19 && funct3 == 6) {
+        result.name = "ori";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_andi(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the andi instruction
+    if (opcode == 19 && funct3 == 7) {
+        result.name = "andi";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_slli(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    uint8_t funct7 = get_funct7(instruction);
+    
+    // Check if this is the slli instruction
+    if (opcode == 19 && funct3 == 1 && funct7 == 0) {
+        result.name = "slli";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.funct7 = get_funct7(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_srli(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    uint8_t funct7 = get_funct7(instruction);
+    
+    // Check if this is the srli instruction
+    if (opcode == 19 && funct3 == 5 && funct7 == 0) {
+        result.name = "srli";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.funct7 = get_funct7(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_srai(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    uint8_t funct7 = get_funct7(instruction);
+    
+    // Check if this is the srai instruction
+    if (opcode == 19 && funct3 == 5 && funct7 == 32) {
+        result.name = "srai";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.funct7 = get_funct7(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_lb(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the lb instruction
+    if (opcode == 3 && funct3 == 0) {
+        result.name = "lb";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_lh(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the lh instruction
+    if (opcode == 3 && funct3 == 1) {
+        result.name = "lh";
         result.format = "I";
         result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
@@ -131,6 +474,42 @@ bool RV32IDecoder::decode_lw(uint32_t instruction, DecodedInstruction& result) {
     return false;
 }
 
+bool RV32IDecoder::decode_lbu(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the lbu instruction
+    if (opcode == 3 && funct3 == 4) {
+        result.name = "lbu";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_lhu(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the lhu instruction
+    if (opcode == 3 && funct3 == 5) {
+        result.name = "lhu";
+        result.format = "I";
+        result.rd = get_rd(instruction);
+                result.rs1 = get_rs1(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
 bool RV32IDecoder::decode_jalr(uint32_t instruction, DecodedInstruction& result) {
     uint8_t opcode = instruction & 0x7F;
     uint8_t funct3 = get_funct3(instruction);
@@ -144,6 +523,42 @@ bool RV32IDecoder::decode_jalr(uint32_t instruction, DecodedInstruction& result)
                 result.rs1 = get_rs1(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_sb(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the sb instruction
+    if (opcode == 35 && funct3 == 0) {
+        result.name = "sb";
+        result.format = "S";
+        result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_s(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_sh(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the sh instruction
+    if (opcode == 35 && funct3 == 1) {
+        result.name = "sh";
+        result.format = "S";
+        result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_s(instruction);
         return true;
     }
     return false;
@@ -167,18 +582,19 @@ bool RV32IDecoder::decode_sw(uint32_t instruction, DecodedInstruction& result) {
     return false;
 }
 
-bool RV32IDecoder::decode_jal(uint32_t instruction, DecodedInstruction& result) {
+bool RV32IDecoder::decode_beq(uint32_t instruction, DecodedInstruction& result) {
     uint8_t opcode = instruction & 0x7F;
     uint8_t funct3 = get_funct3(instruction);
     
     
-    // Check if this is the jal instruction
-    if (opcode == 111) {
-        result.name = "jal";
-        result.format = "J";
-        result.rd = get_rd(instruction);
+    // Check if this is the beq instruction
+    if (opcode == 99 && funct3 == 0) {
+        result.name = "beq";
+        result.format = "B";
+        result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
-                result.imm = get_imm_j(instruction);
+                result.imm = get_imm_b(instruction);
         return true;
     }
     return false;
@@ -197,6 +613,129 @@ bool RV32IDecoder::decode_bne(uint32_t instruction, DecodedInstruction& result) 
                 result.rs2 = get_rs2(instruction);
                 result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_blt(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the blt instruction
+    if (opcode == 99 && funct3 == 4) {
+        result.name = "blt";
+        result.format = "B";
+        result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_b(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_bge(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the bge instruction
+    if (opcode == 99 && funct3 == 5) {
+        result.name = "bge";
+        result.format = "B";
+        result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_b(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_bltu(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the bltu instruction
+    if (opcode == 99 && funct3 == 6) {
+        result.name = "bltu";
+        result.format = "B";
+        result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_b(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_bgeu(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the bgeu instruction
+    if (opcode == 99 && funct3 == 7) {
+        result.name = "bgeu";
+        result.format = "B";
+        result.rs1 = get_rs1(instruction);
+                result.rs2 = get_rs2(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_b(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_lui(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the lui instruction
+    if (opcode == 55) {
+        result.name = "lui";
+        result.format = "U";
+        result.rd = get_rd(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_u(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_auipc(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the auipc instruction
+    if (opcode == 23) {
+        result.name = "auipc";
+        result.format = "U";
+        result.rd = get_rd(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_u(instruction);
+        return true;
+    }
+    return false;
+}
+
+bool RV32IDecoder::decode_jal(uint32_t instruction, DecodedInstruction& result) {
+    uint8_t opcode = instruction & 0x7F;
+    uint8_t funct3 = get_funct3(instruction);
+    
+    
+    // Check if this is the jal instruction
+    if (opcode == 111) {
+        result.name = "jal";
+        result.format = "J";
+        result.rd = get_rd(instruction);
+                result.funct3 = get_funct3(instruction);
+                result.imm = get_imm_j(instruction);
         return true;
     }
     return false;
@@ -226,15 +765,91 @@ DecodedInstruction RV32IDecoder::decode(uint32_t instruction) {
                             break;
                     }
                     break;
+                case 1:
+                    if (decode_sll(instruction, result)) return result;
+                    break;
+                case 2:
+                    if (decode_slt(instruction, result)) return result;
+                    break;
+                case 3:
+                    if (decode_sltu(instruction, result)) return result;
+                    break;
+                case 4:
+                    if (decode_xor(instruction, result)) return result;
+                    break;
+                case 5:
+                    switch (get_funct7(instruction)) {
+                        case 0:
+                            if (decode_srl(instruction, result)) return result;
+                            break;
+                        case 32:
+                            if (decode_sra(instruction, result)) return result;
+                            break;
+                    }
+                    break;
+                case 6:
+                    if (decode_or(instruction, result)) return result;
+                    break;
+                case 7:
+                    if (decode_and(instruction, result)) return result;
+                    break;
             }
             break;
 
             case 19: // 13
-            if (decode_addi(instruction, result)) return result;
+            switch (get_funct3(instruction)) {
+                case 0:
+                    if (decode_addi(instruction, result)) return result;
+                    break;
+                case 2:
+                    if (decode_slti(instruction, result)) return result;
+                    break;
+                case 3:
+                    if (decode_sltiu(instruction, result)) return result;
+                    break;
+                case 4:
+                    if (decode_xori(instruction, result)) return result;
+                    break;
+                case 6:
+                    if (decode_ori(instruction, result)) return result;
+                    break;
+                case 7:
+                    if (decode_andi(instruction, result)) return result;
+                    break;
+                case 1:
+                    if (decode_slli(instruction, result)) return result;
+                    break;
+                case 5:
+                    switch (get_funct7(instruction)) {
+                        case 0:
+                            if (decode_srli(instruction, result)) return result;
+                            break;
+                        case 32:
+                            if (decode_srai(instruction, result)) return result;
+                            break;
+                    }
+                    break;
+            }
             break;
 
             case 3: // 3
-            if (decode_lw(instruction, result)) return result;
+            switch (get_funct3(instruction)) {
+                case 0:
+                    if (decode_lb(instruction, result)) return result;
+                    break;
+                case 1:
+                    if (decode_lh(instruction, result)) return result;
+                    break;
+                case 2:
+                    if (decode_lw(instruction, result)) return result;
+                    break;
+                case 4:
+                    if (decode_lbu(instruction, result)) return result;
+                    break;
+                case 5:
+                    if (decode_lhu(instruction, result)) return result;
+                    break;
+            }
             break;
 
             case 103: // 67
@@ -242,15 +857,52 @@ DecodedInstruction RV32IDecoder::decode(uint32_t instruction) {
             break;
 
             case 35: // 23
-            if (decode_sw(instruction, result)) return result;
+            switch (get_funct3(instruction)) {
+                case 0:
+                    if (decode_sb(instruction, result)) return result;
+                    break;
+                case 1:
+                    if (decode_sh(instruction, result)) return result;
+                    break;
+                case 2:
+                    if (decode_sw(instruction, result)) return result;
+                    break;
+            }
+            break;
+
+            case 99: // 63
+            switch (get_funct3(instruction)) {
+                case 0:
+                    if (decode_beq(instruction, result)) return result;
+                    break;
+                case 1:
+                    if (decode_bne(instruction, result)) return result;
+                    break;
+                case 4:
+                    if (decode_blt(instruction, result)) return result;
+                    break;
+                case 5:
+                    if (decode_bge(instruction, result)) return result;
+                    break;
+                case 6:
+                    if (decode_bltu(instruction, result)) return result;
+                    break;
+                case 7:
+                    if (decode_bgeu(instruction, result)) return result;
+                    break;
+            }
+            break;
+
+            case 55: // 37
+            if (decode_lui(instruction, result)) return result;
+            break;
+
+            case 23: // 17
+            if (decode_auipc(instruction, result)) return result;
             break;
 
             case 111: // 6f
             if (decode_jal(instruction, result)) return result;
-            break;
-
-            case 99: // 63
-            if (decode_bne(instruction, result)) return result;
             break;
         default:
             result.name = "UNKNOWN";
@@ -274,9 +926,7 @@ std::string RV32IDecoder::disassemble(const DecodedInstruction& instr) {
             ss << " x" << static_cast<int>(instr.rd) 
                << ", " << instr.imm 
                << "(x" << static_cast<int>(instr.rs1) << ")";
-        } else if (instr.name.find("lw") != std::string::npos || 
-                   instr.name.find("lh") != std::string::npos ||
-                   instr.name.find("lb") != std::string::npos) {
+        } else if (instr.name.find("l") == 0) {  // loads: lb,lh,lw,lbu,lhu
             ss << " x" << static_cast<int>(instr.rd) 
                << ", " << instr.imm 
                << "(x" << static_cast<int>(instr.rs1) << ")";
@@ -295,7 +945,7 @@ std::string RV32IDecoder::disassemble(const DecodedInstruction& instr) {
            << ", " << instr.imm;
     } else if (instr.format == "U") {
         ss << " x" << static_cast<int>(instr.rd) 
-           << ", " << instr.imm;
+           << ", " << (instr.imm >> 12);
     } else if (instr.format == "J") {
         ss << " x" << static_cast<int>(instr.rd) 
            << ", " << instr.imm;
