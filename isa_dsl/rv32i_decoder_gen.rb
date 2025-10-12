@@ -172,9 +172,7 @@ class DecoderGenerator
                     ss << " x" << static_cast<int>(instr.rd) 
                        << ", " << instr.imm 
                        << "(x" << static_cast<int>(instr.rs1) << ")";
-                } else if (instr.name.find("lw") != std::string::npos || 
-                           instr.name.find("lh") != std::string::npos ||
-                           instr.name.find("lb") != std::string::npos) {
+                } else if (instr.name.find("l") == 0) {  // loads: lb,lh,lw,lbu,lhu
                     ss << " x" << static_cast<int>(instr.rd) 
                        << ", " << instr.imm 
                        << "(x" << static_cast<int>(instr.rs1) << ")";
@@ -193,7 +191,7 @@ class DecoderGenerator
                    << ", " << instr.imm;
             } else if (instr.format == "U") {
                 ss << " x" << static_cast<int>(instr.rd) 
-                   << ", " << instr.imm;
+                   << ", " << (instr.imm >> 12);
             } else if (instr.format == "J") {
                 ss << " x" << static_cast<int>(instr.rd) 
                    << ", " << instr.imm;
