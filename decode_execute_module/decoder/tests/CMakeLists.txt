@@ -1,24 +1,25 @@
-cmake_minimum_required (VERSION 3.28)
+cmake_minimum_required(VERSION 3.21)
 
-#-----------------------------------------------------------------------------------------
+project(decoder_tests)
 
-project (decoder_tests)
+set(UNIT_TESTS
+    main.cpp
+)
 
-#-----------------------------------------------------------------------------------------
+add_executable(${PROJECT_NAME} ${UNIT_TESTS})
 
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
+# Линковка с gtest и decoder
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    GTest::gtest_main
+    decoder
+)
 
-#-----------------------------------------------------------------------------------------
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${gtest_SOURCE_DIR}/include 
+)
 
-#Unit_tests
-set (UNIT_TESTS
-    ./main.cpp)
+include(GoogleTest)
+gtest_discover_tests(${PROJECT_NAME})
 
-#-----------------------------------------------------------------------------------------
-
-add_executable            (${PROJECT_NAME} ${UNIT_TESTS})
-target_include_directories(${PROJECT_NAME} PRIVATE ${GTEST_INCLUDE_DIRS} ../)
-target_link_libraries     (${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES} decoder)
-
-
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
