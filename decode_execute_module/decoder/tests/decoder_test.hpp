@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rv32i_decoder_gen.hpp"
+#include "../rv32i_decoder_gen.hpp"
 // TODO(mgroshev): These tests can be generated as well
 //-----------------------------------------------------------------------------------------
 

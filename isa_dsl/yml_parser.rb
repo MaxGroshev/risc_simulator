@@ -48,6 +48,14 @@ module SimInfra
                     encoding *SimInfra.format_b(opcode, funct3)
                     code instruction_data['code']
                 }
+            elsif(instruction_data["format"] == 'U')
+                inst_sym = instruction_name.to_sym
+                opcode = instruction_data["opcode"]
+
+                SimInfra::Instruction(inst_sym) {
+                    encoding *SimInfra.format_u(opcode)
+                    code instruction_data['code']
+                }
             end
         end
         return isa_config
