@@ -8,7 +8,7 @@ set(GENERATED_DECODER_HPP ${GENERATED_DECODER_DIR}/rv32i_decoder_gen.hpp)
 set(GENERATED_EXECUTER_CPP ${GENERATED_EXECUTER_DIR}/rv32i_executer_gen.cpp)
 set(GENERATED_EXECUTER_HPP ${GENERATED_EXECUTER_DIR}/rv32i_executer_gen.hpp)
 
-# Кастомная команда для генерации файлов через Ruby
+# Generating Ruby code
 add_custom_command(
     OUTPUT ${GENERATED_DECODER_CPP} ${GENERATED_DECODER_HPP} ${GENERATED_EXECUTER_CPP} ${GENERATED_EXECUTER_HPP}
     COMMAND ruby ${RUBY_GEN_SCRIPT}
@@ -19,7 +19,7 @@ add_custom_command(
     VERBATIM
 )
 
-# Кастомная цель для генерации
+# Compile after generating in Ruby
 add_custom_target(run_ruby_generation DEPENDS ${GENERATED_DECODER_CPP} ${GENERATED_DECODER_HPP} ${GENERATED_EXECUTER_CPP} ${GENERATED_EXECUTER_HPP})
 
 add_subdirectory(decoder)

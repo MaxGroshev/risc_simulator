@@ -2,11 +2,11 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
-#include <elf.h>  // For ELF structures
+#include <elf.h>
 #include <stdexcept>
 #include <cstring>
 
-Machine::Machine() : hart_(this) {}  // Hart references this Machine
+Machine::Machine() : hart_(this) {}
 
 uint32_t Machine::memory_read(uint32_t addr, int size, bool sign_extend) const {
     return memory_.read(addr, size, sign_extend);
@@ -31,23 +31,19 @@ void Machine::load_elf(const std::string& filename) {
         throw std::runtime_error("Not a RISC-V ELF");
     }
 
-    // Set entry point
     hart_.set_pc(ehdr.e_entry);
-    memory_.zero_init(0, 16 * 1024 * 1024);  // Clear memory
 
-    // Read program headers
     file.seekg(ehdr.e_phoff);
     for (int i = 0; i < ehdr.e_phnum; ++i) {
         Elf32_Phdr phdr;
         file.read(reinterpret_cast<char*>(&phdr), sizeof(phdr));
         if (phdr.p_type == PT_LOAD) {
-            // Load segment
             file.seekg(phdr.p_offset);
             std::vector<uint8_t> data(phdr.p_filesz);
             file.read(reinterpret_cast<char*>(data.data()), phdr.p_filesz);
             memory_.load_data(phdr.p_vaddr, data.data(), phdr.p_filesz);
 
-            // Zero-init remaining (for .bss)
+            // for .bss
             if (phdr.p_memsz > phdr.p_filesz) {
                 memory_.zero_init(phdr.p_vaddr + phdr.p_filesz, phdr.p_memsz - phdr.p_filesz);
             }
@@ -63,7 +59,7 @@ void Machine::load_elf(const std::string& filename) {
 void Machine::run(uint64_t max_cycles) {
     uint64_t cycle = 0;
     while ((max_cycles == 0 || cycle < max_cycles) && !hart_.is_halt()) {
-        if (!hart_.step()) break;  // If step returns false, halt
+        if (!hart_.step()) break;
         ++cycle;
     }
     std::cout << "Ran " << cycle << " cycles." << std::endl;

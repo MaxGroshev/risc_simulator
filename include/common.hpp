@@ -15,7 +15,6 @@ struct DecodedInstruction {
     int32_t imm;
     uint32_t raw_instruction;
     
-    // Constructor
     DecodedInstruction() : rd(0), rs1(0), rs2(0), funct3(0), funct7(0), imm(0), raw_instruction(0) {}
 };
 
