@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 Hart::Hart(Machine* machine) : machine_(machine), pc_(0), next_pc_(0) {
-    regs_.fill(0);  // All registers zero-initialized
+    regs_.fill(0);
 }
 
 uint32_t Hart::get_reg(uint8_t reg_num) const {
@@ -60,20 +60,15 @@ bool Hart::is_halt() const {
 }
 
 bool Hart::step() {
-    // Fetch
     uint32_t raw_instr = memory_read(pc_, 4, false); 
     // std::cout << "Fetched instruction 0x" << std::hex << raw_instr << " at PC 0x" << pc_ << std::dec << std::endl;  
 
-    // Decode
     DecodedInstruction decoded = RV32IDecoder::decode(raw_instr);
 
-    // Set default next_pc
     next_pc_ = pc_ + 4;
 
-    // Execute
     RV32IExecuter::execute(decoded, this);
 
-    // Update PC
     pc_ = next_pc_;
 
     return !is_halt();

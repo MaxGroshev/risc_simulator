@@ -16,12 +16,12 @@ FetchContent_MakeAvailable(googletest)
 
 set(CMAKE_BUILD_TYPE "Debug")
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS  -fsanitize=address)
+    add_compile_options(-fno-omit-frame-pointer -fsanitize=address)
+    add_link_options(-fno-omit-frame-pointer -fsanitize=address)
     add_compile_definitions(MY_DEBUG)
     message(STATUS "Building in Debug mode")
 endif ()
 
-# NEW: Add sources for hart, machine, memory
 set(SOURCES
     src/main.cpp
     src/hart.cpp

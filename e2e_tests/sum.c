@@ -13,5 +13,5 @@ int main() {
 void _start() {
     int res = main();
     asm volatile ("mv a0, %0" : : "r"(res)); 
-    asm volatile ("ecall");  /* Halt в симуляторе */
+    asm volatile ("ecall");  /* Currently Halt in our simulator */
 }
