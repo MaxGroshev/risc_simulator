@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <cstring>
 
-Machine::Machine() : hart_(this) {}
+Machine::Machine() : memory_(16 * 1024 * 1024), hart_(*this) {}
 
 uint32_t Machine::memory_read(uint32_t addr, int size, bool sign_extend) const {
     return memory_.read(addr, size, sign_extend);
@@ -18,7 +18,8 @@ void Machine::memory_write(uint32_t addr, uint32_t value, int size) {
 
 void Machine::load_elf(const std::string& filename) {
     std::ifstream file(filename, std::ios::binary);
-    if (!file) throw std::runtime_error("Failed to open ELF file");
+    if (!file) 
+        throw std::runtime_error("Failed to open ELF file");
 
     Elf32_Ehdr ehdr;
     file.read(reinterpret_cast<char*>(&ehdr), sizeof(ehdr));
@@ -27,6 +28,7 @@ void Machine::load_elf(const std::string& filename) {
         std::cout << ehdr.e_ident << std::endl;
         throw std::runtime_error("Not a valid ELF file");
     }
+
     if (ehdr.e_machine != EM_RISCV) {
         throw std::runtime_error("Not a RISC-V ELF");
     }
@@ -50,9 +52,8 @@ void Machine::load_elf(const std::string& filename) {
         }
     }
 
-    // Set stack pointer (high address, e.g., end of memory - some offset)
-    hart_.set_reg(2, static_cast<uint32_t>(16 * 1024 * 1024 - 0x1000));  // sp = mem_size - 4KB
-
+    /// TODO: it is rather ugly
+    hart_.set_reg(2, static_cast<uint32_t>(memory_.size() - 0x1000));
     hart_.set_halt(false);
 }
 

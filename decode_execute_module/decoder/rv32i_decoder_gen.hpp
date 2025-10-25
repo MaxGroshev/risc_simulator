@@ -1,19 +1,15 @@
 #pragma once
 #include <cstdint>
 #include <string>
-#include <unordered_map>
 #include <bitset>
+#include "../../include/common.hpp"
 
-#include "../../include/common.hpp" // Include DecodedInstruction
-
-// RV32I Decoder class
 class RV32IDecoder {
 public:
     static DecodedInstruction decode(uint32_t instruction);
     static std::string disassemble(const DecodedInstruction& instr);
     
 private:
-    // Field extraction methods
     static uint8_t get_rd(uint32_t instruction);
     static uint8_t get_rs1(uint32_t instruction);
     static uint8_t get_rs2(uint32_t instruction);
@@ -25,7 +21,6 @@ private:
     static int32_t get_imm_u(uint32_t instruction);
     static int32_t get_imm_j(uint32_t instruction);
     
-    // Instruction specific decoding
     static void decode_add(uint32_t instruction, DecodedInstruction& result);
     static void decode_sub(uint32_t instruction, DecodedInstruction& result);
     static void decode_sll(uint32_t instruction, DecodedInstruction& result);

@@ -8,9 +8,15 @@
 class Machine {
 public:
     Machine();
+    Machine(const Machine&) = delete;
+    Machine(Machine&&) = delete;
+    Machine& operator=(const Machine&) = delete;
+    Machine& operator=(Machine&&) = delete;
+
+    ~Machine() = default;
 
     Hart& get_hart() { return hart_; }
-    Memory& get_memory() { return memory_; }
+    const Memory& get_memory() const { return memory_; }
 
     void load_elf(const std::string& filename);
 

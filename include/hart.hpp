@@ -3,14 +3,19 @@
 
 #include <cstdint>
 #include <array>
-
-#include "common.hpp"    
+#include "common.hpp"
 
 class Machine;
 
 class Hart {
 public:
-    Hart(Machine* machine);
+    Hart(Machine& machine);
+    Hart(const Hart&) = delete;
+    Hart(Hart&&) = delete;
+    Hart& operator=(const Hart&) = delete;
+    Hart& operator=(Hart&&) = delete;
+
+    ~Hart() = default;
 
     uint32_t get_reg(uint8_t reg_num) const;
     void set_reg(uint8_t reg_num, uint32_t value);
@@ -32,10 +37,10 @@ public:
     bool step();
 
 private:
-    Machine* machine_;  
+    Machine& machine_;
     std::array<uint32_t, 32> regs_;
     uint32_t pc_;
-    uint32_t next_pc_; 
+    uint32_t next_pc_;
     bool halt_;
 };
 
