@@ -70,11 +70,11 @@ bool Hart::is_halt() const {
 bool Hart::step() {
     uint32_t raw_instr = memory_read(pc_, 4, false);
 
-    DecodedInstruction decoded = RV32IDecoder::decode(raw_instr);
+    DecodedInstruction decoded = riscv_sim::decoder::decode(raw_instr);
 
     next_pc_ = pc_ + 4;
 
-    RV32IExecuter::execute(decoded, *this);
+    riscv_sim::executer::execute(decoded, *this);
 
     pc_ = next_pc_;
 
