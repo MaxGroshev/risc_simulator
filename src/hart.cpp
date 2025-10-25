@@ -5,19 +5,27 @@
 #include <iostream>
 #include <stdexcept>
 
-Hart::Hart(Machine* machine) : machine_(machine), pc_(0), next_pc_(0) {
+Hart::Hart(Machine& machine) : machine_(machine), pc_(0), next_pc_(0), halt_(false) {
     regs_.fill(0);
 }
 
 uint32_t Hart::get_reg(uint8_t reg_num) const {
-    if (reg_num == 0) return 0U;
-    if (reg_num >= 32) throw std::out_of_range("Invalid register number");
+    if (reg_num == 0) 
+        return 0U;
+
+    if (reg_num >= 32) 
+        throw std::out_of_range("Invalid register number");
+
     return regs_[reg_num];
 }
 
 void Hart::set_reg(uint8_t reg_num, uint32_t value) {
-    if (reg_num == 0) return;  
-    if (reg_num >= 32) throw std::out_of_range("Invalid register number");
+    if (reg_num == 0) 
+        return;
+
+    if (reg_num >= 32) 
+        throw std::out_of_range("Invalid register number");
+
     regs_[reg_num] = value;
 }
 
@@ -34,16 +42,16 @@ void Hart::set_next_pc(uint32_t value) {
 }
 
 uint32_t Hart::memory_read(uint32_t addr, int size, bool sign_extend) const {
-    return machine_->memory_read(addr, size, sign_extend);
+    return machine_.memory_read(addr, size, sign_extend);
 }
 
 void Hart::memory_write(uint32_t addr, uint32_t value, int size) {
-    machine_->memory_write(addr, value, size);
+    machine_.memory_write(addr, value, size);
 }
 
 void Hart::handle_unknown_instruction(const DecodedInstruction& instr) {
-    std::cerr << "Unknown instruction: " << instr.name << std::endl;
-    std::cerr << "Raw: 0x" << std::hex << instr.raw_instruction << std::dec << std::endl;   
+    std::cerr << "Unknown instruction opcode: " << static_cast<int>(instr.opcode) << std::endl;
+    std::cerr << "Raw: 0x" << std::hex << instr.raw_instruction << std::dec << std::endl;
     std::abort();
 }
 
@@ -60,14 +68,13 @@ bool Hart::is_halt() const {
 }
 
 bool Hart::step() {
-    uint32_t raw_instr = memory_read(pc_, 4, false); 
-    // std::cout << "Fetched instruction 0x" << std::hex << raw_instr << " at PC 0x" << pc_ << std::dec << std::endl;  
+    uint32_t raw_instr = memory_read(pc_, 4, false);
 
     DecodedInstruction decoded = RV32IDecoder::decode(raw_instr);
 
     next_pc_ = pc_ + 4;
 
-    RV32IExecuter::execute(decoded, this);
+    RV32IExecuter::execute(decoded, *this);
 
     pc_ = next_pc_;
 

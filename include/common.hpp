@@ -4,7 +4,10 @@
 #include <cstdint>
 #include <string>
 
+#include "../decode_execute_module/instruction_opcodes_gen.hpp"
+
 struct DecodedInstruction {
+    InstructionOpcode opcode;
     std::string name;
     std::string format;
     uint8_t rd;
@@ -14,8 +17,8 @@ struct DecodedInstruction {
     uint8_t funct7;
     int32_t imm;
     uint32_t raw_instruction;
-    
-    DecodedInstruction() : rd(0), rs1(0), rs2(0), funct3(0), funct7(0), imm(0), raw_instruction(0) {}
+
+    DecodedInstruction() : opcode(InstructionOpcode::UNKNOWN), rd(0), rs1(0), rs2(0), funct3(0), funct7(0), imm(0), raw_instruction(0) {}
 };
 
 #endif // COMMON_HPP

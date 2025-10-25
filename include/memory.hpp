@@ -7,7 +7,14 @@
 
 class Memory {
 public:
-    Memory(size_t size = 16 * 1024 * 1024);  // Default 16MB
+    explicit Memory(size_t size = 16 * 1024 * 1024);  // Default 16MB
+
+    Memory(const Memory&) = delete;
+    Memory(Memory&&) = delete;
+    Memory& operator=(const Memory&) = delete;
+    Memory& operator=(Memory&&) = delete;
+
+    ~Memory() = default;
 
     uint32_t read(uint32_t addr, int size, bool sign_extend) const;
     void write(uint32_t addr, uint32_t value, int size);
@@ -15,6 +22,8 @@ public:
     void load_data(uint32_t addr, const uint8_t* data, size_t size);
 
     void zero_init(uint32_t addr, size_t size);
+
+    size_t size() const;
 
 private:
     std::vector<uint8_t> mem_;
