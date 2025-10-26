@@ -5,6 +5,7 @@
 #include <elf.h>
 #include <stdexcept>
 #include <cstring>
+#include <chrono>
 
 Machine::Machine() : memory_(16 * 1024 * 1024), hart_(*this) {}
 
@@ -59,12 +60,25 @@ void Machine::load_elf(const std::string& filename) {
 
 void Machine::run(uint64_t max_cycles) {
     uint64_t cycle = 0;
+    auto start = std::chrono::high_resolution_clock::now();
+
     while ((max_cycles == 0 || cycle < max_cycles) && !hart_.is_halt()) {
         if (!hart_.step()) break;
         ++cycle;
     }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+    double time_sec = elapsed.count();
+
     std::cout << "Ran " << cycle << " cycles." << std::endl;
     std::cout << "Output (a0): " << hart_.get_reg(10) << std::endl; // a0 is x10
+
+    if (cycle > 0 && time_sec > 0) {
+        double mips = (static_cast<double>(cycle) / time_sec) / 1e6;
+        std::cout << "Performance: " << mips << " MIPS" << std::endl;
+    }
+    
 }
 
 void Machine::dump_regs() const {
