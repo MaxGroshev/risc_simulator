@@ -2,21 +2,17 @@
 #define COMMON_HPP
 
 #include <cstdint>
-#include <string>
+
+#include "../decode_execute_module/instruction_opcodes_gen.hpp"
 
 struct DecodedInstruction {
-    std::string name;
-    std::string format;
+    InstructionOpcode opcode;
     uint8_t rd;
     uint8_t rs1;
     uint8_t rs2;
-    uint8_t funct3;
-    uint8_t funct7;
     int32_t imm;
-    uint32_t raw_instruction;
-    
-    // Constructor
-    DecodedInstruction() : rd(0), rs1(0), rs2(0), funct3(0), funct7(0), imm(0), raw_instruction(0) {}
+
+    DecodedInstruction() : opcode(InstructionOpcode::UNKNOWN), rd(0), rs1(0), rs2(0), imm(0) {}
 };
 
-#endif // COMMON_HPP
+#endif

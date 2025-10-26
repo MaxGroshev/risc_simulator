@@ -1,12 +1,12 @@
-int sum(int a) {
-    if (a == 1) {
-        return a;
+int fib(int n) {
+    if (n <= 1) {
+        return n;
     }
-    return a + sum(a - 1);
+    return fib(n - 1) + fib(n - 2);
 }
 
 int main() {
-    int res = sum(10);
+    int res = fib(29);
     return res; 
 }
 

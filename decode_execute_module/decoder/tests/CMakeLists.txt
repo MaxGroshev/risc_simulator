@@ -8,7 +8,6 @@ set(UNIT_TESTS
 
 add_executable(${PROJECT_NAME} ${UNIT_TESTS})
 
-# Линковка с gtest и decoder
 target_link_libraries(${PROJECT_NAME} PRIVATE
     GTest::gtest_main
     decoder
