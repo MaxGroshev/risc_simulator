@@ -63,8 +63,7 @@ void Machine::run(uint64_t max_cycles) {
     auto start = std::chrono::high_resolution_clock::now();
 
     while ((max_cycles == 0 || cycle < max_cycles) && !hart_.is_halt()) {
-        if (!hart_.step()) break;
-        ++cycle;
+        cycle += hart_.step();
     }
 
     auto end = std::chrono::high_resolution_clock::now();

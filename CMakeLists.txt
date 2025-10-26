@@ -23,6 +23,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif ()
 
 set(SOURCES
+    src/block_cache.cpp
     src/main.cpp
     src/hart.cpp
     src/machine.cpp

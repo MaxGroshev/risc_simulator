@@ -4,12 +4,13 @@
 #include <cstdint>
 #include <array>
 #include "common.hpp"
+#include "block_cache.hpp"
 
 class Machine;
 
 class Hart {
 public:
-    Hart(Machine& machine);
+    Hart(Machine& machine, uint32_t cache_len = 128);
     Hart(const Hart&) = delete;
     Hart(Hart&&) = delete;
     Hart& operator=(const Hart&) = delete;
@@ -34,14 +35,17 @@ public:
     void set_halt(bool value);
     bool is_halt() const;
 
-    bool step();
+    uint64_t step();
 
 private:
     Machine& machine_;
     std::array<uint32_t, 32> regs_;
     uint32_t pc_;
     uint32_t next_pc_;
+    uint32_t cache_len_;
     bool halt_;
+
+    riscv_sim::BlockCache block_cache_;
 };
 
 #endif // HART_HPP
