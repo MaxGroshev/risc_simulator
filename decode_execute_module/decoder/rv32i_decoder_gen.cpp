@@ -1,6 +1,4 @@
 #include "rv32i_decoder_gen.hpp"
-#include <iostream>
-#include <sstream>
 #include "../../include/common.hpp"
 #include "../instruction_opcodes_gen.hpp"
 
@@ -62,406 +60,279 @@ int32_t get_imm_j(uint32_t instruction) {
 
 void decode_add(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::ADD;
-    result.name = "add";
-    result.format = "R";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = 0;
 }
 
 void decode_sub(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SUB;
-    result.name = "sub";
-    result.format = "R";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = 0;
 }
 
 void decode_sll(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SLL;
-    result.name = "sll";
-    result.format = "R";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = 0;
 }
 
 void decode_slt(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SLT;
-    result.name = "slt";
-    result.format = "R";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = 0;
 }
 
 void decode_sltu(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SLTU;
-    result.name = "sltu";
-    result.format = "R";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = 0;
 }
 
 void decode_xor(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::XOR;
-    result.name = "xor";
-    result.format = "R";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = 0;
 }
 
 void decode_srl(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SRL;
-    result.name = "srl";
-    result.format = "R";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = 0;
 }
 
 void decode_sra(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SRA;
-    result.name = "sra";
-    result.format = "R";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = 0;
 }
 
 void decode_or(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::OR;
-    result.name = "or";
-    result.format = "R";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = 0;
 }
 
 void decode_and(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::AND;
-    result.name = "and";
-    result.format = "R";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = 0;
 }
 
 void decode_addi(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::ADDI;
-    result.name = "addi";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_slti(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SLTI;
-    result.name = "slti";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_sltiu(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SLTIU;
-    result.name = "sltiu";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_xori(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::XORI;
-    result.name = "xori";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_ori(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::ORI;
-    result.name = "ori";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_andi(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::ANDI;
-    result.name = "andi";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_slli(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SLLI;
-    result.name = "slli";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_srli(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SRLI;
-    result.name = "srli";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_srai(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SRAI;
-    result.name = "srai";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
-                result.funct7 = get_funct7(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_lb(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::LB;
-    result.name = "lb";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_lh(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::LH;
-    result.name = "lh";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_lw(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::LW;
-    result.name = "lw";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_lbu(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::LBU;
-    result.name = "lbu";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_lhu(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::LHU;
-    result.name = "lhu";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_jalr(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::JALR;
-    result.name = "jalr";
-    result.format = "I";
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_i(instruction);
 }
 
 void decode_sb(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SB;
-    result.name = "sb";
-    result.format = "S";
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_s(instruction);
 }
 
 void decode_sh(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SH;
-    result.name = "sh";
-    result.format = "S";
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_s(instruction);
 }
 
 void decode_sw(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::SW;
-    result.name = "sw";
-    result.format = "S";
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_s(instruction);
 }
 
 void decode_beq(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::BEQ;
-    result.name = "beq";
-    result.format = "B";
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
 }
 
 void decode_bne(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::BNE;
-    result.name = "bne";
-    result.format = "B";
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
 }
 
 void decode_blt(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::BLT;
-    result.name = "blt";
-    result.format = "B";
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
 }
 
 void decode_bge(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::BGE;
-    result.name = "bge";
-    result.format = "B";
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
 }
 
 void decode_bltu(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::BLTU;
-    result.name = "bltu";
-    result.format = "B";
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
 }
 
 void decode_bgeu(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::BGEU;
-    result.name = "bgeu";
-    result.format = "B";
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_b(instruction);
 }
 
 void decode_lui(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::LUI;
-    result.name = "lui";
-    result.format = "U";
     result.rd = get_rd(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_u(instruction);
 }
 
 void decode_auipc(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::AUIPC;
-    result.name = "auipc";
-    result.format = "U";
     result.rd = get_rd(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_u(instruction);
 }
 
 void decode_jal(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::JAL;
-    result.name = "jal";
-    result.format = "J";
     result.rd = get_rd(instruction);
-                result.funct3 = get_funct3(instruction);
                 result.imm = get_imm_j(instruction);
 }
 
 void decode_ecall(uint32_t instruction, DecodedInstruction& result) {
     result.opcode = InstructionOpcode::ECALL;
-    result.name = "ecall";
-    result.format = "I";
-    result.funct3 = get_funct3(instruction);
-                result.imm = get_imm_i(instruction);
+    result.imm = get_imm_i(instruction);
 }
 
 
 DecodedInstruction decode(uint32_t instruction) {
     DecodedInstruction result;
-    result.raw_instruction = instruction;
+    result.opcode = InstructionOpcode::UNKNOWN;
 
     uint8_t opcode = instruction & 0x7F;
     switch (opcode) {
@@ -611,8 +482,6 @@ DecodedInstruction decode(uint32_t instruction) {
 			break;
         default:
             result.opcode = InstructionOpcode::UNKNOWN;
-            result.name = "UNKNOWN";
-            result.format = "UNKNOWN";
     }
 
     return result;

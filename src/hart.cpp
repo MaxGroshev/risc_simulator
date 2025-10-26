@@ -4,6 +4,7 @@
 #include "../decode_execute_module/executer/rv32i_executer_gen.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <array>
 
 Hart::Hart(Machine& machine) : machine_(machine), pc_(0), next_pc_(0), halt_(false) {
     regs_.fill(0);
@@ -14,7 +15,7 @@ uint32_t Hart::get_reg(uint8_t reg_num) const {
         return 0U;
 
     if (reg_num >= 32) 
-        throw std::out_of_range("Invalid register number");
+        throw std::out_of_range("Invalid register number in get_reg");
 
     return regs_[reg_num];
 }
@@ -24,7 +25,7 @@ void Hart::set_reg(uint8_t reg_num, uint32_t value) {
         return;
 
     if (reg_num >= 32) 
-        throw std::out_of_range("Invalid register number");
+        throw std::out_of_range("Invalid register number in set_reg");
 
     regs_[reg_num] = value;
 }
@@ -50,8 +51,9 @@ void Hart::memory_write(uint32_t addr, uint32_t value, int size) {
 }
 
 void Hart::handle_unknown_instruction(const DecodedInstruction& instr) {
-    std::cerr << "Unknown instruction opcode: " << static_cast<int>(instr.opcode) << std::endl;
-    std::cerr << "Raw: 0x" << std::hex << instr.raw_instruction << std::dec << std::endl;
+    uint32_t instruction = memory_read(pc_, 4, false);
+    std::cerr << "Unknown instruction at PC: 0x" << std::hex << pc_ << std::endl;
+    std::cerr << "Raw: 0x" << std::hex << instruction << std::dec << std::endl;
     std::abort();
 }
 

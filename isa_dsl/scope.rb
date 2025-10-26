@@ -85,6 +85,8 @@ module SimInfra
             stmt op, [condition, body_scope]
         end
 
+        # TODO: stmt call creates load and store to rs1 / rd what is not needed now and generating wrong code
+        # (fixed now with DecodedInstruction zeroing all the fields)
         def ecall
             stmt(:ecall, [])
         end
