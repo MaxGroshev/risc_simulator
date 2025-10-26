@@ -4,20 +4,29 @@
 #include "../decode_execute_module/executer/rv32i_executer_gen.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <array>
 
-Hart::Hart(Machine* machine) : machine_(machine), pc_(0), next_pc_(0) {
-    regs_.fill(0);  // All registers zero-initialized
+Hart::Hart(Machine& machine) : machine_(machine), pc_(0), next_pc_(0), halt_(false) {
+    regs_.fill(0);
 }
 
 uint32_t Hart::get_reg(uint8_t reg_num) const {
-    if (reg_num == 0) return 0U;
-    if (reg_num >= 32) throw std::out_of_range("Invalid register number");
+    if (reg_num == 0) 
+        return 0U;
+
+    if (reg_num >= 32) 
+        throw std::out_of_range("Invalid register number in get_reg");
+
     return regs_[reg_num];
 }
 
 void Hart::set_reg(uint8_t reg_num, uint32_t value) {
-    if (reg_num == 0) return;  
-    if (reg_num >= 32) throw std::out_of_range("Invalid register number");
+    if (reg_num == 0) 
+        return;
+
+    if (reg_num >= 32) 
+        throw std::out_of_range("Invalid register number in set_reg");
+
     regs_[reg_num] = value;
 }
 
@@ -34,16 +43,17 @@ void Hart::set_next_pc(uint32_t value) {
 }
 
 uint32_t Hart::memory_read(uint32_t addr, int size, bool sign_extend) const {
-    return machine_->memory_read(addr, size, sign_extend);
+    return machine_.memory_read(addr, size, sign_extend);
 }
 
 void Hart::memory_write(uint32_t addr, uint32_t value, int size) {
-    machine_->memory_write(addr, value, size);
+    machine_.memory_write(addr, value, size);
 }
 
 void Hart::handle_unknown_instruction(const DecodedInstruction& instr) {
-    std::cerr << "Unknown instruction: " << instr.name << std::endl;
-    std::cerr << "Raw: 0x" << std::hex << instr.raw_instruction << std::dec << std::endl;   
+    uint32_t instruction = memory_read(pc_, 4, false);
+    std::cerr << "Unknown instruction at PC: 0x" << std::hex << pc_ << std::endl;
+    std::cerr << "Raw: 0x" << std::hex << instruction << std::dec << std::endl;
     std::abort();
 }
 
@@ -60,20 +70,14 @@ bool Hart::is_halt() const {
 }
 
 bool Hart::step() {
-    // Fetch
-    uint32_t raw_instr = memory_read(pc_, 4, false); 
-    // std::cout << "Fetched instruction 0x" << std::hex << raw_instr << " at PC 0x" << pc_ << std::dec << std::endl;  
+    uint32_t raw_instr = memory_read(pc_, 4, false);
 
-    // Decode
-    DecodedInstruction decoded = RV32IDecoder::decode(raw_instr);
+    DecodedInstruction decoded = riscv_sim::decoder::decode(raw_instr);
 
-    // Set default next_pc
     next_pc_ = pc_ + 4;
 
-    // Execute
-    RV32IExecuter::execute(decoded, this);
+    riscv_sim::executer::execute(decoded, *this);
 
-    // Update PC
     pc_ = next_pc_;
 
     return !is_halt();
