@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <array>
-#include "common.hpp"
+#include "decode_execute_module/common.hpp"
 
 class Machine;
 

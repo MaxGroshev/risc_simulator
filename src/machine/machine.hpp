@@ -1,8 +1,8 @@
 #ifndef MACHINE_HPP
 #define MACHINE_HPP
 
-#include "hart.hpp"
-#include "memory.hpp"
+#include "hart/hart.hpp"
+#include "memory/memory.hpp"
 #include <string>
 
 class Machine {

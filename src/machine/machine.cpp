@@ -1,4 +1,4 @@
-#include "../include/machine.hpp"
+#include "machine.hpp"
 #include <fstream>
 #include <iostream>
 #include <iomanip>

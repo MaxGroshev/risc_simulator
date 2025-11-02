@@ -1,7 +1,8 @@
-#include "../include/hart.hpp"
-#include "../include/machine.hpp"
-#include "../decode_execute_module/decoder/rv32i_decoder_gen.hpp"
-#include "../decode_execute_module/executer/rv32i_executer_gen.hpp"
+#include "hart.hpp"
+// TODO(ArsenySamoylov) Consider removing hart dependency on machine
+#include "machine/machine.hpp"
+#include "decode_execute_module/decoder/rv32i_decoder_gen.hpp"
+#include "decode_execute_module/executer/rv32i_executer_gen.hpp"
 #include <iostream>
 #include <stdexcept>
 #include <array>

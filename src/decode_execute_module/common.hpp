@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "../decode_execute_module/instruction_opcodes_gen.hpp"
+#include "instruction_opcodes_gen.hpp"
 
 struct DecodedInstruction {
     InstructionOpcode opcode;
