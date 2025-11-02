@@ -7,7 +7,7 @@
 #include <cstring>
 #include <chrono>
 
-Machine::Machine() : memory_(16 * 1024 * 1024), hart_(*this) {}
+Machine::Machine() : memory_(16 * 1024 * 1024), hart_(memory_) {}
 
 uint32_t Machine::memory_read(uint32_t addr, int size, bool sign_extend) const {
     return memory_.read(addr, size, sign_extend);

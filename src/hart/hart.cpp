@@ -5,13 +5,12 @@
 #include "decode_execute_module/executer/rv32i_executer_gen.hpp"
 #include <iostream>
 #include <stdexcept>
-#include <array>
 
-Hart::Hart(Machine& machine) : machine_(machine), pc_(0), next_pc_(0), halt_(false) {
+Hart::Hart(Memory& memory) : memory_(memory), pc_(0), next_pc_(0), halt_(false) {
     regs_.fill(0);
 }
 
-uint32_t Hart::get_reg(uint8_t reg_num) const {
+reg_t Hart::get_reg(uint8_t reg_num) const {
     if (reg_num == 0) 
         return 0U;
 
@@ -21,7 +20,7 @@ uint32_t Hart::get_reg(uint8_t reg_num) const {
     return regs_[reg_num];
 }
 
-void Hart::set_reg(uint8_t reg_num, uint32_t value) {
+void Hart::set_reg(uint8_t reg_num, reg_t value) {
     if (reg_num == 0) 
         return;
 
@@ -31,28 +30,30 @@ void Hart::set_reg(uint8_t reg_num, uint32_t value) {
     regs_[reg_num] = value;
 }
 
-uint32_t Hart::get_pc() const {
+reg_t Hart::get_pc() const {
     return pc_;
 }
 
-void Hart::set_pc(uint32_t value) {
+void Hart::set_pc(reg_t value) {
     pc_ = value;
 }
 
-void Hart::set_next_pc(uint32_t value) {
+void Hart::set_next_pc(reg_t value) {
     next_pc_ = value;
 }
 
-uint32_t Hart::memory_read(uint32_t addr, int size, bool sign_extend) const {
-    return machine_.memory_read(addr, size, sign_extend);
+reg_t Hart::memory_read(reg_t addr, int size, bool sign_extend) const {
+    return memory_.read(addr, size, sign_extend);
 }
 
-void Hart::memory_write(uint32_t addr, uint32_t value, int size) {
-    machine_.memory_write(addr, value, size);
+void Hart::memory_write(reg_t addr, reg_t value, int size) {
+    memory_.write(addr, value, size);
 }
 
 void Hart::handle_unknown_instruction(const DecodedInstruction instr) {
-    uint32_t instruction = memory_read(pc_, 4, false);
+    reg_t instruction = memory_read(pc_, 4, false);
+    // TODO: if started using exceptions (see set/get_reg)
+    //       than consider trowing exception here as well
     std::cerr << "Unknown instruction at PC: 0x" << std::hex << pc_ << std::endl;
     std::cerr << "Raw: 0x" << std::hex << instruction << std::dec << std::endl;
     std::abort();
@@ -71,7 +72,7 @@ bool Hart::is_halt() const {
 }
 
 bool Hart::step() {
-    uint32_t raw_instr = memory_read(pc_, 4, false);
+    reg_t raw_instr = memory_read(pc_, sizeof(reg_t), false);
 
     DecodedInstruction decoded = riscv_sim::decoder::decode(raw_instr);
 
