@@ -49,7 +49,7 @@ class ExecuterGenerator
         namespace riscv_sim {
         namespace executer {
 
-        void execute(const DecodedInstruction& instr, Hart& hart);
+        void execute(const DecodedInstruction instr, Hart& hart);
 
         #{generate_execution_methods}
 
@@ -60,7 +60,7 @@ class ExecuterGenerator
   end
 
   def generate_execution_methods
-    @instructions.map { |instr| "void execute_#{instr.name}(const DecodedInstruction& instr, Hart& hart);" }.join("\n        ")
+    @instructions.map { |instr| "void execute_#{instr.name}(const DecodedInstruction instr, Hart& hart);" }.join("\n        ")
   end
 
   def generate_implementation
@@ -78,7 +78,7 @@ class ExecuterGenerator
 
         #{generate_instruction_executers}
 
-        void execute(const DecodedInstruction& instr, Hart& hart) {
+        void execute(const DecodedInstruction instr, Hart& hart) {
             switch (instr.opcode) {
                 #{@instructions.map { |instr| "case InstructionOpcode::#{instr.name.upcase}: execute_#{instr.name}(instr, hart); return;" }.join("\n                ")}
                 default:
@@ -97,7 +97,7 @@ class ExecuterGenerator
     executers = []
     @instructions.each do |instr_info|
       executer = <<~CPP
-        void execute_#{instr_info.name}(const DecodedInstruction& instr, Hart& hart) {
+        void execute_#{instr_info.name}(const DecodedInstruction instr, Hart& hart) {
             // Generated from IR
             #{generate_cpp_from_ir(instr_info.code)}
         }
