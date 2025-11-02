@@ -12,8 +12,8 @@ make
 ## RiscV compilation
 Toolchain:
 ```bash
-mkdir ~/riscv && cd ~/riscv
-git clone --recursive https://github.com/riscv/riscv-gnu-toolchain
+mkdir riscv && cd riscv
+git clone --recursive --depth=1 https://github.com/riscv/riscv-gnu-toolchain 
 cd riscv-gnu-toolchain
 mkdir build && cd build
 ../configure --prefix=/opt/riscv --with-arch=rv32i --with-abi=ilp32 --with-newlib  # RV32I
