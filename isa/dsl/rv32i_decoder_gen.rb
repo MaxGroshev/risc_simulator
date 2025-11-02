@@ -128,9 +128,12 @@ class DecoderGenerator
 
     @data['instructions'].each do |name, instr|
       decoder = <<~CPP
-        void decode_#{name}(uint32_t instruction, DecodedInstruction& result) {
+        DecodedInstruction decode_#{name}(uint32_t instruction) {
+            DecodedInstruction result;
             result.opcode = InstructionOpcode::#{name.upcase};
             #{generate_field_extraction(name, instr)}
+
+            return result;
         }
       CPP
       decoders << decoder
@@ -171,7 +174,7 @@ class DecoderGenerator
             case_stmt = "\n\t\tcase #{opcode}:"
             if instructions.size == 1
                 name = instructions.first[0]
-                case_stmt += "\n\t\t\tdecode_#{name}(instruction, result);"
+                case_stmt += "\n\t\t\tresult = decode_#{name}(instruction);"
             else
                 case_stmt += "\n\t\t\tswitch (get_funct3(instruction)) {"
                 funct3_groups = instructions.group_by { |_, instr| instr['funct3'] }
@@ -179,11 +182,11 @@ class DecoderGenerator
                     case_stmt += "\n\t\t\t\tcase #{funct3}:"
                     if instrs.size == 1
                         name = instrs.first[0]
-                        case_stmt += "\n\t\t\t\t\tdecode_#{name}(instruction, result);"
+                        case_stmt += "\n\t\t\t\t\tresult = decode_#{name}(instruction);"
                     else
                         case_stmt += "\n\t\t\t\t\tswitch (get_funct7(instruction)) {"
                         instrs.each do |name, instr|
-                            case_stmt += "\n\t\t\t\t\t\tcase #{instr['funct7']}: decode_#{name}(instruction, result); break;"
+                            case_stmt += "\n\t\t\t\t\t\tcase #{instr['funct7']}: result = decode_#{name}(instruction); break;"
                         end
                         case_stmt += "\n\t\t\t\t\t}"
                     end

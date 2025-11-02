@@ -8,7 +8,7 @@
 namespace riscv_sim {
 namespace executer {
 
-void execute_add(const DecodedInstruction& instr, Hart& hart) {
+void execute_add(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -22,7 +22,7 @@ void execute_add(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_sub(const DecodedInstruction& instr, Hart& hart) {
+void execute_sub(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -36,7 +36,7 @@ void execute_sub(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_sll(const DecodedInstruction& instr, Hart& hart) {
+void execute_sll(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -50,7 +50,7 @@ void execute_sll(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_slt(const DecodedInstruction& instr, Hart& hart) {
+void execute_slt(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -65,7 +65,7 @@ void execute_slt(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_sltu(const DecodedInstruction& instr, Hart& hart) {
+void execute_sltu(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -80,7 +80,7 @@ void execute_sltu(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_xor(const DecodedInstruction& instr, Hart& hart) {
+void execute_xor(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -94,7 +94,7 @@ void execute_xor(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_srl(const DecodedInstruction& instr, Hart& hart) {
+void execute_srl(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -108,7 +108,7 @@ void execute_srl(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_sra(const DecodedInstruction& instr, Hart& hart) {
+void execute_sra(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -122,7 +122,7 @@ void execute_sra(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_or(const DecodedInstruction& instr, Hart& hart) {
+void execute_or(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -136,7 +136,7 @@ void execute_or(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_and(const DecodedInstruction& instr, Hart& hart) {
+void execute_and(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -150,7 +150,7 @@ void execute_and(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_addi(const DecodedInstruction& instr, Hart& hart) {
+void execute_addi(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -164,7 +164,7 @@ void execute_addi(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_slti(const DecodedInstruction& instr, Hart& hart) {
+void execute_slti(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -179,7 +179,7 @@ void execute_slti(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_sltiu(const DecodedInstruction& instr, Hart& hart) {
+void execute_sltiu(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -194,7 +194,7 @@ void execute_sltiu(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_xori(const DecodedInstruction& instr, Hart& hart) {
+void execute_xori(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -208,7 +208,7 @@ void execute_xori(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_ori(const DecodedInstruction& instr, Hart& hart) {
+void execute_ori(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -222,7 +222,7 @@ void execute_ori(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_andi(const DecodedInstruction& instr, Hart& hart) {
+void execute_andi(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -236,7 +236,7 @@ void execute_andi(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_slli(const DecodedInstruction& instr, Hart& hart) {
+void execute_slli(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -250,7 +250,7 @@ void execute_slli(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_srli(const DecodedInstruction& instr, Hart& hart) {
+void execute_srli(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -264,7 +264,7 @@ void execute_srli(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_srai(const DecodedInstruction& instr, Hart& hart) {
+void execute_srai(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -278,7 +278,7 @@ void execute_srai(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_lb(const DecodedInstruction& instr, Hart& hart) {
+void execute_lb(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -294,7 +294,7 @@ void execute_lb(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_lh(const DecodedInstruction& instr, Hart& hart) {
+void execute_lh(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -310,7 +310,7 @@ void execute_lh(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_lw(const DecodedInstruction& instr, Hart& hart) {
+void execute_lw(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -326,7 +326,7 @@ void execute_lw(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_lbu(const DecodedInstruction& instr, Hart& hart) {
+void execute_lbu(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -342,7 +342,7 @@ void execute_lbu(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_lhu(const DecodedInstruction& instr, Hart& hart) {
+void execute_lhu(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -358,7 +358,7 @@ void execute_lhu(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_jalr(const DecodedInstruction& instr, Hart& hart) {
+void execute_jalr(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -378,7 +378,7 @@ void execute_jalr(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_sb(const DecodedInstruction& instr, Hart& hart) {
+void execute_sb(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rs1_val;
     uint32_t rs2_val;
@@ -392,7 +392,7 @@ void execute_sb(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_sh(const DecodedInstruction& instr, Hart& hart) {
+void execute_sh(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rs1_val;
     uint32_t rs2_val;
@@ -406,7 +406,7 @@ void execute_sh(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_sw(const DecodedInstruction& instr, Hart& hart) {
+void execute_sw(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rs1_val;
     uint32_t rs2_val;
@@ -420,7 +420,7 @@ void execute_sw(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_beq(const DecodedInstruction& instr, Hart& hart) {
+void execute_beq(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rs1_val;
     uint32_t rs2_val;
@@ -440,7 +440,7 @@ void execute_beq(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_bne(const DecodedInstruction& instr, Hart& hart) {
+void execute_bne(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rs1_val;
     uint32_t rs2_val;
@@ -460,7 +460,7 @@ void execute_bne(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_blt(const DecodedInstruction& instr, Hart& hart) {
+void execute_blt(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rs1_val;
     uint32_t rs2_val;
@@ -480,7 +480,7 @@ void execute_blt(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_bge(const DecodedInstruction& instr, Hart& hart) {
+void execute_bge(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rs1_val;
     uint32_t rs2_val;
@@ -503,7 +503,7 @@ void execute_bge(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_bltu(const DecodedInstruction& instr, Hart& hart) {
+void execute_bltu(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rs1_val;
     uint32_t rs2_val;
@@ -523,7 +523,7 @@ void execute_bltu(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_bgeu(const DecodedInstruction& instr, Hart& hart) {
+void execute_bgeu(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rs1_val;
     uint32_t rs2_val;
@@ -546,7 +546,7 @@ void execute_bgeu(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_lui(const DecodedInstruction& instr, Hart& hart) {
+void execute_lui(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t imm_val;
@@ -559,7 +559,7 @@ void execute_lui(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_auipc(const DecodedInstruction& instr, Hart& hart) {
+void execute_auipc(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t pc_val;
@@ -576,7 +576,7 @@ void execute_auipc(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_jal(const DecodedInstruction& instr, Hart& hart) {
+void execute_jal(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t pc_val;
@@ -594,7 +594,7 @@ void execute_jal(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute_ecall(const DecodedInstruction& instr, Hart& hart) {
+void execute_ecall(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
         uint32_t rd_val;
     uint32_t rs1_val;
@@ -604,7 +604,7 @@ void execute_ecall(const DecodedInstruction& instr, Hart& hart) {
 }
 
 
-void execute(const DecodedInstruction& instr, Hart& hart) {
+void execute(const DecodedInstruction instr, Hart& hart) {
     switch (instr.opcode) {
         case InstructionOpcode::ADD: execute_add(instr, hart); return;
                 case InstructionOpcode::SUB: execute_sub(instr, hart); return;

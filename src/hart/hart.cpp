@@ -51,7 +51,7 @@ void Hart::memory_write(uint32_t addr, uint32_t value, int size) {
     machine_.memory_write(addr, value, size);
 }
 
-void Hart::handle_unknown_instruction(const DecodedInstruction& instr) {
+void Hart::handle_unknown_instruction(const DecodedInstruction instr) {
     uint32_t instruction = memory_read(pc_, 4, false);
     std::cerr << "Unknown instruction at PC: 0x" << std::hex << pc_ << std::endl;
     std::cerr << "Raw: 0x" << std::hex << instruction << std::dec << std::endl;
