@@ -1,4 +1,4 @@
-#include "../include/memory.hpp"
+#include "memory.hpp"
 #include <stdexcept>
 #include <cstring>
 #include <iostream>

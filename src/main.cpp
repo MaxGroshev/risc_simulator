@@ -1,4 +1,4 @@
-#include "../include/machine.hpp"
+#include "machine/machine.hpp"
 #include <iostream>
 #include <cstdint>
 
