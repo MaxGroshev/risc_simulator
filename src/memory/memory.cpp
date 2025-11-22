@@ -5,19 +5,10 @@
 
 Memory::Memory(size_t size) : mem_(size, 0) {}
 
-uint32_t Memory::read(uint32_t addr, int size, bool sign_extend) const {
+uint32_t Memory::read(uint32_t addr, int size) const {
     if (addr + size > mem_.size())
         throw std::out_of_range("Memory read out of bounds");
-
-    uint32_t value = 0;
-    std::memcpy(&value, &mem_[addr], size);
-
-    if (sign_extend && size < 4) {
-        int32_t signed_val = static_cast<int32_t>(value << (32 - size * 8)) >> (32 - size * 8);
-        return static_cast<uint32_t>(signed_val);
-    }
-
-    return value;
+    return mem_[addr];
 }
 
 void Memory::write(uint32_t addr, uint32_t value, int size) {

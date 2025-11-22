@@ -153,9 +153,8 @@ class ExecuterGenerator
       dest = get_var_name(stmt.oprnds[0])
       addr = get_var_name(stmt.oprnds[1])
       size = stmt.attrs[:size] || :word
-      sign = stmt.attrs[:sign] == :signed
       size_bytes = {byte: 1, half: 2, word: 4}[size]
-      "#{indent}#{dest} = hart.memory_read(#{addr}, #{size_bytes}, #{sign});"
+      "#{indent}#{dest} = hart.memory_read(#{addr}, #{size_bytes});"
     when :store_to_mem
       addr = get_var_name(stmt.oprnds[0])
       src = get_var_name(stmt.oprnds[1])

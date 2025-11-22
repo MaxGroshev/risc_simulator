@@ -134,13 +134,13 @@ instructions:
     opcode: 0b0000011
     funct3: 0b000
     code: !ruby/code |
-      rd[]= memory_ld(rs1 + imm, :byte, :signed)
+      rd[]= memory_ld(rs1 + imm, :byte)
   lh:
     format: "I"
     opcode: 0b0000011
     funct3: 0b001
     code: !ruby/code |
-      rd[]= memory_ld(rs1 + imm, :half, :signed)
+      rd[]= memory_ld(rs1 + imm, :half)
   lw:
     format: "I"
     opcode: 0b0000011
@@ -152,13 +152,13 @@ instructions:
     opcode: 0b0000011
     funct3: 0b100
     code: !ruby/code |
-      rd[]= memory_ld(rs1 + imm, :byte, :unsigned)
+      rd[]= memory_ld(rs1 + imm, :byte)
   lhu:
     format: "I"
     opcode: 0b0000011
     funct3: 0b101
     code: !ruby/code |
-      rd[]= memory_ld(rs1 + imm, :half, :unsigned)
+      rd[]= memory_ld(rs1 + imm, :half)
   jalr:
     format: "I"
     opcode: 0b1100111
