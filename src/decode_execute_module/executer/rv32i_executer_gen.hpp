@@ -11,7 +11,9 @@ class Hart;
 namespace riscv_sim {
 namespace executer {
 
-void execute(const DecodedInstruction instr, Hart& hart);
+using ExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
+
+ExecFn execute(const DecodedInstruction instr, Hart& hart);
 
 void execute_add(const DecodedInstruction instr, Hart& hart);
         void execute_sub(const DecodedInstruction instr, Hart& hart);

@@ -49,7 +49,9 @@ class ExecuterGenerator
         namespace riscv_sim {
         namespace executer {
 
-        void execute(const DecodedInstruction instr, Hart& hart);
+        using ExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
+
+        ExecFn execute(const DecodedInstruction instr, Hart& hart);
 
         #{generate_execution_methods}
 
@@ -78,11 +80,12 @@ class ExecuterGenerator
 
         #{generate_instruction_executers}
 
-        void execute(const DecodedInstruction instr, Hart& hart) {
+        ExecFn execute(const DecodedInstruction instr, Hart& hart) {
             switch (instr.opcode) {
-                #{@instructions.map { |instr| "case InstructionOpcode::#{instr.name.upcase}: execute_#{instr.name}(instr, hart); return;" }.join("\n                ")}
+                #{@instructions.map { |instr| "case InstructionOpcode::#{instr.name.upcase}: execute_#{instr.name}(instr, hart); return &execute_#{instr.name};" }.join("\n                ")}
                 default:
                     hart.handle_unknown_instruction(instr);
+                    return nullptr;
             }
         }
 

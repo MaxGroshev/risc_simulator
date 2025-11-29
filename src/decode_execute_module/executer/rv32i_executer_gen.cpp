@@ -604,48 +604,49 @@ void execute_ecall(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute(const DecodedInstruction instr, Hart& hart) {
+ExecFn execute(const DecodedInstruction instr, Hart& hart) {
     switch (instr.opcode) {
-        case InstructionOpcode::ADD: execute_add(instr, hart); return;
-                case InstructionOpcode::SUB: execute_sub(instr, hart); return;
-                case InstructionOpcode::SLL: execute_sll(instr, hart); return;
-                case InstructionOpcode::SLT: execute_slt(instr, hart); return;
-                case InstructionOpcode::SLTU: execute_sltu(instr, hart); return;
-                case InstructionOpcode::XOR: execute_xor(instr, hart); return;
-                case InstructionOpcode::SRL: execute_srl(instr, hart); return;
-                case InstructionOpcode::SRA: execute_sra(instr, hart); return;
-                case InstructionOpcode::OR: execute_or(instr, hart); return;
-                case InstructionOpcode::AND: execute_and(instr, hart); return;
-                case InstructionOpcode::ADDI: execute_addi(instr, hart); return;
-                case InstructionOpcode::SLTI: execute_slti(instr, hart); return;
-                case InstructionOpcode::SLTIU: execute_sltiu(instr, hart); return;
-                case InstructionOpcode::XORI: execute_xori(instr, hart); return;
-                case InstructionOpcode::ORI: execute_ori(instr, hart); return;
-                case InstructionOpcode::ANDI: execute_andi(instr, hart); return;
-                case InstructionOpcode::SLLI: execute_slli(instr, hart); return;
-                case InstructionOpcode::SRLI: execute_srli(instr, hart); return;
-                case InstructionOpcode::SRAI: execute_srai(instr, hart); return;
-                case InstructionOpcode::LB: execute_lb(instr, hart); return;
-                case InstructionOpcode::LH: execute_lh(instr, hart); return;
-                case InstructionOpcode::LW: execute_lw(instr, hart); return;
-                case InstructionOpcode::LBU: execute_lbu(instr, hart); return;
-                case InstructionOpcode::LHU: execute_lhu(instr, hart); return;
-                case InstructionOpcode::JALR: execute_jalr(instr, hart); return;
-                case InstructionOpcode::SB: execute_sb(instr, hart); return;
-                case InstructionOpcode::SH: execute_sh(instr, hart); return;
-                case InstructionOpcode::SW: execute_sw(instr, hart); return;
-                case InstructionOpcode::BEQ: execute_beq(instr, hart); return;
-                case InstructionOpcode::BNE: execute_bne(instr, hart); return;
-                case InstructionOpcode::BLT: execute_blt(instr, hart); return;
-                case InstructionOpcode::BGE: execute_bge(instr, hart); return;
-                case InstructionOpcode::BLTU: execute_bltu(instr, hart); return;
-                case InstructionOpcode::BGEU: execute_bgeu(instr, hart); return;
-                case InstructionOpcode::LUI: execute_lui(instr, hart); return;
-                case InstructionOpcode::AUIPC: execute_auipc(instr, hart); return;
-                case InstructionOpcode::JAL: execute_jal(instr, hart); return;
-                case InstructionOpcode::ECALL: execute_ecall(instr, hart); return;
+        case InstructionOpcode::ADD: execute_add(instr, hart); return &execute_add;
+                case InstructionOpcode::SUB: execute_sub(instr, hart); return &execute_sub;
+                case InstructionOpcode::SLL: execute_sll(instr, hart); return &execute_sll;
+                case InstructionOpcode::SLT: execute_slt(instr, hart); return &execute_slt;
+                case InstructionOpcode::SLTU: execute_sltu(instr, hart); return &execute_sltu;
+                case InstructionOpcode::XOR: execute_xor(instr, hart); return &execute_xor;
+                case InstructionOpcode::SRL: execute_srl(instr, hart); return &execute_srl;
+                case InstructionOpcode::SRA: execute_sra(instr, hart); return &execute_sra;
+                case InstructionOpcode::OR: execute_or(instr, hart); return &execute_or;
+                case InstructionOpcode::AND: execute_and(instr, hart); return &execute_and;
+                case InstructionOpcode::ADDI: execute_addi(instr, hart); return &execute_addi;
+                case InstructionOpcode::SLTI: execute_slti(instr, hart); return &execute_slti;
+                case InstructionOpcode::SLTIU: execute_sltiu(instr, hart); return &execute_sltiu;
+                case InstructionOpcode::XORI: execute_xori(instr, hart); return &execute_xori;
+                case InstructionOpcode::ORI: execute_ori(instr, hart); return &execute_ori;
+                case InstructionOpcode::ANDI: execute_andi(instr, hart); return &execute_andi;
+                case InstructionOpcode::SLLI: execute_slli(instr, hart); return &execute_slli;
+                case InstructionOpcode::SRLI: execute_srli(instr, hart); return &execute_srli;
+                case InstructionOpcode::SRAI: execute_srai(instr, hart); return &execute_srai;
+                case InstructionOpcode::LB: execute_lb(instr, hart); return &execute_lb;
+                case InstructionOpcode::LH: execute_lh(instr, hart); return &execute_lh;
+                case InstructionOpcode::LW: execute_lw(instr, hart); return &execute_lw;
+                case InstructionOpcode::LBU: execute_lbu(instr, hart); return &execute_lbu;
+                case InstructionOpcode::LHU: execute_lhu(instr, hart); return &execute_lhu;
+                case InstructionOpcode::JALR: execute_jalr(instr, hart); return &execute_jalr;
+                case InstructionOpcode::SB: execute_sb(instr, hart); return &execute_sb;
+                case InstructionOpcode::SH: execute_sh(instr, hart); return &execute_sh;
+                case InstructionOpcode::SW: execute_sw(instr, hart); return &execute_sw;
+                case InstructionOpcode::BEQ: execute_beq(instr, hart); return &execute_beq;
+                case InstructionOpcode::BNE: execute_bne(instr, hart); return &execute_bne;
+                case InstructionOpcode::BLT: execute_blt(instr, hart); return &execute_blt;
+                case InstructionOpcode::BGE: execute_bge(instr, hart); return &execute_bge;
+                case InstructionOpcode::BLTU: execute_bltu(instr, hart); return &execute_bltu;
+                case InstructionOpcode::BGEU: execute_bgeu(instr, hart); return &execute_bgeu;
+                case InstructionOpcode::LUI: execute_lui(instr, hart); return &execute_lui;
+                case InstructionOpcode::AUIPC: execute_auipc(instr, hart); return &execute_auipc;
+                case InstructionOpcode::JAL: execute_jal(instr, hart); return &execute_jal;
+                case InstructionOpcode::ECALL: execute_ecall(instr, hart); return &execute_ecall;
         default:
             hart.handle_unknown_instruction(instr);
+            return nullptr;
     }
 }
 

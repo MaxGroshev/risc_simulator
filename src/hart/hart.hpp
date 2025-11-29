@@ -6,12 +6,13 @@
 
 #include "memory/memory.hpp"
 #include "decode_execute_module/common.hpp"
+#include "block_cache.hpp"
 
 using reg_t = uint32_t;
 
 class Hart {
 public:
-    Hart(Memory&);
+    Hart(Memory&, uint32_t cache_len = 128);
     Hart(const Hart&) = delete;
     Hart(Hart&&) = delete;
     Hart& operator=(const Hart&) = delete;
@@ -34,7 +35,7 @@ public:
     void set_halt(bool value);
     bool is_halt() const;
     
-    bool step();
+    uint64_t step();
 
     reg_t memory_read(reg_t addr, int size, bool sign_extend) const;
     void memory_write(reg_t addr, reg_t value, int size);
@@ -45,6 +46,9 @@ public:
     reg_t pc_;
     reg_t next_pc_;
     bool halt_;
+    
+    uint32_t cache_len_;
+    riscv_sim::BlockCache block_cache_;
 };
 
 #endif // HART_HPP
