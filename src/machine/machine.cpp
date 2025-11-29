@@ -7,13 +7,15 @@
 #include <cstring>
 #include <chrono>
 
-Machine::Machine() : memory_(16 * 1024 * 1024), hart_(memory_) {}
+Machine::Machine() : memory_(), hart_(memory_) {
+    memory_.zero_init(0x10000000 - 4096, 4096);  // stack page
+}
 
-uint32_t Machine::memory_read(uint32_t addr, int size, bool sign_extend) const {
+uint64_t Machine::memory_read(uint64_t addr, int size, bool sign_extend) const {
     return memory_.read(addr, size, sign_extend);
 }
 
-void Machine::memory_write(uint32_t addr, uint32_t value, int size) {
+void Machine::memory_write(uint64_t addr, uint64_t value, int size) {
     memory_.write(addr, value, size);
 }
 
@@ -22,7 +24,7 @@ void Machine::load_elf(const std::string& filename) {
     if (!file) 
         throw std::runtime_error("Failed to open ELF file");
 
-    Elf32_Ehdr ehdr;
+    Elf64_Ehdr ehdr;
     file.read(reinterpret_cast<char*>(&ehdr), sizeof(ehdr));
     if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F')
     {
@@ -34,11 +36,15 @@ void Machine::load_elf(const std::string& filename) {
         throw std::runtime_error("Not a RISC-V ELF");
     }
 
+    if (ehdr.e_ident[EI_CLASS] != ELFCLASS64) {
+        throw std::runtime_error("Only 64-bit ELF supported in RV64 mode");
+    }
+
     hart_.set_pc(ehdr.e_entry);
 
     file.seekg(ehdr.e_phoff);
     for (int i = 0; i < ehdr.e_phnum; ++i) {
-        Elf32_Phdr phdr;
+        Elf64_Phdr phdr;
         file.read(reinterpret_cast<char*>(&phdr), sizeof(phdr));
         if (phdr.p_type == PT_LOAD) {
             file.seekg(phdr.p_offset);
@@ -54,7 +60,7 @@ void Machine::load_elf(const std::string& filename) {
     }
 
     /// TODO: it is rather ugly
-    hart_.set_reg(2, static_cast<uint32_t>(memory_.size() - 0x1000));
+    hart_.set_reg(2, 0x1000000ULL - 0x1000ULL);
     hart_.set_halt(false);
 }
 
@@ -82,6 +88,6 @@ void Machine::run(uint64_t max_cycles) {
 
 void Machine::dump_regs() const {
     for (int i = 0; i < 32; ++i) {
-        std::cout << "x" << i << ": 0x" << std::hex << std::setw(8) << std::setfill('0') << hart_.get_reg(i) << std::endl;
+        std::cout << "x" << i << ": 0x" << std::hex << std::setw(16) << std::setfill('0') << hart_.get_reg(i) << std::endl;
     }
 }

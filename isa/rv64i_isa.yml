@@ -1,0 +1,348 @@
+instructions:
+  lb:    
+    format: I
+    opcode: 0b0000011
+    funct3: 0b000
+    code: rd[]= memory_ld(rs1 + imm, :byte,  :signed)
+
+  lh:    
+    format: I
+    opcode: 0b0000011
+    funct3: 0b001
+    code: rd[]= memory_ld(rs1 + imm, :half,  :signed)
+
+  lw:    
+    format: I
+    opcode: 0b0000011
+    funct3: 0b010
+    code: rd[]= memory_ld(rs1 + imm, :word,  :signed)
+
+  ld:    
+    format: I
+    opcode: 0b0000011
+    funct3: 0b011
+    code: rd[]= memory_ld(rs1 + imm, :double, :signed)
+
+  lbu:   
+    format: I
+    opcode: 0b0000011
+    funct3: 0b100
+    code: rd[]= memory_ld(rs1 + imm, :byte,  :unsigned)
+
+  lhu:   
+    format: I
+    opcode: 0b0000011
+    funct3: 0b101
+    code: rd[]= memory_ld(rs1 + imm, :half,  :unsigned)
+
+  lwu:   
+    format: I
+    opcode: 0b0000011
+    funct3: 0b110
+    code: rd[]= memory_ld(rs1 + imm, :word,  :unsigned)
+
+  sb:    
+    format: S
+    opcode: 0b0100011
+    funct3: 0b000
+    code: memory_st(rs1 + imm, rs2, :byte)
+
+  sh:    
+    format: S
+    opcode: 0b0100011
+    funct3: 0b001
+    code: memory_st(rs1 + imm, rs2, :half)
+
+  sw:    
+    format: S
+    opcode: 0b0100011
+    funct3: 0b010
+    code: memory_st(rs1 + imm, rs2, :word)
+
+  sd:    
+    format: S
+    opcode: 0b0100011
+    funct3: 0b011
+    code: memory_st(rs1 + imm, rs2, :double)
+
+  addiw: 
+    format: I
+    opcode: 0b0011011
+    funct3: 0b000
+    code: rd[]= addw(rs1, imm)
+
+  slliw: 
+    format: I
+    opcode: 0b0011011
+    funct3: 0b001
+    funct7: 0b0000000
+    code: rd[]= shl_w(rs1, imm)
+
+  srliw: 
+    format: I
+    opcode: 0b0011011
+    funct3: 0b101
+    funct7: 0b0000000
+    code: rd[]= srl_w(rs1, imm)
+
+  sraiw: 
+    format: I
+    opcode: 0b0011011
+    funct3: 0b101
+    funct7: 0b0100000
+    code: rd[]= sra_w(rs1, imm)
+
+  addw:  
+    format: R
+    opcode: 0b0111011
+    funct3: 0b000
+    funct7: 0b0000000
+    code: rd[]= addw(rs1, rs2)
+
+  subw:  
+    format: R
+    opcode: 0b0111011
+    funct3: 0b000
+    funct7: 0b0100000
+    code: rd[]= subw(rs1, rs2)
+
+  sllw:  
+    format: R
+    opcode: 0b0111011
+    funct3: 0b001
+    funct7: 0b0000000
+    code: rd[]= shl_w(rs1, rs2)
+
+  srlw:  
+    format: R
+    opcode: 0b0111011
+    funct3: 0b101
+    funct7: 0b0000000
+    code: rd[]= srl_w(rs1, rs2)
+
+  sraw:  
+    format: R
+    opcode: 0b0111011
+    funct3: 0b101
+    funct7: 0b0100000
+    code: rd[]= sra_w(rs1, rs2)
+
+
+  # Остальные инструкции — просто копия из RV32I (они одинаковые)
+
+  # R-type instructions
+  add:
+    format: R
+    opcode: 0b0110011
+    funct3: 0b000
+    funct7: 0b0000000
+    code: rd[]= rs1 + rs2
+  sub:
+    format: R
+    opcode: 0b0110011
+    funct3: 0b000
+    funct7: 0b0100000
+    code: !ruby/code |
+      rd[]= rs1 - rs2
+  sll:
+    format: "R"
+    opcode: 0b0110011
+    funct3: 0b001
+    funct7: 0b0000000
+    code: !ruby/code |
+      rd[]= rs1 << rs2
+  slt:
+    format: "R"
+    opcode: 0b0110011
+    funct3: 0b010
+    funct7: 0b0000000
+    code: !ruby/code |
+      tmp = (rs1 < rs2)
+      rd[]= tmp
+  sltu:
+    format: "R"
+    opcode: 0b0110011
+    funct3: 0b011
+    funct7: 0b0000000
+    code: !ruby/code |
+      tmp = rs1.ltu(rs2)
+      rd[]= tmp
+  xor:
+    format: "R"
+    opcode: 0b0110011
+    funct3: 0b100
+    funct7: 0b0000000
+    code: !ruby/code |
+      rd[]= rs1 ^ rs2
+  srl:
+    format: "R"
+    opcode: 0b0110011
+    funct3: 0b101
+    funct7: 0b0000000
+    code: !ruby/code |
+      rd[]= rs1 >> rs2
+  sra:
+    format: "R"
+    opcode: 0b0110011
+    funct3: 0b101
+    funct7: 0b0100000
+    code: !ruby/code |
+      rd[]= rs1.sra(rs2)
+  or:
+    format: "R"
+    opcode: 0b0110011
+    funct3: 0b110
+    funct7: 0b0000000
+    code: !ruby/code |
+      rd[]= rs1 | rs2
+  and:
+    format: "R"
+    opcode: 0b0110011
+    funct3: 0b111
+    funct7: 0b0000000
+    code: !ruby/code |
+      rd[]= rs1 & rs2
+
+# I-type instructions
+  addi:
+    format: "I"
+    opcode: 0b0010011
+    funct3: 0b000
+    code: !ruby/code |
+      rd[]= rs1 + imm
+  slti:
+    format: "I"
+    opcode: 0b0010011
+    funct3: 0b010
+    code: !ruby/code |
+      tmp = (rs1 < imm)
+      rd[]= tmp
+  sltiu:
+    format: "I"
+    opcode: 0b0010011
+    funct3: 0b011
+    code: !ruby/code |
+      tmp = rs1.ltu(imm)
+      rd[]= tmp
+  xori:
+    format: "I"
+    opcode: 0b0010011
+    funct3: 0b100
+    code: !ruby/code |
+      rd[]= rs1 ^ imm
+  ori:
+    format: "I"
+    opcode: 0b0010011
+    funct3: 0b110
+    code: !ruby/code |
+      rd[]= rs1 | imm
+  andi:
+    format: "I"
+    opcode: 0b0010011
+    funct3: 0b111
+    code: !ruby/code |
+      rd[]= rs1 & imm
+  slli:
+    format: "I"
+    opcode: 0b0010011
+    funct3: 0b001
+    funct7: 0b0000000
+    code: !ruby/code |
+      rd[]= rs1 << imm
+  srli:
+    format: "I"
+    opcode: 0b0010011
+    funct3: 0b101
+    funct7: 0b0000000
+    code: !ruby/code |
+      rd[]= rs1 >> imm
+  srai:
+    format: "I"
+    opcode: 0b0010011
+    funct3: 0b101
+    funct7: 0b0100000
+    code: !ruby/code |
+      rd[]= rs1.sra(imm)
+  jalr:
+    format: "I"
+    opcode: 0b1100111
+    funct3: 0b000
+    code: !ruby/code |
+      rd[]= pc + 4; 
+      set_pc(rs1 + imm)
+
+# B-type instructions
+  beq:
+    format: "B"
+    opcode: 0b1100011
+    funct3: 0b000
+    code: !ruby/code |
+      if_expr (rs1 == rs2) {
+        set_pc(pc + imm)
+      }
+  bne:
+    format: "B"
+    opcode: 0b1100011
+    funct3: 0b001
+    code: !ruby/code |
+      if_expr (rs1 != rs2) {
+        set_pc(pc + imm)
+      }
+  blt:
+    format: "B"
+    opcode: 0b1100011
+    funct3: 0b100
+    code: !ruby/code |
+      if_expr (rs1 < rs2) {
+        set_pc(pc + imm)
+      }
+  bge:
+    format: "B"
+    opcode: 0b1100011
+    funct3: 0b101
+    code: !ruby/code |
+      if_expr (rs1 >= rs2) {
+        set_pc(pc + imm)
+      }
+  bltu:
+    format: "B"
+    opcode: 0b1100011
+    funct3: 0b110
+    code: !ruby/code |
+      if_expr (rs1.ltu(rs2)) {
+        set_pc(pc + imm)
+      }
+  bgeu:
+    format: "B"
+    opcode: 0b1100011
+    funct3: 0b111
+    code: !ruby/code |
+      if_expr (rs1.geu(rs2)) {
+        set_pc(pc + imm)
+      }
+
+# U-type instructions
+  lui:
+    format: "U"
+    opcode: 0b0110111
+    code: !ruby/code |
+      rd[]= imm << 12
+  auipc:
+    format: "U"
+    opcode: 0b0010111
+    code: !ruby/code |
+      rd[]= pc + (imm << 12)
+
+# J-type instructions
+  jal:
+    format: "J"
+    opcode: 0b1101111
+    code: !ruby/code |
+      rd[]= pc + 4; 
+      set_pc(pc + imm)
+  ecall:
+    format: "I"
+    opcode: 0b1110011  # 0x73
+    funct3: 0b000
+    code: !ruby/code |
+      ecall

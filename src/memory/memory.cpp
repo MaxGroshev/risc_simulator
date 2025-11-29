@@ -1,48 +1,88 @@
 #include "memory.hpp"
+
 #include <stdexcept>
 #include <cstring>
-#include <iostream>
+#include <sys/mman.h>
+#include <unistd.h>
+#include <errno.h>
 
-Memory::Memory(size_t size) : mem_(size, 0) {}
-
-uint32_t Memory::read(uint32_t addr, int size, bool sign_extend) const {
-    if (addr + size > mem_.size())
-        throw std::out_of_range("Memory read out of bounds");
-
-    uint32_t value = 0;
-    std::memcpy(&value, &mem_[addr], size);
-
-    if (sign_extend && size < 4) {
-        int32_t signed_val = static_cast<int32_t>(value << (32 - size * 8)) >> (32 - size * 8);
-        return static_cast<uint32_t>(signed_val);
+Memory::Memory(size_t size) : backing_(nullptr), capacity_(0) {
+    if (size == 0) {
+        throw std::invalid_argument("Memory size must be > 0");
     }
 
+    const long page_size = sysconf(_SC_PAGESIZE);
+    if (page_size <= 0) 
+        throw std::runtime_error("failed to get page size");
+
+    size_t pages = (size + page_size - 1) / page_size;
+    size_t alloc_size = pages * static_cast<size_t>(page_size);
+
+    void* ptr = mmap(nullptr, alloc_size,
+                     PROT_READ | PROT_WRITE,
+                     MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE,
+                     -1, 0);
+
+    if (ptr == MAP_FAILED) {
+        throw std::runtime_error(std::string("mmap failed: ") + strerror(errno));
+    }
+
+    backing_ = static_cast<uint8_t*>(ptr);
+    capacity_ = alloc_size;
+}
+
+Memory::~Memory() {
+    if (backing_ && capacity_ > 0) {
+        munmap(static_cast<void*>(backing_), capacity_);
+        backing_ = nullptr;
+        capacity_ = 0;
+    }
+}
+
+uint64_t Memory::read(uint64_t addr, int size_bytes, bool sign_extend) const {
+    // if (size_bytes <= 0 || size_bytes > 8)
+    //     throw std::invalid_argument("invalid read size");
+
+    uint64_t end = addr + static_cast<uint64_t>(size_bytes);
+    // if (end > capacity_)
+    //     throw std::out_of_range("memory read out of range");
+
+    uint64_t value = 0;
+    std::memcpy(&value, backing_ + static_cast<size_t>(addr), static_cast<size_t>(size_bytes));
+
+    if (sign_extend && size_bytes < 8) {
+        int shift = 64 - size_bytes * 8;
+        int64_t signed_val = static_cast<int64_t>(value << shift) >> shift;
+        return static_cast<uint64_t>(signed_val);
+    }
     return value;
 }
 
-void Memory::write(uint32_t addr, uint32_t value, int size) {
-    if (addr + size > mem_.size()) {
-        std::cout << "Attempted write of size " << size << " at address 0x" << std::hex << addr << std::dec << std::endl;
-        throw std::out_of_range("Memory write out of bounds");
-    }
+void Memory::write(uint64_t addr, uint64_t value, int size_bytes) {
+    // if (size_bytes <= 0 || size_bytes > 8)
+    //     throw std::invalid_argument("invalid write size");
 
-    std::memcpy(&mem_[addr], &value, size);
+    uint64_t end = addr + static_cast<uint64_t>(size_bytes);
+    // if (end > capacity_)
+    //     throw std::out_of_range("memory write out of range");
+
+    std::memcpy(backing_ + static_cast<size_t>(addr), &value, static_cast<size_t>(size_bytes));
 }
 
-void Memory::load_data(uint32_t addr, const uint8_t* data, size_t size) {
-    if (addr + size > mem_.size()) 
-        throw std::out_of_range("Memory load out of bounds");
-
-    std::memcpy(&mem_[addr], data, size);
+void Memory::load_data(uint64_t addr, const uint8_t* data, size_t size) {
+    uint64_t end = addr + static_cast<uint64_t>(size);
+    if (end > capacity_)
+        throw std::out_of_range("memory load_data out of range");
+    std::memcpy(backing_ + static_cast<size_t>(addr), data, size);
 }
 
-void Memory::zero_init(uint32_t addr, size_t size) {
-    if (addr + size > mem_.size()) 
-        throw std::out_of_range("Memory zero-init out of bounds");
-
-    std::memset(&mem_[addr], 0, size);
+void Memory::zero_init(uint64_t addr, size_t size) {
+    uint64_t end = addr + static_cast<uint64_t>(size);
+    if (end > capacity_)
+        throw std::out_of_range("memory zero_init out of range");
+    std::memset(backing_ + static_cast<size_t>(addr), 0, size);
 }
 
 size_t Memory::size() const {
-    return mem_.size();
+    return capacity_;
 }

@@ -126,7 +126,7 @@ class ExecuterGenerator
     tree.each do |stmt|
       if stmt.name == :new_var
         var = stmt.oprnds[0]
-        vars.add("uint32_t #{var.name}_val;") if var.type == :i32
+        vars.add("uint64_t #{var.name}_val;") if var.type == :i32
       end
     end
     vars.to_a
@@ -135,21 +135,21 @@ class ExecuterGenerator
   def translate_stmt(stmt, indent)
     case stmt.name
     when :new_var then nil  # Handled in declarations
-    when :getimm then "#{indent}#{get_var_name(stmt.oprnds[0])} = static_cast<uint32_t>(instr.imm);"
+    when :getimm then "#{indent}#{get_var_name(stmt.oprnds[0])} = static_cast<uint64_t>(instr.imm);"
     when :getpc then "#{indent}#{get_var_name(stmt.oprnds[0])} = hart.get_pc();"
     when :getreg then "#{indent}#{stmt.oprnds[0]}_val = hart.get_reg(instr.#{stmt.oprnds[0]});"
     when :setreg then "#{indent}hart.set_reg(instr.#{stmt.oprnds[0].name}, #{stmt.oprnds[1]}_val);"
-    when :new_const then "#{indent}uint32_t #{stmt.oprnds[0].name}_val = #{stmt.oprnds[0].value}U;"
+    when :new_const then "#{indent}uint64_t #{stmt.oprnds[0].name}_val = #{stmt.oprnds[0].value}U;"
     when :add, :sub, :bitand, :bitor, :bitxor, :shl, :srl
       op_map = {add: '+', sub: '-', bitand: '&', bitor: '|', bitxor: '^', shl: '<<', srl: '>>'}
       dest, a, b = get_operands(stmt.oprnds)
       "#{indent}#{dest} = #{a} #{op_map[stmt.name]} #{b};"
     when :sra
       dest, a, b = get_operands(stmt.oprnds)
-      "#{indent}#{dest} = static_cast<uint32_t>(static_cast<int32_t>(#{a}) >> #{b});"
+      "#{indent}#{dest} = static_cast<uint64_t>(static_cast<int64_t>(#{a}) >> #{b});"
     when :eq, :neq, :lt, :gt, :ltu, :gtu
       op_map = {eq: '==', neq: '!=', lt: '<', gt: '>', ltu: '<', gtu: '>'}
-      cast = [:lt, :gt].include?(stmt.name) ? 'static_cast<int32_t>' : ''
+      cast = [:lt, :gt].include?(stmt.name) ? 'static_cast<int64_t>' : ''
       dest, a, b = get_operands(stmt.oprnds)
       "#{indent}#{dest} = (#{cast}(#{a}) #{op_map[stmt.name]} #{cast}(#{b})) ? 1U : 0U;"
     when :load_from_mem

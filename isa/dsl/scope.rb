@@ -114,7 +114,7 @@ module SimInfra
         def ltu(a, b); binOp(a, b, :ltu); end
         def gtu(a, b); binOp(a, b, :gtu); end
         def geu(a, b); neq(ltu(a, b), 1); end  # >=u as !(a <u b)
-        def ge(a, b); neq(lt(b, a), 1); end
+        def ge(a, b); neq(lt(a, b), 1); end
 
         # memory
         def memory_ld(address, size=:word, sign=:signed); memoryLoad(address, :load_from_mem, size, sign) end
@@ -126,5 +126,25 @@ module SimInfra
         def imm(); immHandler end
         # if
         def if_expr(condition, &body); ifHandler(condition, :if_expr, &body) end
+
+        def addw(a, b)
+            stmt(:addw, [tmpvar(:i32), resolve_const(a), resolve_const(b)])
+        end
+
+        def subw(a, b)
+            stmt(:subw, [tmpvar(:i32), resolve_const(a), resolve_const(b)])
+        end
+
+        def shl_w(a, b)
+            stmt(:shl_w, [tmpvar(:i32), resolve_const(a), resolve_const(b & 0x1F)])
+        end
+
+        def srl_w(a, b)
+            stmt(:srl_w, [tmpvar(:i32), resolve_const(a), resolve_const(b & 0x1F)])
+        end
+
+        def sra_w(a, b)
+            stmt(:sra_w, [tmpvar(:i32), resolve_const(a), resolve_const(b & 0x1F)])
+        end
     end
 end

@@ -60,7 +60,25 @@ void Hart::handle_unknown_instruction(const DecodedInstruction instr) {
 }
 
 void Hart::do_ecall() {
-    set_halt(true); // Now simulate stop on ecall
+    set_halt(true);
+    // reg_t syscall_num = get_reg(17); // a7
+    // reg_t to_print;
+    // std::cerr << "ecall invoked at PC: 0x" << std::hex << pc_ << std::dec << " syscall: " << syscall_num << std::endl;
+
+    // switch (syscall_num) {
+    //     case 1: // print integer
+    //         to_print = get_reg(10); // a0
+    //         std::cout << to_print << std::endl;
+    //         break;
+    //     case 2: // print char
+    //         to_print = get_reg(10); // a0
+    //         std::cout << static_cast<char>(to_print) << std::flush;
+    //         break;
+    //     default:
+    //         std::cerr << "Unknown syscall number: " << syscall_num << std::endl;
+    //         set_halt(true); // Now simulate stop on ecall
+    //         break;
+    // }
 }
 
 void Hart::set_halt(bool value) {
@@ -140,7 +158,7 @@ uint64_t Hart::step() {
     uint64_t collected = 0;
 
     while (collected < cache_len_) {
-        reg_t raw_instr = memory_read(pc_, sizeof(reg_t), false);
+        uint32_t raw_instr = static_cast<uint32_t>(memory_read(pc_, 4, false));
         DecodedInstruction dinstr = riscv_sim::decoder::decode(raw_instr);
 
         next_pc_ = pc_ + 4;
@@ -174,7 +192,7 @@ uint64_t Hart::step() {
         // std::cout << "Falling through to next instruction at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
 
         if (collected >= cache_len_) {
-            std::cout << "Max block length reached at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
+            // std::cout << "Max block length reached at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
             new_block.valid = (new_block.instrs.size() > 0);
             block_cache_.install(new_block);
             break;

@@ -8,7 +8,7 @@
 #include "decode_execute_module/common.hpp"
 #include "block_cache.hpp"
 
-using reg_t = uint32_t;
+using reg_t = uint64_t;
 
 class Hart {
 public:

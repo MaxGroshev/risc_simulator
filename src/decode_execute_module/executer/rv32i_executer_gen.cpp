@@ -8,596 +8,791 @@
 namespace riscv_sim {
 namespace executer {
 
-void execute_add(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp0_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    rs2_val = hart.get_reg(instr.rs2);
-    _tmp0_val = rs1_val + rs2_val;
-    rd_val = _tmp0_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_sub(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp1_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    rs2_val = hart.get_reg(instr.rs2);
-    _tmp1_val = rs1_val - rs2_val;
-    rd_val = _tmp1_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_sll(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp2_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    rs2_val = hart.get_reg(instr.rs2);
-    _tmp2_val = rs1_val << rs2_val;
-    rd_val = _tmp2_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_slt(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp3_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    rs2_val = hart.get_reg(instr.rs2);
-    _tmp3_val = (static_cast<int32_t>(rs1_val) < static_cast<int32_t>(rs2_val)) ? 1U : 0U;
-    uint32_t _val = 1U;
-    rd_val = _val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_sltu(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp5_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    rs2_val = hart.get_reg(instr.rs2);
-    _tmp5_val = ((rs1_val) < (rs2_val)) ? 1U : 0U;
-    uint32_t _val = 1U;
-    rd_val = _val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_xor(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp7_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    rs2_val = hart.get_reg(instr.rs2);
-    _tmp7_val = rs1_val ^ rs2_val;
-    rd_val = _tmp7_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_srl(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp8_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    rs2_val = hart.get_reg(instr.rs2);
-    _tmp8_val = rs1_val >> rs2_val;
-    rd_val = _tmp8_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_sra(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp9_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    rs2_val = hart.get_reg(instr.rs2);
-    _tmp9_val = static_cast<uint32_t>(static_cast<int32_t>(rs1_val) >> rs2_val);
-    rd_val = _tmp9_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_or(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp10_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    rs2_val = hart.get_reg(instr.rs2);
-    _tmp10_val = rs1_val | rs2_val;
-    rd_val = _tmp10_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_and(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp11_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    rs2_val = hart.get_reg(instr.rs2);
-    _tmp11_val = rs1_val & rs2_val;
-    rd_val = _tmp11_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_addi(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp12_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp12_val = rs1_val + imm_val;
-    rd_val = _tmp12_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_slti(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp13_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp13_val = (static_cast<int32_t>(rs1_val) < static_cast<int32_t>(imm_val)) ? 1U : 0U;
-    uint32_t _val = 1U;
-    rd_val = _val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_sltiu(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp15_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp15_val = ((rs1_val) < (imm_val)) ? 1U : 0U;
-    uint32_t _val = 1U;
-    rd_val = _val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_xori(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp17_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp17_val = rs1_val ^ imm_val;
-    rd_val = _tmp17_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_ori(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp18_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp18_val = rs1_val | imm_val;
-    rd_val = _tmp18_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_andi(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp19_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp19_val = rs1_val & imm_val;
-    rd_val = _tmp19_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_slli(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp20_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp20_val = rs1_val << imm_val;
-    rd_val = _tmp20_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_srli(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp21_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp21_val = rs1_val >> imm_val;
-    rd_val = _tmp21_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
-void execute_srai(const DecodedInstruction instr, Hart& hart) {
-    // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp22_val;
-    rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp22_val = static_cast<uint32_t>(static_cast<int32_t>(rs1_val) >> imm_val);
-    rd_val = _tmp22_val;
-    hart.set_reg(instr.rd, rd_val);
-}
-
-
 void execute_lb(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp23_val;
-    uint32_t _tmp24_val;
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp0_val;
+    uint64_t _tmp1_val;
     rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp23_val = rs1_val + imm_val;
-    _tmp24_val = hart.memory_read(_tmp23_val, 1, true);
-    rd_val = _tmp24_val;
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp0_val = rs1_val + imm_val;
+    _tmp1_val = hart.memory_read(_tmp0_val, 1, true);
+    rd_val = _tmp1_val;
     hart.set_reg(instr.rd, rd_val);
 }
 
 
 void execute_lh(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp25_val;
-    uint32_t _tmp26_val;
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp2_val;
+    uint64_t _tmp3_val;
     rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp25_val = rs1_val + imm_val;
-    _tmp26_val = hart.memory_read(_tmp25_val, 2, true);
-    rd_val = _tmp26_val;
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp2_val = rs1_val + imm_val;
+    _tmp3_val = hart.memory_read(_tmp2_val, 2, true);
+    rd_val = _tmp3_val;
     hart.set_reg(instr.rd, rd_val);
 }
 
 
 void execute_lw(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp27_val;
-    uint32_t _tmp28_val;
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp4_val;
+    uint64_t _tmp5_val;
     rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp27_val = rs1_val + imm_val;
-    _tmp28_val = hart.memory_read(_tmp27_val, 4, true);
-    rd_val = _tmp28_val;
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp4_val = rs1_val + imm_val;
+    _tmp5_val = hart.memory_read(_tmp4_val, 4, true);
+    rd_val = _tmp5_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_ld(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp6_val;
+    uint64_t _tmp7_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp6_val = rs1_val + imm_val;
+    _tmp7_val = hart.memory_read(_tmp6_val, 8, true);
+    rd_val = _tmp7_val;
     hart.set_reg(instr.rd, rd_val);
 }
 
 
 void execute_lbu(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp29_val;
-    uint32_t _tmp30_val;
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp8_val;
+    uint64_t _tmp9_val;
     rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp29_val = rs1_val + imm_val;
-    _tmp30_val = hart.memory_read(_tmp29_val, 1, false);
-    rd_val = _tmp30_val;
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp8_val = rs1_val + imm_val;
+    _tmp9_val = hart.memory_read(_tmp8_val, 1, false);
+    rd_val = _tmp9_val;
     hart.set_reg(instr.rd, rd_val);
 }
 
 
 void execute_lhu(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t imm_val;
-    uint32_t _tmp31_val;
-    uint32_t _tmp32_val;
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp10_val;
+    uint64_t _tmp11_val;
     rs1_val = hart.get_reg(instr.rs1);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp31_val = rs1_val + imm_val;
-    _tmp32_val = hart.memory_read(_tmp31_val, 2, false);
-    rd_val = _tmp32_val;
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp10_val = rs1_val + imm_val;
+    _tmp11_val = hart.memory_read(_tmp10_val, 2, false);
+    rd_val = _tmp11_val;
     hart.set_reg(instr.rd, rd_val);
 }
 
 
-void execute_jalr(const DecodedInstruction instr, Hart& hart) {
+void execute_lwu(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
-    uint32_t pc_val;
-    uint32_t _tmp34_val;
-    uint32_t imm_val;
-    uint32_t _tmp35_val;
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp12_val;
+    uint64_t _tmp13_val;
     rs1_val = hart.get_reg(instr.rs1);
-    pc_val = hart.get_pc();
-    uint32_t _val = 4U;
-    _tmp34_val = pc_val + _val;
-    rd_val = _tmp34_val;
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp35_val = rs1_val + imm_val;
-    hart.set_next_pc(_tmp35_val);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp12_val = rs1_val + imm_val;
+    _tmp13_val = hart.memory_read(_tmp12_val, 4, false);
+    rd_val = _tmp13_val;
     hart.set_reg(instr.rd, rd_val);
 }
 
 
 void execute_sb(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t imm_val;
-    uint32_t _tmp36_val;
+        uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t imm_val;
+    uint64_t _tmp14_val;
     rs1_val = hart.get_reg(instr.rs1);
     rs2_val = hart.get_reg(instr.rs2);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp36_val = rs1_val + imm_val;
-    hart.memory_write(_tmp36_val, rs2_val, 1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp14_val = rs1_val + imm_val;
+    hart.memory_write(_tmp14_val, rs2_val, 1);
 }
 
 
 void execute_sh(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t imm_val;
-    uint32_t _tmp37_val;
+        uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t imm_val;
+    uint64_t _tmp15_val;
     rs1_val = hart.get_reg(instr.rs1);
     rs2_val = hart.get_reg(instr.rs2);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp37_val = rs1_val + imm_val;
-    hart.memory_write(_tmp37_val, rs2_val, 2);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp15_val = rs1_val + imm_val;
+    hart.memory_write(_tmp15_val, rs2_val, 2);
 }
 
 
 void execute_sw(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t imm_val;
-    uint32_t _tmp38_val;
+        uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t imm_val;
+    uint64_t _tmp16_val;
     rs1_val = hart.get_reg(instr.rs1);
     rs2_val = hart.get_reg(instr.rs2);
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp38_val = rs1_val + imm_val;
-    hart.memory_write(_tmp38_val, rs2_val, 4);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp16_val = rs1_val + imm_val;
+    hart.memory_write(_tmp16_val, rs2_val, 4);
+}
+
+
+void execute_sd(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t imm_val;
+    uint64_t _tmp17_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp17_val = rs1_val + imm_val;
+    hart.memory_write(_tmp17_val, rs2_val, 8);
+}
+
+
+void execute_addiw(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp18_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    int32_t tmp = static_cast<int32_t>(rs1_val & 0xFFFFFFFFULL) + static_cast<int32_t>(imm_val & 0xFFFFFFFFULL);
+    _tmp18_val = static_cast<uint64_t>(static_cast<int64_t>(tmp));
+    rd_val = _tmp18_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_slliw(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp19_val;
+    uint64_t _tmp21_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    uint64_t _val = 31U;
+    _tmp21_val = imm_val & _val;
+    uint32_t res = static_cast<uint32_t>(rs1_val & 0xFFFFFFFFULL) << _tmp21_val;
+    _tmp19_val = static_cast<uint64_t>(res);
+    rd_val = _tmp19_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_srliw(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp22_val;
+    uint64_t _tmp24_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    uint64_t _val = 31U;
+    _tmp24_val = imm_val & _val;
+    uint32_t res = static_cast<uint32_t>(rs1_val & 0xFFFFFFFFULL) >> _tmp24_val;
+    _tmp22_val = static_cast<uint64_t>(res);
+    rd_val = _tmp22_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_sraiw(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp25_val;
+    uint64_t _tmp27_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    uint64_t _val = 31U;
+    _tmp27_val = imm_val & _val;
+    int32_t res = static_cast<int32_t>(rs1_val & 0xFFFFFFFFULL) >> _tmp27_val;
+    _tmp25_val = static_cast<uint64_t>(static_cast<int64_t>(res));
+    rd_val = _tmp25_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_addw(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp28_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    int32_t tmp = static_cast<int32_t>(rs1_val & 0xFFFFFFFFULL) + static_cast<int32_t>(rs2_val & 0xFFFFFFFFULL);
+    _tmp28_val = static_cast<uint64_t>(static_cast<int64_t>(tmp));
+    rd_val = _tmp28_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_subw(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp29_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    int32_t tmp = static_cast<int32_t>(rs1_val & 0xFFFFFFFFULL) - static_cast<int32_t>(rs2_val & 0xFFFFFFFFULL);
+    _tmp29_val = static_cast<uint64_t>(static_cast<int64_t>(tmp));
+    rd_val = _tmp29_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_sllw(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp30_val;
+    uint64_t _tmp32_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    uint64_t _val = 31U;
+    _tmp32_val = rs2_val & _val;
+    uint32_t res = static_cast<uint32_t>(rs1_val & 0xFFFFFFFFULL) << _tmp32_val;
+    _tmp30_val = static_cast<uint64_t>(res);
+    rd_val = _tmp30_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_srlw(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp33_val;
+    uint64_t _tmp35_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    uint64_t _val = 31U;
+    _tmp35_val = rs2_val & _val;
+    uint32_t res = static_cast<uint32_t>(rs1_val & 0xFFFFFFFFULL) >> _tmp35_val;
+    _tmp33_val = static_cast<uint64_t>(res);
+    rd_val = _tmp33_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_sraw(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp36_val;
+    uint64_t _tmp38_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    uint64_t _val = 31U;
+    _tmp38_val = rs2_val & _val;
+    int32_t res = static_cast<int32_t>(rs1_val & 0xFFFFFFFFULL) >> _tmp38_val;
+    _tmp36_val = static_cast<uint64_t>(static_cast<int64_t>(res));
+    rd_val = _tmp36_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_add(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp39_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    _tmp39_val = rs1_val + rs2_val;
+    rd_val = _tmp39_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_sub(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp40_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    _tmp40_val = rs1_val - rs2_val;
+    rd_val = _tmp40_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_sll(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp41_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    _tmp41_val = rs1_val << rs2_val;
+    rd_val = _tmp41_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_slt(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp42_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    _tmp42_val = (static_cast<int64_t>(rs1_val) < static_cast<int64_t>(rs2_val)) ? 1U : 0U;
+    rd_val = _tmp42_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_sltu(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp43_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    _tmp43_val = ((rs1_val) < (rs2_val)) ? 1U : 0U;
+    rd_val = _tmp43_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_xor(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp44_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    _tmp44_val = rs1_val ^ rs2_val;
+    rd_val = _tmp44_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_srl(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp45_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    _tmp45_val = rs1_val >> rs2_val;
+    rd_val = _tmp45_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_sra(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp46_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    _tmp46_val = static_cast<uint64_t>(static_cast<int64_t>(rs1_val) >> rs2_val);
+    rd_val = _tmp46_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_or(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp47_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    _tmp47_val = rs1_val | rs2_val;
+    rd_val = _tmp47_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_and(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp48_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    rs2_val = hart.get_reg(instr.rs2);
+    _tmp48_val = rs1_val & rs2_val;
+    rd_val = _tmp48_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_addi(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp49_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp49_val = rs1_val + imm_val;
+    rd_val = _tmp49_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_slti(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp50_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp50_val = (static_cast<int64_t>(rs1_val) < static_cast<int64_t>(imm_val)) ? 1U : 0U;
+    rd_val = _tmp50_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_sltiu(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp51_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp51_val = ((rs1_val) < (imm_val)) ? 1U : 0U;
+    rd_val = _tmp51_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_xori(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp52_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp52_val = rs1_val ^ imm_val;
+    rd_val = _tmp52_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_ori(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp53_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp53_val = rs1_val | imm_val;
+    rd_val = _tmp53_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_andi(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp54_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp54_val = rs1_val & imm_val;
+    rd_val = _tmp54_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_slli(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp55_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp55_val = rs1_val << imm_val;
+    rd_val = _tmp55_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_srli(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp56_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp56_val = rs1_val >> imm_val;
+    rd_val = _tmp56_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_srai(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    uint64_t _tmp57_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp57_val = static_cast<uint64_t>(static_cast<int64_t>(rs1_val) >> imm_val);
+    rd_val = _tmp57_val;
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
+void execute_jalr(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t pc_val;
+    uint64_t _tmp59_val;
+    uint64_t imm_val;
+    uint64_t _tmp60_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    pc_val = hart.get_pc();
+    uint64_t _val = 4U;
+    _tmp59_val = pc_val + _val;
+    rd_val = _tmp59_val;
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp60_val = rs1_val + imm_val;
+    hart.set_next_pc(_tmp60_val);
+    hart.set_reg(instr.rd, rd_val);
 }
 
 
 void execute_beq(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp39_val;
+        uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp61_val;
     rs1_val = hart.get_reg(instr.rs1);
     rs2_val = hart.get_reg(instr.rs2);
-    _tmp39_val = ((rs1_val) == (rs2_val)) ? 1U : 0U;
-    if (_tmp39_val) {
-        uint32_t pc_val;
-        uint32_t imm_val;
-        uint32_t _tmp40_val;
+    _tmp61_val = ((rs1_val) == (rs2_val)) ? 1U : 0U;
+    if (_tmp61_val) {
+        uint64_t pc_val;
+        uint64_t imm_val;
+        uint64_t _tmp62_val;
         pc_val = hart.get_pc();
-        imm_val = static_cast<uint32_t>(instr.imm);
-        _tmp40_val = pc_val + imm_val;
-        hart.set_next_pc(_tmp40_val);
+        imm_val = static_cast<uint64_t>(instr.imm);
+        _tmp62_val = pc_val + imm_val;
+        hart.set_next_pc(_tmp62_val);
     }
 }
 
 
 void execute_bne(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp41_val;
+        uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp63_val;
     rs1_val = hart.get_reg(instr.rs1);
     rs2_val = hart.get_reg(instr.rs2);
-    _tmp41_val = ((rs1_val) != (rs2_val)) ? 1U : 0U;
-    if (_tmp41_val) {
-        uint32_t pc_val;
-        uint32_t imm_val;
-        uint32_t _tmp42_val;
+    _tmp63_val = ((rs1_val) != (rs2_val)) ? 1U : 0U;
+    if (_tmp63_val) {
+        uint64_t pc_val;
+        uint64_t imm_val;
+        uint64_t _tmp64_val;
         pc_val = hart.get_pc();
-        imm_val = static_cast<uint32_t>(instr.imm);
-        _tmp42_val = pc_val + imm_val;
-        hart.set_next_pc(_tmp42_val);
+        imm_val = static_cast<uint64_t>(instr.imm);
+        _tmp64_val = pc_val + imm_val;
+        hart.set_next_pc(_tmp64_val);
     }
 }
 
 
 void execute_blt(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp43_val;
+        uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp65_val;
     rs1_val = hart.get_reg(instr.rs1);
     rs2_val = hart.get_reg(instr.rs2);
-    _tmp43_val = (static_cast<int32_t>(rs1_val) < static_cast<int32_t>(rs2_val)) ? 1U : 0U;
-    if (_tmp43_val) {
-        uint32_t pc_val;
-        uint32_t imm_val;
-        uint32_t _tmp44_val;
+    _tmp65_val = (static_cast<int64_t>(rs1_val) < static_cast<int64_t>(rs2_val)) ? 1U : 0U;
+    if (_tmp65_val) {
+        uint64_t pc_val;
+        uint64_t imm_val;
+        uint64_t _tmp66_val;
         pc_val = hart.get_pc();
-        imm_val = static_cast<uint32_t>(instr.imm);
-        _tmp44_val = pc_val + imm_val;
-        hart.set_next_pc(_tmp44_val);
+        imm_val = static_cast<uint64_t>(instr.imm);
+        _tmp66_val = pc_val + imm_val;
+        hart.set_next_pc(_tmp66_val);
     }
 }
 
 
 void execute_bge(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp45_val;
-    uint32_t _tmp47_val;
+        uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp67_val;
+    uint64_t _tmp69_val;
     rs1_val = hart.get_reg(instr.rs1);
     rs2_val = hart.get_reg(instr.rs2);
-    _tmp45_val = (static_cast<int32_t>(rs2_val) < static_cast<int32_t>(rs1_val)) ? 1U : 0U;
-    uint32_t _val = 1U;
-    _tmp47_val = ((_tmp45_val) != (_val)) ? 1U : 0U;
-    if (_tmp47_val) {
-        uint32_t pc_val;
-        uint32_t imm_val;
-        uint32_t _tmp48_val;
+    _tmp67_val = (static_cast<int64_t>(rs1_val) < static_cast<int64_t>(rs2_val)) ? 1U : 0U;
+    uint64_t _val = 1U;
+    _tmp69_val = ((_tmp67_val) != (_val)) ? 1U : 0U;
+    if (_tmp69_val) {
+        uint64_t pc_val;
+        uint64_t imm_val;
+        uint64_t _tmp70_val;
         pc_val = hart.get_pc();
-        imm_val = static_cast<uint32_t>(instr.imm);
-        _tmp48_val = pc_val + imm_val;
-        hart.set_next_pc(_tmp48_val);
+        imm_val = static_cast<uint64_t>(instr.imm);
+        _tmp70_val = pc_val + imm_val;
+        hart.set_next_pc(_tmp70_val);
     }
 }
 
 
 void execute_bltu(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp49_val;
+        uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp71_val;
     rs1_val = hart.get_reg(instr.rs1);
     rs2_val = hart.get_reg(instr.rs2);
-    _tmp49_val = ((rs1_val) < (rs2_val)) ? 1U : 0U;
-    if (_tmp49_val) {
-        uint32_t pc_val;
-        uint32_t imm_val;
-        uint32_t _tmp50_val;
+    _tmp71_val = ((rs1_val) < (rs2_val)) ? 1U : 0U;
+    if (_tmp71_val) {
+        uint64_t pc_val;
+        uint64_t imm_val;
+        uint64_t _tmp72_val;
         pc_val = hart.get_pc();
-        imm_val = static_cast<uint32_t>(instr.imm);
-        _tmp50_val = pc_val + imm_val;
-        hart.set_next_pc(_tmp50_val);
+        imm_val = static_cast<uint64_t>(instr.imm);
+        _tmp72_val = pc_val + imm_val;
+        hart.set_next_pc(_tmp72_val);
     }
 }
 
 
 void execute_bgeu(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rs1_val;
-    uint32_t rs2_val;
-    uint32_t _tmp51_val;
-    uint32_t _tmp53_val;
+        uint64_t rs1_val;
+    uint64_t rs2_val;
+    uint64_t _tmp73_val;
+    uint64_t _tmp75_val;
     rs1_val = hart.get_reg(instr.rs1);
     rs2_val = hart.get_reg(instr.rs2);
-    _tmp51_val = ((rs1_val) < (rs2_val)) ? 1U : 0U;
-    uint32_t _val = 1U;
-    _tmp53_val = ((_tmp51_val) != (_val)) ? 1U : 0U;
-    if (_tmp53_val) {
-        uint32_t pc_val;
-        uint32_t imm_val;
-        uint32_t _tmp54_val;
+    _tmp73_val = ((rs1_val) < (rs2_val)) ? 1U : 0U;
+    uint64_t _val = 1U;
+    _tmp75_val = ((_tmp73_val) != (_val)) ? 1U : 0U;
+    if (_tmp75_val) {
+        uint64_t pc_val;
+        uint64_t imm_val;
+        uint64_t _tmp76_val;
         pc_val = hart.get_pc();
-        imm_val = static_cast<uint32_t>(instr.imm);
-        _tmp54_val = pc_val + imm_val;
-        hart.set_next_pc(_tmp54_val);
+        imm_val = static_cast<uint64_t>(instr.imm);
+        _tmp76_val = pc_val + imm_val;
+        hart.set_next_pc(_tmp76_val);
     }
 }
 
 
 void execute_lui(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rd_val;
-    uint32_t imm_val;
-    uint32_t _tmp56_val;
-    imm_val = static_cast<uint32_t>(instr.imm);
-    uint32_t _val = 12U;
-    _tmp56_val = imm_val << _val;
-    rd_val = _tmp56_val;
+        uint64_t rd_val;
+    uint64_t imm_val;
+    uint64_t _tmp78_val;
+    imm_val = static_cast<uint64_t>(instr.imm);
+    uint64_t _val = 12U;
+    _tmp78_val = imm_val << _val;
+    rd_val = _tmp78_val;
     hart.set_reg(instr.rd, rd_val);
 }
 
 
 void execute_auipc(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rd_val;
-    uint32_t pc_val;
-    uint32_t imm_val;
-    uint32_t _tmp58_val;
-    uint32_t _tmp59_val;
+        uint64_t rd_val;
+    uint64_t pc_val;
+    uint64_t imm_val;
+    uint64_t _tmp80_val;
+    uint64_t _tmp81_val;
     pc_val = hart.get_pc();
-    imm_val = static_cast<uint32_t>(instr.imm);
-    uint32_t _val = 12U;
-    _tmp58_val = imm_val << _val;
-    _tmp59_val = pc_val + _tmp58_val;
-    rd_val = _tmp59_val;
+    imm_val = static_cast<uint64_t>(instr.imm);
+    uint64_t _val = 12U;
+    _tmp80_val = imm_val << _val;
+    _tmp81_val = pc_val + _tmp80_val;
+    rd_val = _tmp81_val;
     hart.set_reg(instr.rd, rd_val);
 }
 
 
 void execute_jal(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rd_val;
-    uint32_t pc_val;
-    uint32_t _tmp61_val;
-    uint32_t imm_val;
-    uint32_t _tmp62_val;
+        uint64_t rd_val;
+    uint64_t pc_val;
+    uint64_t _tmp83_val;
+    uint64_t imm_val;
+    uint64_t _tmp84_val;
     pc_val = hart.get_pc();
-    uint32_t _val = 4U;
-    _tmp61_val = pc_val + _val;
-    rd_val = _tmp61_val;
-    imm_val = static_cast<uint32_t>(instr.imm);
-    _tmp62_val = pc_val + imm_val;
-    hart.set_next_pc(_tmp62_val);
+    uint64_t _val = 4U;
+    _tmp83_val = pc_val + _val;
+    rd_val = _tmp83_val;
+    imm_val = static_cast<uint64_t>(instr.imm);
+    _tmp84_val = pc_val + imm_val;
+    hart.set_next_pc(_tmp84_val);
     hart.set_reg(instr.rd, rd_val);
 }
 
 
 void execute_ecall(const DecodedInstruction instr, Hart& hart) {
     // Generated from IR
-        uint32_t rd_val;
-    uint32_t rs1_val;
+        uint64_t rd_val;
+    uint64_t rs1_val;
     rs1_val = hart.get_reg(instr.rs1);
     hart.do_ecall();
     hart.set_reg(instr.rd, rd_val);
@@ -606,7 +801,27 @@ void execute_ecall(const DecodedInstruction instr, Hart& hart) {
 
 ExecFn execute(const DecodedInstruction instr, Hart& hart) {
     switch (instr.opcode) {
-        case InstructionOpcode::ADD: execute_add(instr, hart); return &execute_add;
+        case InstructionOpcode::LB: execute_lb(instr, hart); return &execute_lb;
+                case InstructionOpcode::LH: execute_lh(instr, hart); return &execute_lh;
+                case InstructionOpcode::LW: execute_lw(instr, hart); return &execute_lw;
+                case InstructionOpcode::LD: execute_ld(instr, hart); return &execute_ld;
+                case InstructionOpcode::LBU: execute_lbu(instr, hart); return &execute_lbu;
+                case InstructionOpcode::LHU: execute_lhu(instr, hart); return &execute_lhu;
+                case InstructionOpcode::LWU: execute_lwu(instr, hart); return &execute_lwu;
+                case InstructionOpcode::SB: execute_sb(instr, hart); return &execute_sb;
+                case InstructionOpcode::SH: execute_sh(instr, hart); return &execute_sh;
+                case InstructionOpcode::SW: execute_sw(instr, hart); return &execute_sw;
+                case InstructionOpcode::SD: execute_sd(instr, hart); return &execute_sd;
+                case InstructionOpcode::ADDIW: execute_addiw(instr, hart); return &execute_addiw;
+                case InstructionOpcode::SLLIW: execute_slliw(instr, hart); return &execute_slliw;
+                case InstructionOpcode::SRLIW: execute_srliw(instr, hart); return &execute_srliw;
+                case InstructionOpcode::SRAIW: execute_sraiw(instr, hart); return &execute_sraiw;
+                case InstructionOpcode::ADDW: execute_addw(instr, hart); return &execute_addw;
+                case InstructionOpcode::SUBW: execute_subw(instr, hart); return &execute_subw;
+                case InstructionOpcode::SLLW: execute_sllw(instr, hart); return &execute_sllw;
+                case InstructionOpcode::SRLW: execute_srlw(instr, hart); return &execute_srlw;
+                case InstructionOpcode::SRAW: execute_sraw(instr, hart); return &execute_sraw;
+                case InstructionOpcode::ADD: execute_add(instr, hart); return &execute_add;
                 case InstructionOpcode::SUB: execute_sub(instr, hart); return &execute_sub;
                 case InstructionOpcode::SLL: execute_sll(instr, hart); return &execute_sll;
                 case InstructionOpcode::SLT: execute_slt(instr, hart); return &execute_slt;
@@ -625,15 +840,7 @@ ExecFn execute(const DecodedInstruction instr, Hart& hart) {
                 case InstructionOpcode::SLLI: execute_slli(instr, hart); return &execute_slli;
                 case InstructionOpcode::SRLI: execute_srli(instr, hart); return &execute_srli;
                 case InstructionOpcode::SRAI: execute_srai(instr, hart); return &execute_srai;
-                case InstructionOpcode::LB: execute_lb(instr, hart); return &execute_lb;
-                case InstructionOpcode::LH: execute_lh(instr, hart); return &execute_lh;
-                case InstructionOpcode::LW: execute_lw(instr, hart); return &execute_lw;
-                case InstructionOpcode::LBU: execute_lbu(instr, hart); return &execute_lbu;
-                case InstructionOpcode::LHU: execute_lhu(instr, hart); return &execute_lhu;
                 case InstructionOpcode::JALR: execute_jalr(instr, hart); return &execute_jalr;
-                case InstructionOpcode::SB: execute_sb(instr, hart); return &execute_sb;
-                case InstructionOpcode::SH: execute_sh(instr, hart); return &execute_sh;
-                case InstructionOpcode::SW: execute_sw(instr, hart); return &execute_sw;
                 case InstructionOpcode::BEQ: execute_beq(instr, hart); return &execute_beq;
                 case InstructionOpcode::BNE: execute_bne(instr, hart); return &execute_bne;
                 case InstructionOpcode::BLT: execute_blt(instr, hart); return &execute_blt;

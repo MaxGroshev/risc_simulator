@@ -15,10 +15,10 @@ set(GENERATED_EXECUTER_HPP ${GENERATED_EXECUTER_DIR}/rv32i_executer_gen.hpp)
 add_custom_command(
     OUTPUT ${GENERATED_ENUM_HPP} ${GENERATED_DECODER_CPP} ${GENERATED_DECODER_HPP} ${GENERATED_EXECUTER_CPP} ${GENERATED_EXECUTER_HPP}
     COMMAND ruby ${RUBY_GEN_SCRIPT}
-    DEPENDS ${RUBY_GEN_SCRIPT}  
-            ${CMAKE_SOURCE_DIR}/isa/rv32i_isa.yml  
+        DEPENDS ${RUBY_GEN_SCRIPT}  
+            ${CMAKE_SOURCE_DIR}/isa/rv64i_isa.yml  
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/isa/ 
-    COMMENT "Generating RV32I decoder and executer files using Ruby"
+        COMMENT "Generating RV64I decoder and executer files using Ruby"
     VERBATIM
 )
 

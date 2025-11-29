@@ -6,13 +6,13 @@ require_relative 'scope'
 require_relative 'pc'
 require_relative 'utils'
 require_relative 'rv32i_decoder_gen'
-require_relative 'rv32i_executer_gen'
+require_relative 'rv64i_executer_gen'
 
 require 'yaml'
 
 if __FILE__ == $0
     # TODO(mgroshev) move isa_dir in config or .sh
-    isa_dir      = "#{__dir__}/../rv32i_isa.yml"
+    isa_dir      = "#{__dir__}/../rv64i_isa.yml"
     decoder_dir  = "#{__dir__}/../../src/decode_execute_module/decoder"
     executer_dir = "#{__dir__}/../../src/decode_execute_module/executer"
     instructions_opcode_dir = "#{__dir__}/../../src/decode_execute_module"
