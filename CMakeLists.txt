@@ -22,4 +22,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Building in Debug mode")
 endif ()
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 add_subdirectory(src)
