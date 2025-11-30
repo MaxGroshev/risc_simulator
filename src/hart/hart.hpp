@@ -35,7 +35,7 @@ public:
 
     // Traps
     void do_ecall();
-    void handle_unknown_instruction(const DecodedInstruction instr);
+    void handle_exception(const Exception e);
     
 private:
     MMU &mmu_;

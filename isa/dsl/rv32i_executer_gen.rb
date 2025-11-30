@@ -84,7 +84,7 @@ class ExecuterGenerator
             switch (instr.opcode) {
                 #{@instructions.map { |instr| "case InstructionOpcode::#{instr.name.upcase}: execute_#{instr.name}(instr, hart); return &execute_#{instr.name};" }.join("\n                ")}
                 default:
-                    hart.handle_unknown_instruction(instr);
+                    hart.handle_exception(ExceptionCause::UnknowInstruction);
                     return nullptr;
             }
         }

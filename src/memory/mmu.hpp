@@ -20,7 +20,7 @@ using pa_t = reg_t;
 
 struct TranslateResult {
     pa_t pa;
-    ExceptionCauseWrapper cause;
+    Exception e;
 };
 
 
@@ -29,7 +29,7 @@ public:
     explicit MMU(Memory &m) : mem_(m) {}
 
     TranslateResult translate(va_t va, AccessType type, const HartContext &ctx) { 
-        return TranslateResult{.pa=va, .cause=ExceptionCauseWrapper{ExceptionCause::None}};
+        return TranslateResult{.pa=va, .e=Exception{ExceptionCause::None}};
     };
     
     reg_t phys_read(pa_t pa, int size) const {return mem_.read(pa, size); };
