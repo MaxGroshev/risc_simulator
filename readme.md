@@ -10,6 +10,7 @@ make
 ```
 
 ## RiscV compilation
+TODO: Update to rv64
 Toolchain:
 ```bash
 mkdir riscv && cd riscv

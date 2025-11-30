@@ -1,5 +1,5 @@
-add_library(memory memory.cpp)
+add_library(memory memory.cpp mmu.cpp)
 
-target_include_directories(hart PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/..
+target_link_libraries(memory PUBLIC
+    decoder
 )

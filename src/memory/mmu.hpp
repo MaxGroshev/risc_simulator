@@ -10,8 +10,14 @@ enum class AccessType {
     Store
 };
 
+
+
+const uint64_t PAGESIZE = 4096;
+const uint64_t PTESIZE  = 8; // 64-bit PTE
+const int LEVELS   = 3;      // Sv39
+
 struct HartContext {
-    uint32_t satp;
+    reg_t satp;
     PrivilegeMode prv;
 };
 
@@ -28,9 +34,7 @@ class MMU {
 public:
     explicit MMU(Memory &m) : mem_(m) {}
 
-    TranslateResult translate(va_t va, AccessType type, const HartContext &ctx) { 
-        return TranslateResult{.pa=va, .e=Exception{ExceptionCause::None}};
-    };
+    TranslateResult translate(va_t va, AccessType type, const HartContext &ctx);
     
     reg_t phys_read(pa_t pa, int size) const {return mem_.read(pa, size); };
     void phys_write(pa_t pa, reg_t value, int size) { return mem_.write(pa, value, size); };
