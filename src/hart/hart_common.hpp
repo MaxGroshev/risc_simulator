@@ -10,6 +10,7 @@ enum class PrivilegeMode {
 enum class ExceptionCause{
     None,
     UnknowInstruction,
+    PageFault,
 };
 
 struct Exception {
@@ -22,6 +23,7 @@ public:
         switch(value) {
             case ExceptionCause::None: return "None";
             case ExceptionCause::UnknowInstruction: return "UnknowInstruction";
+            case ExceptionCause::PageFault: return "PageFault";
             default: return "Unknown";
         }
     }
