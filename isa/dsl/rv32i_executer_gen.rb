@@ -11,7 +11,7 @@ class ExecuterGenerator
     @instructions_opcode_dir = instructions_opcode_dir
     FileUtils.mkdir_p(@output_dir) unless Dir.exist?(@output_dir)
     FileUtils.mkdir_p(@instructions_opcode_dir) unless Dir.exist?(@instructions_opcode_dir)
-    generate_enum_header
+    generate_enum_headers
   end
 
   def generate_executer
@@ -21,12 +21,18 @@ class ExecuterGenerator
 
   private
 
-  def generate_enum_header
+  def generate_enum_headers
     File.open(File.join(@instructions_opcode_dir, 'instruction_opcodes_gen.hpp'), 'w') do |f|
+      unique_formats = @instructions.map(&:frmt).uniq    
       f.puts <<~HEADER
         #pragma once
         enum class InstructionOpcode {
             #{@instructions.map { |instr| "#{instr.name.upcase}" }.join(",\n ")},
+            UNKNOWN
+        };
+
+        enum class InstructionFormat {
+            #{unique_formats.map { |frmt| "#{frmt.upcase}" }.join(",\n ")},
             UNKNOWN
         };
       HEADER
@@ -39,6 +45,7 @@ class ExecuterGenerator
         #pragma once
         #include <cstdint>
         #include <cstddef>
+        #include <memory>
         #include "decode_execute_module/common.hpp"
         #include "../instruction_opcodes_gen.hpp"
 
@@ -50,17 +57,17 @@ class ExecuterGenerator
         namespace riscv_sim {
         namespace executer {
 
-        using ExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
-        using PreExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
-        using PostExecFn = void (*)(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
+        using ExecFn = void (*)(const DecodedInstruction &instr, Hart& hart);
+        using PreExecFn = void (*)(const DecodedInstruction &instr, Hart& hart);
+        using PostExecFn = void (*)(const DecodedInstruction &instr, Hart& hart, const PostExecInfo& info);
 
-        ExecFn execute(const DecodedInstruction instr, Hart& hart);
+        ExecFn execute(const DecodedInstruction &instr, Hart& hart);
 
         void ensure_pre_dispatcher_installed(size_t idx);
         void ensure_post_dispatcher_installed(size_t idx);
 
-        void pre_dispatcher(const DecodedInstruction instr, Hart& hart);
-        void post_dispatcher(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
+        void pre_dispatcher(const DecodedInstruction &instr, Hart& hart);
+        void post_dispatcher(const DecodedInstruction &instr, Hart& hart, const PostExecInfo& info);
 
         #{generate_execution_methods}
 
@@ -71,7 +78,7 @@ class ExecuterGenerator
   end
 
   def generate_execution_methods
-    @instructions.map { |instr| "void execute_#{instr.name}(const DecodedInstruction instr, Hart& hart);" }.join("\n        ")
+    @instructions.map { |instr| "void execute_#{instr.name}(const DecodedInstruction &instr, Hart& hart);" }.join("\n")
   end
 
   def generate_implementation
@@ -109,17 +116,17 @@ class ExecuterGenerator
           }
         }
 
-        void pre_dispatcher(const DecodedInstruction instr, Hart& hart) {
+        void pre_dispatcher(const DecodedInstruction &instr, Hart& hart) {
           hart.invoke_pre_callbacks(static_cast<size_t>(instr.opcode), instr);
         }
 
-        void post_dispatcher(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info) {
+        void post_dispatcher(const DecodedInstruction &instr, Hart& hart, const PostExecInfo& info) {
           hart.invoke_post_callbacks(static_cast<size_t>(instr.opcode), instr, info);
         }
 
         #{generate_instruction_executers}
 
-        PreExecFn execute(const DecodedInstruction instr, Hart& hart) {
+        PreExecFn execute(const DecodedInstruction &instr, Hart& hart) {
           switch (instr.opcode) {
             #{@instructions.map { |instr| "case InstructionOpcode::#{instr.name.upcase}: execute_#{instr.name}(instr, hart); return &execute_#{instr.name};" }.join("\n                ")}
             default:
@@ -138,8 +145,8 @@ class ExecuterGenerator
   def generate_instruction_executers
     executers = []
     @instructions.each do |instr_info|
-      executer = <<~CPP
-        void execute_#{instr_info.name}(const DecodedInstruction instr, Hart& hart) {
+      executer = <<~CPP        
+        void execute_#{instr_info.name}(const DecodedInstruction &instr, Hart& hart) {
           {
             constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::#{instr_info.name.upcase});
             auto __ph = pre_handlers_vec[__idx];

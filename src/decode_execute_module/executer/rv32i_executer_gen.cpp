@@ -30,15 +30,15 @@ void ensure_post_dispatcher_installed(size_t idx) {
   }
 }
 
-void pre_dispatcher(const DecodedInstruction instr, Hart& hart) {
+void pre_dispatcher(const DecodedInstruction &instr, Hart& hart) {
   hart.invoke_pre_callbacks(static_cast<size_t>(instr.opcode), instr);
 }
 
-void post_dispatcher(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info) {
+void post_dispatcher(const DecodedInstruction &instr, Hart& hart, const PostExecInfo& info) {
   hart.invoke_post_callbacks(static_cast<size_t>(instr.opcode), instr, info);
 }
 
-void execute_lb(const DecodedInstruction instr, Hart& hart) {
+void execute_lb(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LB);
     auto __ph = pre_handlers_vec[__idx];
@@ -96,7 +96,7 @@ void execute_lb(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_lh(const DecodedInstruction instr, Hart& hart) {
+void execute_lh(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LH);
     auto __ph = pre_handlers_vec[__idx];
@@ -154,7 +154,7 @@ void execute_lh(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_lw(const DecodedInstruction instr, Hart& hart) {
+void execute_lw(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LW);
     auto __ph = pre_handlers_vec[__idx];
@@ -212,7 +212,7 @@ void execute_lw(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_ld(const DecodedInstruction instr, Hart& hart) {
+void execute_ld(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LD);
     auto __ph = pre_handlers_vec[__idx];
@@ -270,7 +270,7 @@ void execute_ld(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_lbu(const DecodedInstruction instr, Hart& hart) {
+void execute_lbu(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LBU);
     auto __ph = pre_handlers_vec[__idx];
@@ -328,7 +328,7 @@ void execute_lbu(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_lhu(const DecodedInstruction instr, Hart& hart) {
+void execute_lhu(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LHU);
     auto __ph = pre_handlers_vec[__idx];
@@ -386,7 +386,7 @@ void execute_lhu(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_lwu(const DecodedInstruction instr, Hart& hart) {
+void execute_lwu(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LWU);
     auto __ph = pre_handlers_vec[__idx];
@@ -444,7 +444,7 @@ void execute_lwu(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sb(const DecodedInstruction instr, Hart& hart) {
+void execute_sb(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SB);
     auto __ph = pre_handlers_vec[__idx];
@@ -500,7 +500,7 @@ void execute_sb(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sh(const DecodedInstruction instr, Hart& hart) {
+void execute_sh(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SH);
     auto __ph = pre_handlers_vec[__idx];
@@ -556,7 +556,7 @@ void execute_sh(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sw(const DecodedInstruction instr, Hart& hart) {
+void execute_sw(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SW);
     auto __ph = pre_handlers_vec[__idx];
@@ -612,7 +612,7 @@ void execute_sw(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sd(const DecodedInstruction instr, Hart& hart) {
+void execute_sd(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SD);
     auto __ph = pre_handlers_vec[__idx];
@@ -668,7 +668,7 @@ void execute_sd(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_addiw(const DecodedInstruction instr, Hart& hart) {
+void execute_addiw(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDIW);
     auto __ph = pre_handlers_vec[__idx];
@@ -725,7 +725,7 @@ void execute_addiw(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_slliw(const DecodedInstruction instr, Hart& hart) {
+void execute_slliw(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLIW);
     auto __ph = pre_handlers_vec[__idx];
@@ -785,7 +785,7 @@ void execute_slliw(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_srliw(const DecodedInstruction instr, Hart& hart) {
+void execute_srliw(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLIW);
     auto __ph = pre_handlers_vec[__idx];
@@ -845,7 +845,7 @@ void execute_srliw(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sraiw(const DecodedInstruction instr, Hart& hart) {
+void execute_sraiw(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAIW);
     auto __ph = pre_handlers_vec[__idx];
@@ -905,7 +905,7 @@ void execute_sraiw(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_addw(const DecodedInstruction instr, Hart& hart) {
+void execute_addw(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDW);
     auto __ph = pre_handlers_vec[__idx];
@@ -962,7 +962,7 @@ void execute_addw(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_subw(const DecodedInstruction instr, Hart& hart) {
+void execute_subw(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SUBW);
     auto __ph = pre_handlers_vec[__idx];
@@ -1019,7 +1019,7 @@ void execute_subw(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sllw(const DecodedInstruction instr, Hart& hart) {
+void execute_sllw(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLW);
     auto __ph = pre_handlers_vec[__idx];
@@ -1079,7 +1079,7 @@ void execute_sllw(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_srlw(const DecodedInstruction instr, Hart& hart) {
+void execute_srlw(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLW);
     auto __ph = pre_handlers_vec[__idx];
@@ -1139,7 +1139,7 @@ void execute_srlw(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sraw(const DecodedInstruction instr, Hart& hart) {
+void execute_sraw(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAW);
     auto __ph = pre_handlers_vec[__idx];
@@ -1199,7 +1199,7 @@ void execute_sraw(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_add(const DecodedInstruction instr, Hart& hart) {
+void execute_add(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADD);
     auto __ph = pre_handlers_vec[__idx];
@@ -1255,7 +1255,7 @@ void execute_add(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sub(const DecodedInstruction instr, Hart& hart) {
+void execute_sub(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SUB);
     auto __ph = pre_handlers_vec[__idx];
@@ -1311,7 +1311,7 @@ void execute_sub(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sll(const DecodedInstruction instr, Hart& hart) {
+void execute_sll(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLL);
     auto __ph = pre_handlers_vec[__idx];
@@ -1367,7 +1367,7 @@ void execute_sll(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_slt(const DecodedInstruction instr, Hart& hart) {
+void execute_slt(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLT);
     auto __ph = pre_handlers_vec[__idx];
@@ -1423,7 +1423,7 @@ void execute_slt(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sltu(const DecodedInstruction instr, Hart& hart) {
+void execute_sltu(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTU);
     auto __ph = pre_handlers_vec[__idx];
@@ -1479,7 +1479,7 @@ void execute_sltu(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_xor(const DecodedInstruction instr, Hart& hart) {
+void execute_xor(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::XOR);
     auto __ph = pre_handlers_vec[__idx];
@@ -1535,7 +1535,7 @@ void execute_xor(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_srl(const DecodedInstruction instr, Hart& hart) {
+void execute_srl(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRL);
     auto __ph = pre_handlers_vec[__idx];
@@ -1591,7 +1591,7 @@ void execute_srl(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sra(const DecodedInstruction instr, Hart& hart) {
+void execute_sra(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRA);
     auto __ph = pre_handlers_vec[__idx];
@@ -1647,7 +1647,7 @@ void execute_sra(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_or(const DecodedInstruction instr, Hart& hart) {
+void execute_or(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::OR);
     auto __ph = pre_handlers_vec[__idx];
@@ -1703,7 +1703,7 @@ void execute_or(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_and(const DecodedInstruction instr, Hart& hart) {
+void execute_and(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::AND);
     auto __ph = pre_handlers_vec[__idx];
@@ -1759,7 +1759,7 @@ void execute_and(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_addi(const DecodedInstruction instr, Hart& hart) {
+void execute_addi(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDI);
     auto __ph = pre_handlers_vec[__idx];
@@ -1815,7 +1815,7 @@ void execute_addi(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_slti(const DecodedInstruction instr, Hart& hart) {
+void execute_slti(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTI);
     auto __ph = pre_handlers_vec[__idx];
@@ -1871,7 +1871,7 @@ void execute_slti(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_sltiu(const DecodedInstruction instr, Hart& hart) {
+void execute_sltiu(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTIU);
     auto __ph = pre_handlers_vec[__idx];
@@ -1927,7 +1927,7 @@ void execute_sltiu(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_xori(const DecodedInstruction instr, Hart& hart) {
+void execute_xori(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::XORI);
     auto __ph = pre_handlers_vec[__idx];
@@ -1983,7 +1983,7 @@ void execute_xori(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_ori(const DecodedInstruction instr, Hart& hart) {
+void execute_ori(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ORI);
     auto __ph = pre_handlers_vec[__idx];
@@ -2039,7 +2039,7 @@ void execute_ori(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_andi(const DecodedInstruction instr, Hart& hart) {
+void execute_andi(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ANDI);
     auto __ph = pre_handlers_vec[__idx];
@@ -2095,7 +2095,7 @@ void execute_andi(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_slli(const DecodedInstruction instr, Hart& hart) {
+void execute_slli(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLI);
     auto __ph = pre_handlers_vec[__idx];
@@ -2151,7 +2151,7 @@ void execute_slli(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_srli(const DecodedInstruction instr, Hart& hart) {
+void execute_srli(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLI);
     auto __ph = pre_handlers_vec[__idx];
@@ -2207,7 +2207,7 @@ void execute_srli(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_srai(const DecodedInstruction instr, Hart& hart) {
+void execute_srai(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAI);
     auto __ph = pre_handlers_vec[__idx];
@@ -2263,7 +2263,7 @@ void execute_srai(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_jalr(const DecodedInstruction instr, Hart& hart) {
+void execute_jalr(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::JALR);
     auto __ph = pre_handlers_vec[__idx];
@@ -2325,7 +2325,7 @@ void execute_jalr(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_beq(const DecodedInstruction instr, Hart& hart) {
+void execute_beq(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BEQ);
     auto __ph = pre_handlers_vec[__idx];
@@ -2387,7 +2387,7 @@ void execute_beq(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_bne(const DecodedInstruction instr, Hart& hart) {
+void execute_bne(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BNE);
     auto __ph = pre_handlers_vec[__idx];
@@ -2449,7 +2449,7 @@ void execute_bne(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_blt(const DecodedInstruction instr, Hart& hart) {
+void execute_blt(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BLT);
     auto __ph = pre_handlers_vec[__idx];
@@ -2511,7 +2511,7 @@ void execute_blt(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_bge(const DecodedInstruction instr, Hart& hart) {
+void execute_bge(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BGE);
     auto __ph = pre_handlers_vec[__idx];
@@ -2576,7 +2576,7 @@ void execute_bge(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_bltu(const DecodedInstruction instr, Hart& hart) {
+void execute_bltu(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BLTU);
     auto __ph = pre_handlers_vec[__idx];
@@ -2638,7 +2638,7 @@ void execute_bltu(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_bgeu(const DecodedInstruction instr, Hart& hart) {
+void execute_bgeu(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BGEU);
     auto __ph = pre_handlers_vec[__idx];
@@ -2703,7 +2703,7 @@ void execute_bgeu(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_lui(const DecodedInstruction instr, Hart& hart) {
+void execute_lui(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LUI);
     auto __ph = pre_handlers_vec[__idx];
@@ -2758,7 +2758,7 @@ void execute_lui(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_auipc(const DecodedInstruction instr, Hart& hart) {
+void execute_auipc(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::AUIPC);
     auto __ph = pre_handlers_vec[__idx];
@@ -2817,7 +2817,7 @@ void execute_auipc(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_jal(const DecodedInstruction instr, Hart& hart) {
+void execute_jal(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::JAL);
     auto __ph = pre_handlers_vec[__idx];
@@ -2877,7 +2877,7 @@ void execute_jal(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-void execute_ecall(const DecodedInstruction instr, Hart& hart) {
+void execute_ecall(const DecodedInstruction &instr, Hart& hart) {
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ECALL);
     auto __ph = pre_handlers_vec[__idx];
@@ -2930,7 +2930,7 @@ void execute_ecall(const DecodedInstruction instr, Hart& hart) {
 }
 
 
-PreExecFn execute(const DecodedInstruction instr, Hart& hart) {
+PreExecFn execute(const DecodedInstruction &instr, Hart& hart) {
   switch (instr.opcode) {
     case InstructionOpcode::LB: execute_lb(instr, hart); return &execute_lb;
                 case InstructionOpcode::LH: execute_lh(instr, hart); return &execute_lh;

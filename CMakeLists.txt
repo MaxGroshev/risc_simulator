@@ -4,10 +4,11 @@ project(decode_execute)
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set(ASMJIT_DIR "third_party/asmjit")
 
 option(DEBUG_EXECUTION "Enable debug execution logging" OFF)
 
-
+set (CMAKE_CXX_STANDARD 17)
 # enable_testing()
 
 # include(FetchContent)
@@ -33,4 +34,5 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+add_subdirectory(config)
 add_subdirectory(src)

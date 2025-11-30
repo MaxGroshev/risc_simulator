@@ -26,20 +26,24 @@ Compilation (inside `e2e_tests`):
 riscv32-unknown-elf-gcc -o sum.elf sum.c -march=rv32i -mabi=ilp32 -nostdlib -T simple.ld
 ```
 
+## asmjit
+```bash
+mkdir third_pary && cd third_party
+# probably may use installed via apt
+git clone https://github.com/asmjit/asmjit.git 
+cd asmjit
+mkdir build && cd build
+mkdir build
+cd build
+cmake ..
+cmake --build 
+```
+
 ## Run
 ```bash
-build/bin/decode_execute ../e2e_tests/sum.elf
+build/bin/decode_execute [--config=<>] [--module=<>] --input=../e2e_tests/sum.elf 
 ```
 Output will be in register a0 (x10), simulator will print it in console
 
 ### ATTENTION ###
 P.S output c++ files are hardcoded in .rb(move this logic to cmake or config file)
-
-## EPIC ##
-
-- [x] mgroshev: Implemented parsing of isa all needed instruction for factorial(added all main formats of instructions), further extending should be easier. 
-- [x] mgroshev: implemented building of tree to generate cpp handlers of instructions(check out dump during building or during executing of ruby script)
-- [x] mgroshev: Implemented autogeneration of decoder
-- [ ] implement generation of handlers
-- [ ] implement parse of elf
-- [ ] implement ...

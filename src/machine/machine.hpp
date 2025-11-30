@@ -4,6 +4,7 @@
 #include <memory/mmu.hpp>
 #include <memory/memory.hpp>
 
+#include "sim_config.hpp"
 #include <string>
 
 // Memory layout constants
@@ -12,6 +13,9 @@ constexpr va_t StackTop = 0x1000000ULL - StackSize;
 
 class Machine {
 public:
+    Machine(sim_config_t& sim_conf) : memory_(), mmu_(memory_), hart_(mmu_, sim_conf) {
+        memory_.zero_init(StackTop, StackSize);
+    }
     Machine() : memory_(), mmu_(memory_), hart_(mmu_) {
         memory_.zero_init(StackTop, StackSize);
     }

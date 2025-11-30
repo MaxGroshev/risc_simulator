@@ -60,7 +60,7 @@ void Machine::load_elf(const std::string& filename) {
 }
 
 void Machine::run(uint64_t max_cycles) {
-    uint64_t cycle = 0;
+    volatile uint64_t cycle = 0;
     auto start = std::chrono::high_resolution_clock::now();
 
     while ((max_cycles == 0 || cycle < max_cycles) && !hart_.is_halt()) {
