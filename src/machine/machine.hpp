@@ -24,7 +24,7 @@ public:
 
     void dump_regs() const;
 
-    uint64_t memory_read(uint64_t addr, int size, bool sign_extend) const;
+    uint64_t memory_read(uint64_t addr, int size) const;
     void memory_write(uint64_t addr, uint64_t value, int size);
 
 private:

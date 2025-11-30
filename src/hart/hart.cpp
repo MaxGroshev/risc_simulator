@@ -42,8 +42,8 @@ void Hart::set_next_pc(reg_t value) {
     next_pc_ = value;
 }
 
-reg_t Hart::memory_read(reg_t addr, int size, bool sign_extend) const {
-    return memory_.read(addr, size, sign_extend);
+reg_t Hart::memory_read(reg_t addr, int size) const {
+    return memory_.read(addr, size);
 }
 
 void Hart::memory_write(reg_t addr, reg_t value, int size) {
@@ -51,7 +51,7 @@ void Hart::memory_write(reg_t addr, reg_t value, int size) {
 }
 
 void Hart::handle_unknown_instruction(const DecodedInstruction instr) {
-    reg_t instruction = memory_read(pc_, 4, false);
+    reg_t instruction = memory_read(pc_, 4);
     // TODO: if started using exceptions (see set/get_reg)
     //       than consider trowing exception here as well
     std::cerr << "Unknown instruction at PC: 0x" << std::hex << pc_ << std::endl;
@@ -158,7 +158,7 @@ uint64_t Hart::step() {
     uint64_t collected = 0;
 
     while (collected < cache_len_) {
-        uint32_t raw_instr = static_cast<uint32_t>(memory_read(pc_, 4, false));
+        uint32_t raw_instr = static_cast<uint32_t>(memory_read(pc_, 4));
         DecodedInstruction dinstr = riscv_sim::decoder::decode(raw_instr);
 
         next_pc_ = pc_ + 4;

@@ -37,7 +37,7 @@ public:
     
     uint64_t step();
 
-    reg_t memory_read(reg_t addr, int size, bool sign_extend) const;
+    reg_t memory_read(reg_t addr, int size) const;
     void memory_write(reg_t addr, reg_t value, int size);
 
     private:

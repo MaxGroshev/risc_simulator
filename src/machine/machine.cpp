@@ -11,8 +11,8 @@ Machine::Machine() : memory_(), hart_(memory_) {
     memory_.zero_init(0x10000000 - 4096, 4096);  // stack page
 }
 
-uint64_t Machine::memory_read(uint64_t addr, int size, bool sign_extend) const {
-    return memory_.read(addr, size, sign_extend);
+uint64_t Machine::memory_read(uint64_t addr, int size) const {
+    return memory_.read(addr, size);
 }
 
 void Machine::memory_write(uint64_t addr, uint64_t value, int size) {

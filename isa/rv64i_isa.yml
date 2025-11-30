@@ -3,43 +3,43 @@ instructions:
     format: I
     opcode: 0b0000011
     funct3: 0b000
-    code: rd[]= memory_ld(rs1 + imm, :byte,  :signed)
+    code: rd[]= memory_ld(rs1 + imm, :byte)
 
   lh:    
     format: I
     opcode: 0b0000011
     funct3: 0b001
-    code: rd[]= memory_ld(rs1 + imm, :half,  :signed)
+    code: rd[]= memory_ld(rs1 + imm, :half)
 
   lw:    
     format: I
     opcode: 0b0000011
     funct3: 0b010
-    code: rd[]= memory_ld(rs1 + imm, :word,  :signed)
+    code: rd[]= memory_ld(rs1 + imm, :word)
 
   ld:    
     format: I
     opcode: 0b0000011
     funct3: 0b011
-    code: rd[]= memory_ld(rs1 + imm, :double, :signed)
+    code: rd[]= memory_ld(rs1 + imm, :double)
 
   lbu:   
     format: I
     opcode: 0b0000011
     funct3: 0b100
-    code: rd[]= memory_ld(rs1 + imm, :byte,  :unsigned)
+    code: rd[]= memory_ld(rs1 + imm, :byte)
 
   lhu:   
     format: I
     opcode: 0b0000011
     funct3: 0b101
-    code: rd[]= memory_ld(rs1 + imm, :half,  :unsigned)
+    code: rd[]= memory_ld(rs1 + imm, :half)
 
   lwu:   
     format: I
     opcode: 0b0000011
     funct3: 0b110
-    code: rd[]= memory_ld(rs1 + imm, :word,  :unsigned)
+    code: rd[]= memory_ld(rs1 + imm, :word)
 
   sb:    
     format: S

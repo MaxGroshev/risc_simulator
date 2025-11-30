@@ -39,7 +39,7 @@ Memory::~Memory() {
     }
 }
 
-uint64_t Memory::read(uint64_t addr, int size_bytes, bool sign_extend) const {
+uint64_t Memory::read(uint64_t addr, int size_bytes) const {
     // if (size_bytes <= 0 || size_bytes > 8)
     //     throw std::invalid_argument("invalid read size");
 
@@ -49,12 +49,6 @@ uint64_t Memory::read(uint64_t addr, int size_bytes, bool sign_extend) const {
 
     uint64_t value = 0;
     std::memcpy(&value, backing_ + static_cast<size_t>(addr), static_cast<size_t>(size_bytes));
-
-    if (sign_extend && size_bytes < 8) {
-        int shift = 64 - size_bytes * 8;
-        int64_t signed_val = static_cast<int64_t>(value << shift) >> shift;
-        return static_cast<uint64_t>(signed_val);
-    }
     return value;
 }
 

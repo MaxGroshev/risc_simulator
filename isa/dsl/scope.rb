@@ -117,7 +117,7 @@ module SimInfra
         def ge(a, b); neq(lt(a, b), 1); end
 
         # memory
-        def memory_ld(address, size=:word, sign=:signed); memoryLoad(address, :load_from_mem, size, sign) end
+        def memory_ld(address, size=:word, sign=:signed); memoryLoad(address, :load_from_mem, size) end
         def memory_st(address, src, size=:word); memoryStore(address, src, :store_to_mem, size) end
         # pc
         def pc(); pcHandler end
