@@ -11,8 +11,8 @@
 using reg_t = uint64_t;
 
 class Hart {
-public:
-    Hart(Memory&, uint32_t cache_len = 128);
+  public:
+    Hart(Memory&, uint32_t cache_len = 1024);
     Hart(const Hart&) = delete;
     Hart(Hart&&) = delete;
     Hart& operator=(const Hart&) = delete;
@@ -40,7 +40,9 @@ public:
     reg_t memory_read(reg_t addr, int size) const;
     void memory_write(reg_t addr, reg_t value, int size);
 
-    private:
+  private:
+    uint64_t execute_cached_block(Hart& hart, riscv_sim::Block* blk);
+
     Memory& memory_;
     std::array<reg_t, 32> regs_;
     reg_t pc_;
@@ -49,6 +51,7 @@ public:
     
     uint32_t cache_len_;
     riscv_sim::BlockCache block_cache_;
+
 };
 
 #endif // HART_HPP

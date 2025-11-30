@@ -6,6 +6,8 @@
 #include <iostream>
 #include <stdexcept>
 
+using ExecFn = riscv_sim::Block::ExecFn;
+
 Hart::Hart(Memory& memory, uint32_t cache_len) : memory_(memory), pc_(0), next_pc_(0), halt_(false), block_cache_(4096), cache_len_(cache_len) {
     regs_.fill(0);
 }
@@ -89,66 +91,76 @@ bool Hart::is_halt() const {
     return halt_;
 }
 
-uint64_t Hart::step() {
-    using ExecFn = riscv_sim::Block::ExecFn;
+#ifdef DEBUG_EXECUTION
+static inline void debug_cout(const std::string& msg) {
+    std::cout << msg << std::endl;
+}
+#else
+#define debug_cout(...) ((void)0)
+#endif
 
-    riscv_sim::Block* blk = block_cache_.lookup(pc_);
+uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
+    uint64_t executed = 0;
+    uint64_t idx = 0;
+    const size_t blk_size = blk->instrs.size();
 
-    if (blk && blk->valid && blk->start_pc == pc_) {
-        uint64_t executed = 0;
-        uint64_t idx = 0;
-        const size_t blk_size = blk->instrs.size();
-
-        // std::cout << "In cached block at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
-        while (true) {
-            if (idx >= blk_size) {
-                // std::cout << "Block finished at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
-                pc_ = next_pc_;
-                break;
-            }
-
-            ExecFn fn = nullptr;
-            if (idx < blk->exec_fns.size()) 
-                fn = blk->exec_fns[idx];
-
-            const DecodedInstruction dinstr = blk->instrs[idx];
-
-            next_pc_ = pc_ + 4;
-
-            if (fn) {
-                // std::cout << "Executing cached instruction at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
-                fn(dinstr, *this);
-            } else {
-                std::cout << "Executing uncached instruction (How it happenned?) at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
-                riscv_sim::executer::execute(dinstr, *this);
-            }
-
-            executed++;
-
-            reg_t expected_next = pc_ + 4;
-
+    debug_cout("In cached block at PC: 0x" + std::to_string(pc_));
+    while (true) {
+        if (idx >= blk_size) {
+            debug_cout("Block finished at PC: 0x" + std::to_string(pc_));
             pc_ = next_pc_;
-
-            if (is_halt()) {
-                break;
-            }
-
-            if (next_pc_ == expected_next) {
-                // std::cout << "Falling through to next cached instruction at PC: 0x" << std::hex << next_pc_ << std::dec << std::endl;
-                ++idx;
-                continue;
-            }
-
-            if (next_pc_ == blk->start_pc) {
-                // std::cout << "Looping back to block start at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
-                idx = 0;
-                continue;
-            }
-
             break;
         }
 
-        return executed;
+        ExecFn fn = nullptr;
+        if (idx < blk->exec_fns.size()) 
+            fn = blk->exec_fns[idx];
+
+        const DecodedInstruction dinstr = blk->instrs[idx];
+
+        next_pc_ = pc_ + 4;
+
+        if (fn) {
+            debug_cout("Executing cached instruction at PC: 0x" + std::to_string(pc_));
+            fn(dinstr, *this);
+        } else {
+            std::cout << "Executing uncached instruction (How it happenned?) at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
+            riscv_sim::executer::execute(dinstr, *this);
+        }
+
+        executed++;
+
+        reg_t expected_next = pc_ + 4;
+
+        pc_ = next_pc_;
+
+        if (is_halt()) {
+            break;
+        }
+
+        if (next_pc_ == expected_next) {
+            debug_cout("Falling through to next cached instruction at PC: 0x" + std::to_string(next_pc_));
+            ++idx;
+            continue;
+        }
+
+        if (next_pc_ == blk->start_pc) {
+            debug_cout("Looping back to block start at PC: 0x" + std::to_string(pc_));
+            idx = 0;
+            continue;
+        }
+
+        break;
+    }
+
+    return executed;
+}
+
+uint64_t Hart::step() {
+    riscv_sim::Block* blk = block_cache_.lookup(pc_);
+
+    if (blk && blk->valid && blk->start_pc == pc_) {
+        return execute_cached_block(*this, blk);
     }
 
     riscv_sim::Block new_block;
@@ -176,12 +188,12 @@ uint64_t Hart::step() {
             break;
         }
 
-        // std::cout << "Executed instruction at PC: 0x" << std::hex << pc_ << ", next PC: 0x" << next_pc_ << std::dec << std::endl;
+        debug_cout("Executed instruction at PC: 0x" + std::to_string(pc_) + ", next PC: 0x" + std::to_string(next_pc_));
 
         reg_t executed_next = next_pc_;
 
         if (next_pc_ != pc_ + 4) {
-            // std::cout << "Control flow change detected at PC: 0x" << std::hex << pc_ << ", next PC: 0x" << next_pc_ << std::dec << std::endl;
+            debug_cout("Control flow change detected at PC: 0x" + std::to_string(pc_) + ", next PC: 0x" + std::to_string(next_pc_));
             pc_ = executed_next;
             new_block.valid = (new_block.instrs.size() > 0);
             block_cache_.install(new_block);
@@ -189,10 +201,10 @@ uint64_t Hart::step() {
         }
 
         pc_ = next_pc_;
-        // std::cout << "Falling through to next instruction at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
+        debug_cout("Falling through to next instruction at PC: 0x" + std::to_string(pc_));
 
         if (collected >= cache_len_) {
-            // std::cout << "Max block length reached at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
+            debug_cout("Max block length reached at PC: 0x" + std::to_string(pc_));
             new_block.valid = (new_block.instrs.size() > 0);
             block_cache_.install(new_block);
             break;

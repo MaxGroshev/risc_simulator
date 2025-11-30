@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <errno.h>
 
+/// TODO: exceptions should be processed properly, now they are not caught
+
 Memory::Memory(size_t size) : backing_(nullptr), capacity_(0) {
     if (size == 0) {
         throw std::invalid_argument("Memory size must be > 0");

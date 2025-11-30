@@ -5,6 +5,9 @@ project(decode_execute)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
+option(DEBUG_EXECUTION "Enable debug execution logging" OFF)
+
+
 # enable_testing()
 
 # include(FetchContent)
@@ -22,6 +25,11 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 else()
     add_compile_options(-flto)
 endif ()
+
+if (DEBUG_EXECUTION)
+    add_compile_definitions(DEBUG_EXECUTION)
+    message(STATUS "DEBUG_EXECUTION enabled via CMake option")
+endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
