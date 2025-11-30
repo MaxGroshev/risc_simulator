@@ -1,7 +1,7 @@
-#ifndef COMMON_HPP
-#define COMMON_HPP
-
+#pragma once
 #include <cstdint>
+#include <string>
+#include <sstream>
 
 #include "instruction_opcodes_gen.hpp"
 
@@ -13,6 +13,17 @@ struct DecodedInstruction {
     int32_t imm;
 
     DecodedInstruction() : opcode(InstructionOpcode::UNKNOWN), rd(0), rs1(0), rs2(0), imm(0) {}
+
+    std::string to_string() const {
+        std::ostringstream oss;
+        oss << "{ opcode=" << static_cast<int>(opcode)
+            << ", rd=" << static_cast<int>(rd)
+            << ", rs1=" << static_cast<int>(rs1)
+            << ", rs2=" << static_cast<int>(rs2)
+            << ", imm=" << imm
+            << " }";
+    return oss.str();
+    }
 };
 
-#endif
+using reg_t = uint64_t;

@@ -31,12 +31,12 @@ class ExecuterGenerator
     when :load_from_mem
       size = stmt.attrs[:size] || :word
       size_bytes = {byte: 1, half: 2, word: 4, double: 8}[size]
-      "#{indent}#{get_var_name(stmt.oprnds[0])} = hart.memory_read(#{get_var_name(stmt.oprnds[1])}, #{size_bytes});"
+      "#{indent}#{get_var_name(stmt.oprnds[0])} = hart.load(#{get_var_name(stmt.oprnds[1])}, #{size_bytes});"
 
     when :store_to_mem
       size = stmt.attrs[:size] || :word
       size_bytes = {byte: 1, half: 2, word: 4, double: 8}[size]
-      "#{indent}hart.memory_write(#{get_var_name(stmt.oprnds[0])}, #{get_var_name(stmt.oprnds[1])}, #{size_bytes});"
+      "#{indent}hart.store(#{get_var_name(stmt.oprnds[0])}, #{get_var_name(stmt.oprnds[1])}, #{size_bytes});"
 
     when :ecall
       "#{indent}hart.do_ecall();"
