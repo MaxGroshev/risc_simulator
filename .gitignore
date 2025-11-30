@@ -1,3 +1,5 @@
 build/
 riscv/
 .cache/
+.vscode/
+third_parties/

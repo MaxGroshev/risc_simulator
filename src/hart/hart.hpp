@@ -7,9 +7,11 @@
 
 #include <memory/mmu.hpp>
 #include "decode_execute_module/common.hpp"
+#include "threaded_code.hpp"
+#include "sim_config.hpp"
 #include "decode_execute_module/instruction_opcodes_gen.hpp"
 #include "modules_api/module.hpp"
-#include "block_cache.hpp"
+#include "threaded_code.hpp"
 
 // @ArsenySamoylov
 //      Consider inheritance as API for ISA code generated code.
@@ -20,19 +22,25 @@
 
 class Hart {
   public:
+    using reg_t = uint64_t;
+    Hart(MMU&, sim_config_t& sim_conf);
     Hart(MMU&, uint32_t cache_len = 1024);
 
     reg_t get_reg(uint8_t reg_num) const;
     void set_reg(uint8_t reg_num, reg_t value);
 
     reg_t get_pc() const;
+    reg_t* get_pc_ptr();
     void set_pc(reg_t value);
     void set_next_pc(reg_t value);
 
     uint64_t step();
+    
     void set_halt(bool value);
     bool is_halt() const;
-    
+
+    reg_t* get_reg_file_begin();
+
     // Memory access
     reg_t load(va_t addr, int size);
     void store(va_t addr, reg_t value, int size);
@@ -55,20 +63,20 @@ class Hart {
     void invoke_post_callbacks(size_t idx, const DecodedInstruction& instr, const PostExecInfo& info);
 
 private:
+
     uint64_t execute_cached_block(Hart& hart, riscv_sim::Block* blk);
 
+    reg_t pc_;
     MMU &mmu_;
     std::array<reg_t, 32> regs_;
-    reg_t pc_;
     reg_t next_pc_;
     bool halt_;
-
-    // TODO: check that csr_satp is uint32 for rv64
+    
     reg_t csr_satp_;
     PrivilegeMode prv_;
-    
-    uint32_t cache_len_;
-    riscv_sim::BlockCache block_cache_;
+
+    uint32_t max_cached_bb_size_;
+    riscv_sim::ThreadedCode<Hart> th_code_;
     std::vector<std::shared_ptr<Module>> modules_;
 
     // per-opcode callbacks registered by modules

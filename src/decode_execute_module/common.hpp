@@ -7,9 +7,10 @@
 
 struct DecodedInstruction {
     InstructionOpcode opcode;
-    int8_t rd;
-    int8_t rs1;
-    int8_t rs2;
+    InstructionFormat format;
+    uint8_t rd;
+    uint8_t rs1;
+    uint8_t rs2;
     int32_t imm;
 
     DecodedInstruction() : opcode(InstructionOpcode::UNKNOWN), rd(-1), rs1(-1), rs2(-1), imm(-1) {}

@@ -61,6 +61,7 @@ int32_t get_imm_j(uint32_t instruction) {
 DecodedInstruction decode_lb(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::LB;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -71,6 +72,7 @@ DecodedInstruction decode_lb(uint32_t instruction) {
 DecodedInstruction decode_lh(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::LH;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -81,6 +83,7 @@ DecodedInstruction decode_lh(uint32_t instruction) {
 DecodedInstruction decode_lw(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::LW;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -91,6 +94,7 @@ DecodedInstruction decode_lw(uint32_t instruction) {
 DecodedInstruction decode_ld(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::LD;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -101,6 +105,7 @@ DecodedInstruction decode_ld(uint32_t instruction) {
 DecodedInstruction decode_lbu(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::LBU;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -111,6 +116,7 @@ DecodedInstruction decode_lbu(uint32_t instruction) {
 DecodedInstruction decode_lhu(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::LHU;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -121,6 +127,7 @@ DecodedInstruction decode_lhu(uint32_t instruction) {
 DecodedInstruction decode_lwu(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::LWU;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -131,6 +138,7 @@ DecodedInstruction decode_lwu(uint32_t instruction) {
 DecodedInstruction decode_sb(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SB;
+    result.format = InstructionFormat::S;
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
                 result.imm = get_imm_s(instruction);
@@ -141,6 +149,7 @@ DecodedInstruction decode_sb(uint32_t instruction) {
 DecodedInstruction decode_sh(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SH;
+    result.format = InstructionFormat::S;
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
                 result.imm = get_imm_s(instruction);
@@ -151,6 +160,7 @@ DecodedInstruction decode_sh(uint32_t instruction) {
 DecodedInstruction decode_sw(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SW;
+    result.format = InstructionFormat::S;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -162,6 +172,7 @@ DecodedInstruction decode_sw(uint32_t instruction) {
 DecodedInstruction decode_sd(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SD;
+    result.format = InstructionFormat::S;
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
                 result.imm = get_imm_s(instruction);
@@ -172,6 +183,7 @@ DecodedInstruction decode_sd(uint32_t instruction) {
 DecodedInstruction decode_addiw(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::ADDIW;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -182,6 +194,7 @@ DecodedInstruction decode_addiw(uint32_t instruction) {
 DecodedInstruction decode_slliw(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SLLIW;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -192,6 +205,7 @@ DecodedInstruction decode_slliw(uint32_t instruction) {
 DecodedInstruction decode_srliw(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SRLIW;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -202,6 +216,7 @@ DecodedInstruction decode_srliw(uint32_t instruction) {
 DecodedInstruction decode_sraiw(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SRAIW;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -212,6 +227,7 @@ DecodedInstruction decode_sraiw(uint32_t instruction) {
 DecodedInstruction decode_addw(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::ADDW;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -223,6 +239,7 @@ DecodedInstruction decode_addw(uint32_t instruction) {
 DecodedInstruction decode_subw(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SUBW;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -234,6 +251,7 @@ DecodedInstruction decode_subw(uint32_t instruction) {
 DecodedInstruction decode_sllw(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SLLW;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -245,6 +263,7 @@ DecodedInstruction decode_sllw(uint32_t instruction) {
 DecodedInstruction decode_srlw(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SRLW;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -256,6 +275,7 @@ DecodedInstruction decode_srlw(uint32_t instruction) {
 DecodedInstruction decode_sraw(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SRAW;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -267,6 +287,7 @@ DecodedInstruction decode_sraw(uint32_t instruction) {
 DecodedInstruction decode_add(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::ADD;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -278,6 +299,7 @@ DecodedInstruction decode_add(uint32_t instruction) {
 DecodedInstruction decode_sub(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SUB;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -289,6 +311,7 @@ DecodedInstruction decode_sub(uint32_t instruction) {
 DecodedInstruction decode_sll(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SLL;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -300,6 +323,7 @@ DecodedInstruction decode_sll(uint32_t instruction) {
 DecodedInstruction decode_slt(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SLT;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -311,6 +335,7 @@ DecodedInstruction decode_slt(uint32_t instruction) {
 DecodedInstruction decode_sltu(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SLTU;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -322,6 +347,7 @@ DecodedInstruction decode_sltu(uint32_t instruction) {
 DecodedInstruction decode_xor(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::XOR;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -333,6 +359,7 @@ DecodedInstruction decode_xor(uint32_t instruction) {
 DecodedInstruction decode_srl(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SRL;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -344,6 +371,7 @@ DecodedInstruction decode_srl(uint32_t instruction) {
 DecodedInstruction decode_sra(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SRA;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -355,6 +383,7 @@ DecodedInstruction decode_sra(uint32_t instruction) {
 DecodedInstruction decode_or(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::OR;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -366,6 +395,7 @@ DecodedInstruction decode_or(uint32_t instruction) {
 DecodedInstruction decode_and(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::AND;
+    result.format = InstructionFormat::R;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
@@ -377,6 +407,7 @@ DecodedInstruction decode_and(uint32_t instruction) {
 DecodedInstruction decode_addi(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::ADDI;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -387,6 +418,7 @@ DecodedInstruction decode_addi(uint32_t instruction) {
 DecodedInstruction decode_slti(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SLTI;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -397,6 +429,7 @@ DecodedInstruction decode_slti(uint32_t instruction) {
 DecodedInstruction decode_sltiu(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SLTIU;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -407,6 +440,7 @@ DecodedInstruction decode_sltiu(uint32_t instruction) {
 DecodedInstruction decode_xori(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::XORI;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -417,6 +451,7 @@ DecodedInstruction decode_xori(uint32_t instruction) {
 DecodedInstruction decode_ori(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::ORI;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -427,6 +462,7 @@ DecodedInstruction decode_ori(uint32_t instruction) {
 DecodedInstruction decode_andi(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::ANDI;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -437,6 +473,7 @@ DecodedInstruction decode_andi(uint32_t instruction) {
 DecodedInstruction decode_slli(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SLLI;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -447,6 +484,7 @@ DecodedInstruction decode_slli(uint32_t instruction) {
 DecodedInstruction decode_srli(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SRLI;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -457,6 +495,7 @@ DecodedInstruction decode_srli(uint32_t instruction) {
 DecodedInstruction decode_srai(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::SRAI;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -467,6 +506,7 @@ DecodedInstruction decode_srai(uint32_t instruction) {
 DecodedInstruction decode_jalr(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::JALR;
+    result.format = InstructionFormat::I;
     result.rd = get_rd(instruction);
                 result.rs1 = get_rs1(instruction);
                 result.imm = get_imm_i(instruction);
@@ -477,6 +517,7 @@ DecodedInstruction decode_jalr(uint32_t instruction) {
 DecodedInstruction decode_beq(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::BEQ;
+    result.format = InstructionFormat::B;
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
                 result.imm = get_imm_b(instruction);
@@ -487,6 +528,7 @@ DecodedInstruction decode_beq(uint32_t instruction) {
 DecodedInstruction decode_bne(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::BNE;
+    result.format = InstructionFormat::B;
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
                 result.imm = get_imm_b(instruction);
@@ -497,6 +539,7 @@ DecodedInstruction decode_bne(uint32_t instruction) {
 DecodedInstruction decode_blt(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::BLT;
+    result.format = InstructionFormat::B;
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
                 result.imm = get_imm_b(instruction);
@@ -507,6 +550,7 @@ DecodedInstruction decode_blt(uint32_t instruction) {
 DecodedInstruction decode_bge(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::BGE;
+    result.format = InstructionFormat::B;
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
                 result.imm = get_imm_b(instruction);
@@ -517,6 +561,7 @@ DecodedInstruction decode_bge(uint32_t instruction) {
 DecodedInstruction decode_bltu(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::BLTU;
+    result.format = InstructionFormat::B;
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
                 result.imm = get_imm_b(instruction);
@@ -527,6 +572,7 @@ DecodedInstruction decode_bltu(uint32_t instruction) {
 DecodedInstruction decode_bgeu(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::BGEU;
+    result.format = InstructionFormat::B;
     result.rs1 = get_rs1(instruction);
                 result.rs2 = get_rs2(instruction);
                 result.imm = get_imm_b(instruction);
@@ -537,6 +583,7 @@ DecodedInstruction decode_bgeu(uint32_t instruction) {
 DecodedInstruction decode_lui(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::LUI;
+    result.format = InstructionFormat::U;
     result.rd = get_rd(instruction);
                 result.imm = get_imm_u(instruction);
 
@@ -546,6 +593,7 @@ DecodedInstruction decode_lui(uint32_t instruction) {
 DecodedInstruction decode_auipc(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::AUIPC;
+    result.format = InstructionFormat::U;
     result.rd = get_rd(instruction);
                 result.imm = get_imm_u(instruction);
 
@@ -555,6 +603,7 @@ DecodedInstruction decode_auipc(uint32_t instruction) {
 DecodedInstruction decode_jal(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::JAL;
+    result.format = InstructionFormat::J;
     result.rd = get_rd(instruction);
                 result.imm = get_imm_j(instruction);
 
@@ -564,6 +613,7 @@ DecodedInstruction decode_jal(uint32_t instruction) {
 DecodedInstruction decode_ecall(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::ECALL;
+    result.format = InstructionFormat::J;
     result.rd = get_rd(instruction);
                 result.imm = get_imm_j(instruction);
 
