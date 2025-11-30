@@ -1,20 +1,21 @@
 #include "hart.hpp"
-// TODO(ArsenySamoylov) Consider removing hart dependency on machine
-#include "machine/machine.hpp"
-#include "decode_execute_module/decoder/rv32i_decoder_gen.hpp"
-#include "decode_execute_module/executer/rv32i_executer_gen.hpp"
+#include <decode_execute_module/decoder/rv32i_decoder_gen.hpp>
+#include <decode_execute_module/executer/rv32i_executer_gen.hpp>
+
 #include <iostream>
 #include <stdexcept>
 
 using ExecFn = riscv_sim::Block::ExecFn;
 
-Hart::Hart(Memory& memory, uint32_t cache_len) : memory_(memory), pc_(0), next_pc_(0), halt_(false), block_cache_(4096), cache_len_(cache_len) {
+using ExecFn = riscv_sim::Block::ExecFn;
+
+Hart::Hart(MMU &mmu, uint32_t cache_len) : mmu_(mmu), pc_(0), next_pc_(0), halt_(false), block_cache_(4096), cache_len_(cache_len) {
     regs_.fill(0);
 }
 
 reg_t Hart::get_reg(uint8_t reg_num) const {
     if (reg_num == 0) 
-        return 0U;
+        return 0;
 
     if (reg_num >= 32) 
         throw std::out_of_range("Invalid register number in get_reg");
@@ -44,20 +45,27 @@ void Hart::set_next_pc(reg_t value) {
     next_pc_ = value;
 }
 
-reg_t Hart::memory_read(reg_t addr, int size) const {
-    return memory_.read(addr, size);
+pa_t Hart::va_to_pa(va_t va, AccessType type) {
+    auto tr = mmu_.translate(va, type, HartContext{.satp = csr_satp_, .prv = prv_});
+    if (tr.cause.value != ExceptionCause::None) {
+        std::cerr << "Load exception:" << tr.cause.to_string();
+        abort();
+    }
+
+    return tr.pa;
 }
 
-void Hart::memory_write(reg_t addr, reg_t value, int size) {
-    memory_.write(addr, value, size);
+reg_t Hart::load(reg_t va, int size) {
+    return mmu_.phys_read(va_to_pa(va, AccessType::Load), size);
+}
+
+void Hart::store(reg_t va, reg_t value, int size) {
+    return mmu_.phys_write(va_to_pa(va, AccessType::Store), value, size);
 }
 
 void Hart::handle_unknown_instruction(const DecodedInstruction instr) {
-    reg_t instruction = memory_read(pc_, 4);
-    // TODO: if started using exceptions (see set/get_reg)
-    //       than consider trowing exception here as well
     std::cerr << "Unknown instruction at PC: 0x" << std::hex << pc_ << std::endl;
-    std::cerr << "Raw: 0x" << std::hex << instruction << std::dec << std::endl;
+    std::cerr << instr.to_string() << std::endl;
     std::abort();
 }
 
@@ -170,7 +178,7 @@ uint64_t Hart::step() {
     uint64_t collected = 0;
 
     while (collected < cache_len_) {
-        uint32_t raw_instr = static_cast<uint32_t>(memory_read(pc_, 4));
+        uint32_t raw_instr = static_cast<uint32_t>(load(pc_, 4));
         DecodedInstruction dinstr = riscv_sim::decoder::decode(raw_instr);
 
         next_pc_ = pc_ + 4;

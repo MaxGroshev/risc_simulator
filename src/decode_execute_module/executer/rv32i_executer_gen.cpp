@@ -18,7 +18,7 @@ void execute_lb(const DecodedInstruction instr, Hart& hart) {
     rs1_val = hart.get_reg(instr.rs1);
     imm_val = static_cast<uint64_t>(instr.imm);
     _tmp0_val = rs1_val + imm_val;
-    _tmp1_val = hart.memory_read(_tmp0_val, 1);
+    _tmp1_val = hart.load(_tmp0_val, 1);
     rd_val = _tmp1_val;
     hart.set_reg(instr.rd, rd_val);
 }
@@ -34,7 +34,7 @@ void execute_lh(const DecodedInstruction instr, Hart& hart) {
     rs1_val = hart.get_reg(instr.rs1);
     imm_val = static_cast<uint64_t>(instr.imm);
     _tmp2_val = rs1_val + imm_val;
-    _tmp3_val = hart.memory_read(_tmp2_val, 2);
+    _tmp3_val = hart.load(_tmp2_val, 2);
     rd_val = _tmp3_val;
     hart.set_reg(instr.rd, rd_val);
 }
@@ -50,7 +50,7 @@ void execute_lw(const DecodedInstruction instr, Hart& hart) {
     rs1_val = hart.get_reg(instr.rs1);
     imm_val = static_cast<uint64_t>(instr.imm);
     _tmp4_val = rs1_val + imm_val;
-    _tmp5_val = hart.memory_read(_tmp4_val, 4);
+    _tmp5_val = hart.load(_tmp4_val, 4);
     rd_val = _tmp5_val;
     hart.set_reg(instr.rd, rd_val);
 }
@@ -66,7 +66,7 @@ void execute_ld(const DecodedInstruction instr, Hart& hart) {
     rs1_val = hart.get_reg(instr.rs1);
     imm_val = static_cast<uint64_t>(instr.imm);
     _tmp6_val = rs1_val + imm_val;
-    _tmp7_val = hart.memory_read(_tmp6_val, 8);
+    _tmp7_val = hart.load(_tmp6_val, 8);
     rd_val = _tmp7_val;
     hart.set_reg(instr.rd, rd_val);
 }
@@ -82,7 +82,7 @@ void execute_lbu(const DecodedInstruction instr, Hart& hart) {
     rs1_val = hart.get_reg(instr.rs1);
     imm_val = static_cast<uint64_t>(instr.imm);
     _tmp8_val = rs1_val + imm_val;
-    _tmp9_val = hart.memory_read(_tmp8_val, 1);
+    _tmp9_val = hart.load(_tmp8_val, 1);
     rd_val = _tmp9_val;
     hart.set_reg(instr.rd, rd_val);
 }
@@ -98,7 +98,7 @@ void execute_lhu(const DecodedInstruction instr, Hart& hart) {
     rs1_val = hart.get_reg(instr.rs1);
     imm_val = static_cast<uint64_t>(instr.imm);
     _tmp10_val = rs1_val + imm_val;
-    _tmp11_val = hart.memory_read(_tmp10_val, 2);
+    _tmp11_val = hart.load(_tmp10_val, 2);
     rd_val = _tmp11_val;
     hart.set_reg(instr.rd, rd_val);
 }
@@ -114,7 +114,7 @@ void execute_lwu(const DecodedInstruction instr, Hart& hart) {
     rs1_val = hart.get_reg(instr.rs1);
     imm_val = static_cast<uint64_t>(instr.imm);
     _tmp12_val = rs1_val + imm_val;
-    _tmp13_val = hart.memory_read(_tmp12_val, 4);
+    _tmp13_val = hart.load(_tmp12_val, 4);
     rd_val = _tmp13_val;
     hart.set_reg(instr.rd, rd_val);
 }
@@ -130,7 +130,7 @@ void execute_sb(const DecodedInstruction instr, Hart& hart) {
     rs2_val = hart.get_reg(instr.rs2);
     imm_val = static_cast<uint64_t>(instr.imm);
     _tmp14_val = rs1_val + imm_val;
-    hart.memory_write(_tmp14_val, rs2_val, 1);
+    hart.store(_tmp14_val, rs2_val, 1);
 }
 
 
@@ -144,7 +144,7 @@ void execute_sh(const DecodedInstruction instr, Hart& hart) {
     rs2_val = hart.get_reg(instr.rs2);
     imm_val = static_cast<uint64_t>(instr.imm);
     _tmp15_val = rs1_val + imm_val;
-    hart.memory_write(_tmp15_val, rs2_val, 2);
+    hart.store(_tmp15_val, rs2_val, 2);
 }
 
 
@@ -158,7 +158,7 @@ void execute_sw(const DecodedInstruction instr, Hart& hart) {
     rs2_val = hart.get_reg(instr.rs2);
     imm_val = static_cast<uint64_t>(instr.imm);
     _tmp16_val = rs1_val + imm_val;
-    hart.memory_write(_tmp16_val, rs2_val, 4);
+    hart.store(_tmp16_val, rs2_val, 4);
 }
 
 
@@ -172,7 +172,7 @@ void execute_sd(const DecodedInstruction instr, Hart& hart) {
     rs2_val = hart.get_reg(instr.rs2);
     imm_val = static_cast<uint64_t>(instr.imm);
     _tmp17_val = rs1_val + imm_val;
-    hart.memory_write(_tmp17_val, rs2_val, 8);
+    hart.store(_tmp17_val, rs2_val, 8);
 }
 
 

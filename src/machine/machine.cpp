@@ -7,7 +7,7 @@
 #include <cstring>
 #include <chrono>
 
-Machine::Machine() : memory_(), hart_(memory_) {
+Machine::Machine() : memory_(), mmu_(memory_), hart_(mmu_) {
     memory_.zero_init(0x10000000 - 4096, 4096);  // stack page
 }
 

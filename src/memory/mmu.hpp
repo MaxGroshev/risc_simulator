@@ -1,0 +1,40 @@
+#pragma once
+
+#include <decode_execute_module/common.hpp>
+#include <hart/hart_common.hpp>
+#include "memory.hpp"
+
+enum class AccessType {
+    Fetch,
+    Load,
+    Store
+};
+
+struct HartContext {
+    uint32_t satp;
+    PrivilegeMode prv;
+};
+
+using va_t = reg_t;
+using pa_t = reg_t;
+
+struct TranslateResult {
+    pa_t pa;
+    ExceptionCauseWrapper cause;
+};
+
+
+class MMU {
+public:
+    explicit MMU(Memory &m) : mem_(m) {}
+
+    TranslateResult translate(va_t va, AccessType type, const HartContext &ctx) { 
+        return TranslateResult{.pa=va, .cause=ExceptionCauseWrapper{ExceptionCause::None}};
+    };
+    
+    reg_t phys_read(pa_t pa, int size) const {return mem_.read(pa, size); };
+    void phys_write(pa_t pa, reg_t value, int size) { return mem_.write(pa, value, size); };
+    
+private:
+    Memory &mem_;
+};
