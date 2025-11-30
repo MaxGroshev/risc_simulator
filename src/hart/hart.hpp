@@ -35,7 +35,7 @@ class Hart {
 
     // Traps
     void do_ecall();
-    void handle_unknown_instruction(const DecodedInstruction instr);
+    void handle_exception(const Exception e);
     
 private:
     uint64_t execute_cached_block(Hart& hart, riscv_sim::Block* blk);

@@ -47,9 +47,8 @@ void Hart::set_next_pc(reg_t value) {
 
 pa_t Hart::va_to_pa(va_t va, AccessType type) {
     auto tr = mmu_.translate(va, type, HartContext{.satp = csr_satp_, .prv = prv_});
-    if (tr.cause.value != ExceptionCause::None) {
-        std::cerr << "Load exception:" << tr.cause.to_string();
-        abort();
+    if (!tr.e.is_none()) {
+        handle_exception(tr.e);
     }
 
     return tr.pa;
@@ -63,9 +62,8 @@ void Hart::store(reg_t va, reg_t value, int size) {
     return mmu_.phys_write(va_to_pa(va, AccessType::Store), value, size);
 }
 
-void Hart::handle_unknown_instruction(const DecodedInstruction instr) {
-    std::cerr << "Unknown instruction at PC: 0x" << std::hex << pc_ << std::endl;
-    std::cerr << instr.to_string() << std::endl;
+void Hart::handle_exception(const Exception e) {
+    std::cerr << "Exception: " << e.to_string() << std::endl;
     std::abort();
 }
 

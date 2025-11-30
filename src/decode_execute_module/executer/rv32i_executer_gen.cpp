@@ -852,7 +852,7 @@ ExecFn execute(const DecodedInstruction instr, Hart& hart) {
                 case InstructionOpcode::JAL: execute_jal(instr, hart); return &execute_jal;
                 case InstructionOpcode::ECALL: execute_ecall(instr, hart); return &execute_ecall;
         default:
-            hart.handle_unknown_instruction(instr);
+            hart.handle_exception(ExceptionCause::UnknowInstruction);
             return nullptr;
     }
 }
