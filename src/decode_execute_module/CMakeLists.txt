@@ -25,5 +25,6 @@ add_custom_command(
 # Compile after generating in Ruby
 add_custom_target(run_ruby_generation DEPENDS ${GENERATED_DECODER_CPP} ${GENERATED_DECODER_HPP} ${GENERATED_EXECUTER_CPP} ${GENERATED_EXECUTER_HPP})
 
+add_subdirectory(jit)
 add_subdirectory(decoder)
 add_subdirectory(executer)

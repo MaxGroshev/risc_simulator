@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
+find_package(asmjit REQUIRED)
 add_executable(${PROJECT_NAME} main.cpp)
 
 add_subdirectory(decode_execute_module)
@@ -8,7 +9,8 @@ add_subdirectory(memory)
 add_subdirectory(machine)
 
 target_link_libraries(${PROJECT_NAME} 
-   machine
+    machine
+    asmjit::asmjit
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

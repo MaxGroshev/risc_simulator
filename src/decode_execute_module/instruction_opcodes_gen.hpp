@@ -52,3 +52,13 @@ enum class InstructionOpcode {
  ECALL,
     UNKNOWN
 };
+
+enum class InstructionFormat {
+    I,
+ S,
+ R,
+ B,
+ U,
+ J,
+    UNKNOWN
+};

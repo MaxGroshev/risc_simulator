@@ -1,0 +1,15 @@
+project(jit)
+
+find_package(asmjit REQUIRED)
+
+set(SOURCE
+    compiler.cpp
+)
+
+add_executable(${PROJECT_NAME} ${SOURCE})
+
+target_link_libraries(${PROJECT_NAME} asmjit::asmjit)
+
+target_include_directories(${PROJECT_NAME} PUBLIC 
+    ${CMAKE_SOURCE_DIR}/utils/
+)

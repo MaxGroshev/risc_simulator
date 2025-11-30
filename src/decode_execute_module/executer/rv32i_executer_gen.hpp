@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <memory>
 #include "decode_execute_module/common.hpp"
 #include "../instruction_opcodes_gen.hpp"
 

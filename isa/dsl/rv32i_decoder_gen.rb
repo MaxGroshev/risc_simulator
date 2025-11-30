@@ -126,11 +126,12 @@ class DecoderGenerator
   def generate_instruction_decoders
     decoders = []
 
-    @data['instructions'].each do |name, instr|
+    @data['instructions'].each do |name, instr, frmt|
       decoder = <<~CPP
         DecodedInstruction decode_#{name}(uint32_t instruction) {
             DecodedInstruction result;
             result.opcode = InstructionOpcode::#{name.upcase};
+            result.format = InstructionFormat::#{instr['format'].upcase};
             #{generate_field_extraction(name, instr)}
 
             return result;

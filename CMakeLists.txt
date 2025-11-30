@@ -7,7 +7,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 option(DEBUG_EXECUTION "Enable debug execution logging" OFF)
 
-
+set (CMAKE_CXX_STANDARD 17)
 # enable_testing()
 
 # include(FetchContent)
