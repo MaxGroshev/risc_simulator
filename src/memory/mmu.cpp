@@ -36,7 +36,7 @@
 // PPN[0] = lower 10 bits of physical page number
 //
 
-inline TranslateResult translate(uint32_t va,
+TranslateResult MMU::translate(va_t va,
                                  AccessType type,
                                  const HartContext &ctx)
 {
