@@ -6,9 +6,15 @@
 
 #include <string>
 
+// Memory layout constants
+constexpr size_t StackSize = 0x1000;
+constexpr va_t StackTop = 0x1000000ULL - StackSize;
+
 class Machine {
 public:
-    Machine();
+    Machine() : memory_(), mmu_(memory_), hart_(mmu_) {
+        memory_.zero_init(StackTop, StackSize);
+    }
 
     Hart& get_hart() { return hart_; }
     const Memory& get_memory() const { return memory_; }
@@ -18,10 +24,6 @@ public:
     void run(uint64_t max_cycles = 0);
 
     void dump_regs() const;
-
-    // @ArsenySamoylov: Maybe memory_read/write should work with 64 bytes? (or something like this, that is close to the hardware)
-    uint64_t memory_read (uint64_t addr, int size) const;
-    void     memory_write(uint64_t addr, uint64_t value, int size);
 
 private:
     Memory memory_;
