@@ -1,4 +1,5 @@
 #include "machine.hpp"
+
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -7,25 +8,7 @@
 #include <cstring>
 #include <chrono>
 
-Machine::Machine() : memory_(), mmu_(memory_), hart_(mmu_) {
-    memory_.zero_init(0x10000000 - 4096, 4096);  // stack page
-}
-
-uint64_t Machine::memory_read(uint64_t addr, int size) const {
-    return memory_.read(addr, size);
-}
-
-void Machine::memory_write(uint64_t addr, uint64_t value, int size) {
-    memory_.write(addr, value, size);
-}
-
-void Machine::load_elf(const std::string& filename) {
-    std::ifstream file(filename, std::ios::binary);
-    if (!file) 
-        throw std::runtime_error("Failed to open ELF file");
-
-    Elf64_Ehdr ehdr;
-    file.read(reinterpret_cast<char*>(&ehdr), sizeof(ehdr));
+static void ehdr_sanity_check(const Elf64_Ehdr &ehdr) {
     if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F')
     {
         std::cout << ehdr.e_ident << std::endl;
@@ -39,7 +22,17 @@ void Machine::load_elf(const std::string& filename) {
     if (ehdr.e_ident[EI_CLASS] != ELFCLASS64) {
         throw std::runtime_error("Only 64-bit ELF supported in RV64 mode");
     }
+}
 
+void Machine::load_elf(const std::string& filename) {
+    std::ifstream file(filename, std::ios::binary);
+    if (!file) 
+        throw std::runtime_error("Failed to open ELF file");
+
+    Elf64_Ehdr ehdr;
+    file.read(reinterpret_cast<char*>(&ehdr), sizeof(ehdr));
+    ehdr_sanity_check(ehdr);
+    
     hart_.set_pc(ehdr.e_entry);
 
     file.seekg(ehdr.e_phoff);
@@ -60,7 +53,7 @@ void Machine::load_elf(const std::string& filename) {
     }
 
     /// TODO: it is rather ugly
-    hart_.set_reg(2, 0x1000000ULL - 0x1000ULL);
+    hart_.set_reg(2, StackTop);
     hart_.set_halt(false);
 }
 
