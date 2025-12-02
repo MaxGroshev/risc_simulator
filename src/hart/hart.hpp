@@ -47,7 +47,7 @@ private:
     bool halt_;
 
     // TODO: check that csr_satp is uint32 for rv64
-    uint32_t csr_satp_;
+    reg_t csr_satp_;
     PrivilegeMode prv_;
     
     uint32_t cache_len_;

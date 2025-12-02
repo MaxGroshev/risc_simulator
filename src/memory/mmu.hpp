@@ -10,8 +10,14 @@ enum class AccessType {
     Store
 };
 
+
+
+const uint64_t PAGESIZE = 4096;
+const uint64_t PTESIZE  = 8; // 64-bit PTE
+const int LEVELS   = 3;      // Sv39
+
 struct HartContext {
-    uint32_t satp;
+    reg_t satp;
     PrivilegeMode prv;
 };
 
