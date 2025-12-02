@@ -37,6 +37,8 @@ class Hart {
     void do_ecall();
     void handle_exception(const Exception e);
     
+    HartContext get_context_for_MMU() const;
+    
 private:
     uint64_t execute_cached_block(Hart& hart, riscv_sim::Block* blk);
 
@@ -55,4 +57,5 @@ private:
 
 private:
     pa_t va_to_pa (va_t va, AccessType type);
+    pa_t satp_to_root_table(const reg_t satp) const;
 };
