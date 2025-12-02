@@ -17,6 +17,8 @@ public:
 
     size_t size() const;
 
+    // Simple bump allocator
+    size_t alloc_phys_page();
 private:
     uint8_t* backing_ = nullptr;
     size_t capacity_ = 0;

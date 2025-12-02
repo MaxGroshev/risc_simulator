@@ -82,3 +82,14 @@ void Memory::zero_init(uint64_t addr, size_t size) {
 size_t Memory::size() const {
     return capacity_;
 }
+
+// Allocate a page-table page and zero it
+size_t Memory::alloc_phys_page() {
+    static size_t bump = 0x100000000; // 4 GiB
+    auto res = bump;
+    // MUST BE IN SYNC WITH mmu.hpp !!!
+    const size_t PAGESIZE = 4096;
+    bump += PAGESIZE;
+    zero_init(res, PAGESIZE);
+    return res;
+}

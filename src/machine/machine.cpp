@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <chrono>
+#include <cassert>
 
 static void ehdr_sanity_check(const Elf64_Ehdr &ehdr) {
     if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F')
@@ -24,6 +25,10 @@ static void ehdr_sanity_check(const Elf64_Ehdr &ehdr) {
     }
 }
 
+pa_t round_up_to_page(pa_t x) {
+    return (x + (PAGESIZE - 1)) & ~(PAGESIZE - 1);
+}
+
 void Machine::load_elf(const std::string& filename) {
     std::ifstream file(filename, std::ios::binary);
     if (!file) 
@@ -39,21 +44,50 @@ void Machine::load_elf(const std::string& filename) {
     for (int i = 0; i < ehdr.e_phnum; ++i) {
         Elf64_Phdr phdr;
         file.read(reinterpret_cast<char*>(&phdr), sizeof(phdr));
-        if (phdr.p_type == PT_LOAD) {
-            file.seekg(phdr.p_offset);
-            std::vector<uint8_t> data(phdr.p_filesz);
-            file.read(reinterpret_cast<char*>(data.data()), phdr.p_filesz);
-            memory_.load_data(phdr.p_vaddr, data.data(), phdr.p_filesz);
+        if (phdr.p_type != PT_LOAD)
+            continue;
 
-            // for .bss
-            if (phdr.p_memsz > phdr.p_filesz) {
-                memory_.zero_init(phdr.p_vaddr + phdr.p_filesz, phdr.p_memsz - phdr.p_filesz);
+        // permissions
+        flag_t pte_flags = 0;
+        if (phdr.p_flags & PF_R) pte_flags |= PTE_R;
+        if (phdr.p_flags & PF_W) pte_flags |= PTE_W;
+        if (phdr.p_flags & PF_X) pte_flags |= PTE_X;
+        // TODO: PTE_U user/kernel
+
+        // compute mapping ranges
+        const va_t seg_vaddr  = phdr.p_vaddr;
+        const auto seg_memsz  = phdr.p_memsz;
+
+        const va_t start_page = ((seg_vaddr & ~(PAGESIZE - 1)));
+        assert(start_page != seg_vaddr);
+
+        const va_t end_page = round_up_to_page(seg_vaddr + seg_memsz);
+        const size_t page_count = (end_page - start_page) / PAGESIZE;
+
+        file.seekg(phdr.p_offset);
+        std::vector<uint8_t> seg(round_up_to_page(phdr.p_filesz), 0); // Round up to page for safe copy to physical page
+        file.read(reinterpret_cast<char*>(seg.data()), phdr.p_filesz);
+
+        for (size_t pg = 0; pg < page_count; ++pg) {
+            va_t vpage = start_page + pg * PAGESIZE;
+            pa_t phys = vpage; // 1:1 mapping for now
+
+            auto seg_offset = vpage - seg_vaddr;
+
+            if (seg_offset < seg_memsz) {
+                memory_.load_data(phys, (seg.data() + seg_offset), (seg_memsz - seg_offset) % PAGESIZE);
+            } else {
+                memory_.zero_init(phys, PAGESIZE);
             }
+
+            mmu_.map_page(hart_.get_context_for_MMU(), vpage, phys, pte_flags);
         }
     }
 
     /// TODO: it is rather ugly
     hart_.set_reg(2, StackTop);
+    mmu_.map_page(hart_.get_context_for_MMU(), StackTop, StackTop, PTE_R | PTE_W);
+    
     hart_.set_halt(false);
 }
 
