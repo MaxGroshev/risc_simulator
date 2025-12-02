@@ -24,7 +24,8 @@ using ExecFn = riscv_sim::Block::ExecFn;
 
 Hart::Hart(MMU &mmu, sim_config_t& sim_conf) : 
     mmu_(mmu),
-    next_pc_  (0), halt_(false), 
+    next_pc_  (0), halt_(false),
+    csr_satp_(0), 
     pc_       (sim_conf.initial_pc), 
     th_code_  (sim_conf, this), 
     max_cached_bb_size_(sim_conf.cached_bb_size) {
@@ -85,8 +86,16 @@ void Hart::set_next_pc(reg_t value) {
     next_pc_ = value;
 }
 
+HartContext Hart::get_context_for_MMU() const {
+    return HartContext{
+            .root_table = satp_to_root_table(csr_satp_), 
+            .mode = (csr_satp_ >> 60) & 0xF, // satp.MODE is bits 63:60
+            .prv = prv_,
+        };
+}
+
 pa_t Hart::va_to_pa(va_t va, AccessType type) {
-    auto tr = mmu_.translate(va, type, HartContext{.satp = csr_satp_, .prv = prv_});
+    auto tr = mmu_.translate(va, type, get_context_for_MMU());
 
     if (!tr.e.is_none()) {
         handle_exception(tr.e);
@@ -110,9 +119,15 @@ pa_t Hart::va_to_pa(va_t va, AccessType type) {
     return tr.pa;
 }
 
+pa_t Hart::satp_to_root_table(const reg_t satp) const {
+    // satp.PPN lower 44 bits - physical page-number of root table
+    constexpr pa_t SATP_PPN_MASK = ((1ull << 44) - 1);
+    return (satp & SATP_PPN_MASK) * PAGESIZE; 
+}
+
 reg_t Hart::load(reg_t va, int size) {
     pa_t pa = va_to_pa(va, AccessType::Load);
-    reg_t val = mmu_.phys_read(pa, size);
+    reg_t val = mmu_.mem_load(pa, size);
 
 #ifdef ENABLE_MODULES
     if (any_mem_access_callbacks_) {
@@ -136,7 +151,7 @@ reg_t Hart::load(reg_t va, int size) {
 
 void Hart::store(reg_t va, reg_t value, int size) {
     pa_t pa = va_to_pa(va, AccessType::Store);
-    mmu_.phys_write(pa, value, size);
+    mmu_.mem_store(pa, value, size);
 
 #ifdef ENABLE_MODULES
     if (any_mem_access_callbacks_) {
