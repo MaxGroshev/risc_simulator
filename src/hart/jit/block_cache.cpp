@@ -28,10 +28,10 @@ Block* BlockCache::lookup(uint32_t pc) {
     return nullptr;
 }
 
-void BlockCache::install(const Block& blk) {
+void BlockCache::install(Block&& blk) {
     if (!blk.valid) return;
     size_t idx = index_for(blk.start_pc);
-    slots_[idx] = blk;
+    slots_[idx] = std::move(blk);
     slots_[idx].valid = true;
 }
 

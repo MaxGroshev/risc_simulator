@@ -8,11 +8,11 @@
 
 using ExecFn = riscv_sim::Block::ExecFn;
 
-Hart::Hart(Memory& memory, uint32_t cache_len) : memory_(memory), pc_(0), next_pc_(0), halt_(false), block_cache_(4096), cache_len_(cache_len) {
+Hart::Hart(Memory& memory, uint32_t cache_len) : memory_(memory), pc_(0), next_pc_(0), halt_(false), th_code_(4096, this), cache_len_(cache_len) {
     regs_.fill(0);
 }
 
-reg_t Hart::get_reg(uint8_t reg_num) const {
+Hart::reg_t Hart::get_reg(uint8_t reg_num) const {
     if (reg_num == 0) 
         return 0U;
 
@@ -32,8 +32,12 @@ void Hart::set_reg(uint8_t reg_num, reg_t value) {
     regs_[reg_num] = value;
 }
 
-reg_t Hart::get_pc() const {
+Hart::reg_t Hart::get_pc() const {
     return pc_;
+}
+
+Hart::reg_t* Hart::get_pc_ptr() {
+    return &pc_;
 }
 
 void Hart::set_pc(reg_t value) {
@@ -44,7 +48,7 @@ void Hart::set_next_pc(reg_t value) {
     next_pc_ = value;
 }
 
-reg_t Hart::memory_read(reg_t addr, int size) const {
+Hart::reg_t Hart::memory_read(reg_t addr, int size) const {
     return memory_.read(addr, size);
 }
 
@@ -52,13 +56,19 @@ void Hart::memory_write(reg_t addr, reg_t value, int size) {
     memory_.write(addr, value, size);
 }
 
-void Hart::handle_unknown_instruction(const DecodedInstruction instr) {
+void Hart::handle_unknown_instruction(const DecodedInstruction &instr) {
     reg_t instruction = memory_read(pc_, 4);
     // TODO: if started using exceptions (see set/get_reg)
     //       than consider trowing exception here as well
     std::cerr << "Unknown instruction at PC: 0x" << std::hex << pc_ << std::endl;
     std::cerr << "Raw: 0x" << std::hex << instruction << std::dec << std::endl;
     std::abort();
+}
+
+
+// NOTE(mgroshev): Need this to write in reg file from asm(jit)
+Hart::reg_t* Hart::get_reg_file_begin() {
+    return regs_.data();
 }
 
 void Hart::do_ecall() {
@@ -100,6 +110,12 @@ static inline void debug_cout(const std::string& msg) {
 #endif
 
 uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
+    if(blk->get_is_jitted()) {
+        std::cout << "hmm there is jitted" << std::endl;
+        blk->jitted_bb.dump();
+        // abort();
+        blk->jitted_bb.execute();
+    }
     uint64_t executed = 0;
     uint64_t idx = 0;
     const size_t blk_size = blk->instrs.size();
@@ -157,7 +173,7 @@ uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
 }
 
 uint64_t Hart::step() {
-    riscv_sim::Block* blk = block_cache_.lookup(pc_);
+    riscv_sim::Block* blk = th_code_.lookup(pc_);
 
     if (blk && blk->valid && blk->start_pc == pc_) {
         return execute_cached_block(*this, blk);
@@ -176,15 +192,13 @@ uint64_t Hart::step() {
         next_pc_ = pc_ + 4;
 
         ExecFn fn = riscv_sim::executer::execute(dinstr, *this);
-        new_block.instrs.push_back(dinstr);
-        new_block.exec_fns.push_back(fn);
 
         collected++;
 
         if (is_halt()) {
             pc_ = next_pc_;
             new_block.valid = (new_block.instrs.size() > 0);
-            block_cache_.install(new_block);
+            th_code_.install_bb(std::move(new_block));
             break;
         }
 
@@ -196,17 +210,18 @@ uint64_t Hart::step() {
             debug_cout("Control flow change detected at PC: 0x" + std::to_string(pc_) + ", next PC: 0x" + std::to_string(next_pc_));
             pc_ = executed_next;
             new_block.valid = (new_block.instrs.size() > 0);
-            block_cache_.install(new_block);
+            th_code_.install_bb(std::move(new_block));
             break;
         }
-
+        new_block.instrs.push_back(dinstr);
+        new_block.exec_fns.push_back(fn);
         pc_ = next_pc_;
         debug_cout("Falling through to next instruction at PC: 0x" + std::to_string(pc_));
 
         if (collected >= cache_len_) {
             debug_cout("Max block length reached at PC: 0x" + std::to_string(pc_));
             new_block.valid = (new_block.instrs.size() > 0);
-            block_cache_.install(new_block);
+            th_code_.install_bb(std::move(new_block));
             break;
         }
     }

@@ -6,19 +6,38 @@
 #include <cstddef>
 #include <memory>
 
-#include "decode_execute_module/common.hpp"
+#include "jit_basic_block.hpp"
 
 class Hart;
 
 namespace riscv_sim {
 
-struct Block {
+template<typename THart>
+class ThreadedCode;
+
+class Block {
+
+template<typename THart>
+friend class ThreadedCode;
+
+public:
     uint32_t start_pc = 0;
-    bool valid = false;
+    bool     valid    = false;
     std::vector<DecodedInstruction> instrs;
 
-    using ExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
+    using ExecFn = void (*)(const DecodedInstruction &instr, Hart& hart);
     std::vector<ExecFn> exec_fns;
+
+    bool get_is_jitted() const { return is_jitted;}
+    jit::JITBasic_block jitted_bb;
+private:
+    void set_jitted_bb(jit::JITBasic_block&& jitted_bb_)  { 
+        jitted_bb = std::move(jitted_bb_);
+        is_jitted = true;
+    }
+
+    uint64_t search_rate = 0; // show how often we want to access it
+    bool is_jitted = false; 
 };
 
 class BlockCache {
@@ -27,7 +46,7 @@ public:
 
     Block* lookup(uint32_t pc);
 
-    void install(const Block& blk);
+    void install(Block&& blk);
 
     void invalidate_all();
 

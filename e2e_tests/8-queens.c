@@ -31,8 +31,8 @@ typedef int bool;
 
 #define TRUE    1
 #define FALSE   0
-#define MAXCANDIDATES   100		/* max possible next extensions */
-#define NMAX            100		/* maximum solution size */
+#define MAXCANDIDATES   1000		/* max possible next extensions */
+#define NMAX            1000		/* maximum solution size */
 
 typedef char* data;			/* type to pass data to backtrack */
 

@@ -6,12 +6,14 @@
 
 #include "memory/memory.hpp"
 #include "decode_execute_module/common.hpp"
-#include "block_cache.hpp"
+#include "threaded_code.hpp"
 
-using reg_t = uint64_t;
 
 class Hart {
-  public:
+  
+public:
+    using reg_t = uint64_t;
+ 
     Hart(Memory&, uint32_t cache_len = 1024);
     Hart(const Hart&) = delete;
     Hart(Hart&&) = delete;
@@ -24,11 +26,12 @@ class Hart {
     void set_reg(uint8_t reg_num, reg_t value);
 
     reg_t get_pc() const;
+    reg_t* get_pc_ptr();
     void set_pc(reg_t value);
     void set_next_pc(reg_t value);
 
     
-    void handle_unknown_instruction(const DecodedInstruction instr);
+    void handle_unknown_instruction(const DecodedInstruction &instr);
     
     void do_ecall();
     
@@ -36,7 +39,9 @@ class Hart {
     bool is_halt() const;
     
     uint64_t step();
+    DecodedInstruction fetch_instr();
 
+    reg_t* get_reg_file_begin();
     reg_t memory_read(reg_t addr, int size) const;
     void memory_write(reg_t addr, reg_t value, int size);
 
@@ -50,7 +55,7 @@ class Hart {
     bool halt_;
     
     uint32_t cache_len_;
-    riscv_sim::BlockCache block_cache_;
+    riscv_sim::ThreadedCode<Hart> th_code_;
 
 };
 
