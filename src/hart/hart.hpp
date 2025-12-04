@@ -45,12 +45,13 @@ public:
     reg_t memory_read(reg_t addr, int size) const;
     void memory_write(reg_t addr, reg_t value, int size);
 
+    reg_t pc_;
   private:
+    void dump_regs();
     uint64_t execute_cached_block(Hart& hart, riscv_sim::Block* blk);
 
     Memory& memory_;
     std::array<reg_t, 32> regs_;
-    reg_t pc_;
     reg_t next_pc_;
     bool halt_;
     

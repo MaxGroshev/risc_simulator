@@ -37,7 +37,7 @@ Hart::reg_t Hart::get_pc() const {
 }
 
 Hart::reg_t* Hart::get_pc_ptr() {
-    return &pc_;
+    return &(this->pc_);
 }
 
 void Hart::set_pc(reg_t value) {
@@ -101,6 +101,16 @@ bool Hart::is_halt() const {
     return halt_;
 }
 
+void Hart::dump_regs() {
+    std::clog << "Dump of registers: " << std::endl;
+    
+    int i = 0;
+    for (const auto& reg : regs_) {
+        std::clog << "[" << i << "] = " << reg << std::endl;
+        i++;  
+    }
+}
+
 #ifdef DEBUG_EXECUTION
 static inline void debug_cout(const std::string& msg) {
     std::cout << msg << std::endl;
@@ -110,11 +120,14 @@ static inline void debug_cout(const std::string& msg) {
 #endif
 
 uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
-    if(blk->get_is_jitted()) {
-        std::cout << "hmm there is jitted" << std::endl;
-        blk->jitted_bb.dump();
-        // abort();
+    if(blk->get_is_jitted()) {        
+        // blk->jitted_bb.dump();
+        reg_t start_pc = get_pc();
         blk->jitted_bb.execute();
+        reg_t end_pc = get_pc();
+        // dump_regs();
+        // abort();
+        return (end_pc - start_pc) / 4; //NOTE(mgroshev): awful hardcode
     }
     uint64_t executed = 0;
     uint64_t idx = 0;
@@ -168,7 +181,6 @@ uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
 
         break;
     }
-
     return executed;
 }
 

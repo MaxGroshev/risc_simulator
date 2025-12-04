@@ -23,7 +23,6 @@ public:
             if(bb->search_rate == jit_bound && !one_jit) {
                 compile_bb(bb);
                 one_jit = true;
-                std::cout << "I am here" << std::endl;
             }
         }
         return bb;

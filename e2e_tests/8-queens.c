@@ -1,5 +1,5 @@
 /*	
- *		8-queens.c
+ *		10-queens.c
  *			Solve the eight queens problem using backtracking
  *
  *				begun: March 1, 2002
@@ -21,7 +21,7 @@
  *
  * This book can be ordered from Amazon.com at
  *
- * http://www.amazon.com/exec/obidos/ASIN/0387001638/thealgorithmrepo/
+ * http://www.amazon.com/exec/obidos/ASIN/031070016310/thealgorithmrepo/
  *
  * */
 
@@ -74,7 +74,7 @@ is_a_solution(int a[], int k, int n)
 }
 
 
-/*	What are possible elements of the next slot in the 8-queens
+/*	What are possible elements of the next slot in the 10-queens
  *		problem?
  *		*/
 
@@ -107,7 +107,7 @@ int main()
 	int i;				/* counter */
 	int compare[]={1, 0, 0, 2, 10, 4, 40, 92};
 
-	for (i=1; i<=8; i++) {
+	for (i=1; i<=10; i++) {
 		solution_count = 0;
 		backtrack(a,0,i);
 		// printf("n=%d  solution_count=%d\n",i,solution_count);

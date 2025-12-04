@@ -17,14 +17,17 @@ public:
         code->init(rt->environment(), rt->cpu_features());
         code->set_logger(logger.get());
         this->asma64 = std::make_unique<a64::Assembler>(code.get());
-        std::cout << "creation of bb" << std::endl;
+
+        asma64->mov(a64::x29, a64::x30);
         // dump();
     };
 
     void add_code() {
+        asma64->ret(a64::x29);
+
         rt->add(&executer, code.get());
         // execute();
-        dump();
+        // dump();
     }
 
     void dump() {
@@ -32,7 +35,6 @@ public:
     }
 
     void execute() {
-
         executer();
     }
 

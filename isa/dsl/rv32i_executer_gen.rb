@@ -111,7 +111,6 @@ class ExecuterGenerator
       executer = <<~CPP
         void execute_#{instr_info.name}(const DecodedInstruction &instr, Hart& hart) {
             // Generated from IR
-            std::cout << "after jit" << std::endl;
             #{generate_cpp_from_ir(instr_info.code)}
         }
       CPP

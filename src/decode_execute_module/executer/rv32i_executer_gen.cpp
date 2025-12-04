@@ -12,7 +12,6 @@ static std::unique_ptr<jit::JITImpl> jit_compiler = std::make_unique<jit::JITImp
 
 void execute_lb(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -29,7 +28,6 @@ void execute_lb(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_lh(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -46,7 +44,6 @@ void execute_lh(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_lw(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -63,7 +60,6 @@ void execute_lw(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_ld(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -80,7 +76,6 @@ void execute_ld(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_lbu(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -97,7 +92,6 @@ void execute_lbu(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_lhu(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -114,7 +108,6 @@ void execute_lhu(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_lwu(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -131,7 +124,6 @@ void execute_lwu(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sb(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rs1_val;
     uint64_t rs2_val;
     uint64_t imm_val;
@@ -146,7 +138,6 @@ void execute_sb(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sh(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rs1_val;
     uint64_t rs2_val;
     uint64_t imm_val;
@@ -161,7 +152,6 @@ void execute_sh(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sw(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rs1_val;
     uint64_t rs2_val;
     uint64_t imm_val;
@@ -176,7 +166,6 @@ void execute_sw(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sd(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rs1_val;
     uint64_t rs2_val;
     uint64_t imm_val;
@@ -191,7 +180,6 @@ void execute_sd(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_addiw(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -207,7 +195,6 @@ void execute_addiw(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_slliw(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -226,7 +213,6 @@ void execute_slliw(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_srliw(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -245,7 +231,6 @@ void execute_srliw(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sraiw(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -264,7 +249,6 @@ void execute_sraiw(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_addw(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -280,7 +264,6 @@ void execute_addw(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_subw(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -296,7 +279,6 @@ void execute_subw(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sllw(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -315,7 +297,6 @@ void execute_sllw(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_srlw(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -334,7 +315,6 @@ void execute_srlw(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sraw(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -353,7 +333,6 @@ void execute_sraw(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_add(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -368,7 +347,6 @@ void execute_add(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sub(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -383,7 +361,6 @@ void execute_sub(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sll(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -398,7 +375,6 @@ void execute_sll(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_slt(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -413,7 +389,6 @@ void execute_slt(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sltu(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -428,7 +403,6 @@ void execute_sltu(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_xor(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -443,7 +417,6 @@ void execute_xor(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_srl(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -458,7 +431,6 @@ void execute_srl(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sra(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -473,7 +445,6 @@ void execute_sra(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_or(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -488,7 +459,6 @@ void execute_or(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_and(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t rs2_val;
@@ -503,7 +473,6 @@ void execute_and(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_addi(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -518,7 +487,6 @@ void execute_addi(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_slti(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -533,7 +501,6 @@ void execute_slti(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_sltiu(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -548,7 +515,6 @@ void execute_sltiu(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_xori(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -563,7 +529,6 @@ void execute_xori(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_ori(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -578,7 +543,6 @@ void execute_ori(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_andi(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -593,7 +557,6 @@ void execute_andi(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_slli(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -608,7 +571,6 @@ void execute_slli(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_srli(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -623,7 +585,6 @@ void execute_srli(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_srai(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t imm_val;
@@ -638,7 +599,6 @@ void execute_srai(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_jalr(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     uint64_t pc_val;
@@ -659,7 +619,6 @@ void execute_jalr(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_beq(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rs1_val;
     uint64_t rs2_val;
     uint64_t _tmp61_val;
@@ -680,7 +639,6 @@ void execute_beq(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_bne(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rs1_val;
     uint64_t rs2_val;
     uint64_t _tmp63_val;
@@ -701,7 +659,6 @@ void execute_bne(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_blt(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rs1_val;
     uint64_t rs2_val;
     uint64_t _tmp65_val;
@@ -722,7 +679,6 @@ void execute_blt(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_bge(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rs1_val;
     uint64_t rs2_val;
     uint64_t _tmp67_val;
@@ -746,7 +702,6 @@ void execute_bge(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_bltu(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rs1_val;
     uint64_t rs2_val;
     uint64_t _tmp71_val;
@@ -767,7 +722,6 @@ void execute_bltu(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_bgeu(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rs1_val;
     uint64_t rs2_val;
     uint64_t _tmp73_val;
@@ -791,7 +745,6 @@ void execute_bgeu(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_lui(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t imm_val;
     uint64_t _tmp78_val;
@@ -805,7 +758,6 @@ void execute_lui(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_auipc(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t pc_val;
     uint64_t imm_val;
@@ -823,7 +775,6 @@ void execute_auipc(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_jal(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t pc_val;
     uint64_t _tmp83_val;
@@ -842,7 +793,6 @@ void execute_jal(const DecodedInstruction &instr, Hart& hart) {
 
 void execute_ecall(const DecodedInstruction &instr, Hart& hart) {
     // Generated from IR
-    std::cout << "after jit" << std::endl;
         uint64_t rd_val;
     uint64_t rs1_val;
     rs1_val = hart.get_reg(instr.rs1);

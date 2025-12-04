@@ -22,12 +22,9 @@ public:
     JITBasic_block compile_bb(std::vector<DecodedInstruction> instrs, Hart* hart,uint64_t* regs, uint64_t* pc) {//probably const 
         JITBasic_block bb{};
 
+        jit::JITFunctionFactory<Hart> factory{hart};
         for(auto&  instr : instrs) {
-            // if (instr.format == InstructionFormat::B || instr.format == InstructionFormat::J) {
-            //     throw std::runtime_error("B and J frmt instr are not supported in jit yet");
-            // } else {
-                jit::JITFunctionFactory::compile(bb.asma64.get(), hart, instr, regs, pc);
-            // }
+            factory.compile(bb.asma64.get(), hart, instr, regs, pc);
             std::cout << int(instr.format) << ":" << int(instr.opcode) << std::endl;
         }
         bb.add_code();
@@ -35,7 +32,6 @@ public:
     }
     
 private:
-
     // TODO(mgroshev): make typedef for label type  
     // label -> {NumOfUsages, CompiledBB \/ nullptr}(probably std::optional)
     // utils::lru_cache<uint64_t, std::pair<uint64_t, JITBasic_block>> bb_cache;
