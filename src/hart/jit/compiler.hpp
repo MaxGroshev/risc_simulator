@@ -22,10 +22,10 @@ public:
     JITBasic_block compile_bb(std::vector<DecodedInstruction> instrs, Hart* hart,uint64_t* regs, uint64_t* pc) {//probably const 
         JITBasic_block bb{};
 
-        jit::JITFunctionFactory<Hart> factory{hart};
+        jit::JITFunctionFactory<Hart> factory{hart, bb.asma64.get()};
         for(auto&  instr : instrs) {
             factory.compile(bb.asma64.get(), hart, instr, regs, pc);
-            std::cout << int(instr.format) << ":" << int(instr.opcode) << std::endl;
+            // std::cout << int(instr.format) << ":" << int(instr.opcode) << std::endl;
         }
         bb.add_code();
         return bb;

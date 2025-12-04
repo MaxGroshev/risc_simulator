@@ -121,12 +121,9 @@ static inline void debug_cout(const std::string& msg) {
 
 uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
     if(blk->get_is_jitted()) {        
-        // blk->jitted_bb.dump();
         reg_t start_pc = get_pc();
         blk->jitted_bb.execute();
         reg_t end_pc = get_pc();
-        // dump_regs();
-        // abort();
         return (end_pc - start_pc) / 4; //NOTE(mgroshev): awful hardcode
     }
     uint64_t executed = 0;
