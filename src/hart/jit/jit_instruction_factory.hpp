@@ -27,7 +27,8 @@ class JITFunctionFactory {
         asma64->add(x1, x1, 4);
         asma64->str(x1, ptr(pc_));
     }
-    void add(a64::Assembler* asma64, Hart* hart, DecodedInstruction& instr, uint64_t* regs, uint64_t* pc) {
+
+    void add(a64::Assembler* asma64, Hart* hart, DecodedInstruction& instr) {
         using namespace asmjit::a64;
 
         asma64->ldr(x1, ptr(regs_beg_, instr.rs1 * 8));
@@ -39,20 +40,42 @@ class JITFunctionFactory {
         increase_pc(asma64);
     }
 
-    void beq(a64::Assembler* asma64,  Hart* hart, DecodedInstruction& instr, uint64_t* regs, uint64_t* pc) {
+    void addi(a64::Assembler* asma64, Hart* hart, DecodedInstruction& instr) {
+        using namespace asmjit::a64;
+
+        asma64->ldr(x1, ptr(regs_beg_, instr.rs1 * 8));
+        asma64->mov(x2, instr.imm);
+
+        asma64->add(x1, x1, x2);
+
+        asma64->str(x1, ptr(regs_beg_, instr.rd * 8));
+        increase_pc(asma64);
+    }
+
+    void sub(a64::Assembler* asma64, Hart* hart, DecodedInstruction& instr) {
+        using namespace asmjit::a64;
+
+        asma64->ldr(x1, ptr(regs_beg_, instr.rs1 * 8));
+        asma64->ldr(x2, ptr(regs_beg_, instr.rs2 * 8));
+
+        asma64->sub(x1, x1, x2);
+
+        asma64->str(x1, ptr(regs_beg_, instr.rd * 8));
+        increase_pc(asma64);
+    }
+
+    void beq(a64::Assembler* asma64,  Hart* hart, DecodedInstruction& instr) {
         using namespace asmjit::a64;
         
-        uintptr_t instr_ptr = (uintptr_t)&instr;
-        uintptr_t func_ptr  = (uintptr_t)&riscv_sim::executer::execute_beq;
-        
-        asma64->mov(x0, instr_ptr);
-        asma64->mov(x1, hart_ptr);
-        asma64->mov(x2, func_ptr);
+        asma64->ldr(x1, ptr(regs_beg_, instr.rs1 * 8));
+        asma64->ldr(x2, ptr(regs_beg_, instr.rs2 * 8));
+        // asma64->cmp(x2, func_ptr);
         asma64->blr(x2);
 
         increase_pc(asma64);
     }
-    void slli(a64::Assembler* asma64,  Hart* hart, DecodedInstruction& instr, uint64_t* regs, uint64_t* pc) {
+
+    void slli(a64::Assembler* asma64,  Hart* hart, DecodedInstruction& instr) {
         using namespace asmjit::a64;
         
         asma64->ldr(x1, ptr(regs_beg_, instr.rs1 * 8));
@@ -63,7 +86,20 @@ class JITFunctionFactory {
 
         increase_pc(asma64);
     }
-    void ld(a64::Assembler* asma64,  Hart* hart, DecodedInstruction& instr, uint64_t* regs, uint64_t* pc) {
+
+    void sll(a64::Assembler* asma64,  Hart* hart, DecodedInstruction& instr) {
+        using namespace asmjit::a64;
+        
+        asma64->ldr(x1, ptr(regs_beg_, instr.rs1 * 8));
+        asma64->ldr(x2, ptr(regs_beg_, instr.rs2 * 8));
+        asma64->lsl(x1, x1, x2);
+
+        asma64->str(x1, ptr(regs_beg_, instr.rd * 8));
+
+        increase_pc(asma64);
+    }
+
+    void ld(a64::Assembler* asma64,  Hart* hart, DecodedInstruction& instr) {
         using namespace asmjit::a64;
 
         // get address for read
@@ -73,7 +109,6 @@ class JITFunctionFactory {
 
         // run handler
         asma64->mov(x0, hart_ptr);
-        // asma64->mov(x1, x14);
         asma64->mov(x2, 8);
         asma64->mov(x3, memread_func_ptr);
         asma64->blr(x3);
@@ -84,7 +119,7 @@ class JITFunctionFactory {
         increase_pc(asma64);
     }
 
-    void sd(a64::Assembler* asma64,  Hart* hart, DecodedInstruction& instr, uint64_t* regs, uint64_t* pc) {
+    void sd(a64::Assembler* asma64,  Hart* hart, DecodedInstruction& instr) {
         using namespace asmjit::a64;
 
         // get address for read
@@ -119,20 +154,25 @@ public:
         asma64->mov(regs_beg_, regs_ptr);
     }
     
-    void compile(a64::Assembler* asma64, Hart* hart, DecodedInstruction& instr, uint64_t* regs, uint64_t* pc) {
+    void compile(a64::Assembler* asma64, Hart* hart, DecodedInstruction& instr) {
         assert(asma64 != nullptr);
         switch (instr.opcode) {
             case InstructionOpcode::ADD: 
-                add(asma64, hart, instr, regs, pc); break;
+                add(asma64, hart, instr); break;
+            case InstructionOpcode::SUB: 
+                sub(asma64, hart, instr); break;
+            case InstructionOpcode::ADDI: 
+                addi(asma64, hart, instr); break;
             case InstructionOpcode::LD: 
-                ld(asma64, hart, instr, regs, pc); break;
+                ld(asma64, hart, instr); break;
             case InstructionOpcode::SLLI: 
-                slli(asma64, hart, instr, regs, pc); break;
+                slli(asma64, hart, instr); break;
             case InstructionOpcode::SD: 
-                sd(asma64, hart, instr, regs, pc); break;
-            // case InstructionOpcode::BEQ: 
-            //     beq(asma64, hart, instr, regs, pc); break;
+                sd(asma64, hart, instr); break;
+            case InstructionOpcode::SLL: 
+                sll(asma64, hart, instr); break;
             default:
+                std::cout << "Nowhere" << std::endl;
                 assert("unknown instr");
         }
     }

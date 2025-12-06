@@ -49,6 +49,7 @@ void Hart::set_next_pc(reg_t value) {
 }
 
 Hart::reg_t Hart::memory_read(reg_t addr, int size) const {
+    // std::cout << "Reading: " << addr << std::endl;
     return memory_.read(addr, size);
 }
 
@@ -120,11 +121,10 @@ static inline void debug_cout(const std::string& msg) {
 #endif
 
 uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
-    if(blk->get_is_jitted()) {        
-        reg_t start_pc = get_pc();
-        blk->jitted_bb.execute();
-        reg_t end_pc = get_pc();
-        return (end_pc - start_pc) / 4; //NOTE(mgroshev): awful hardcode
+    if(blk->get_is_jitted()) {  
+        // blk->jitted_bb.dump();
+        blk->jitted_bb->execute();
+        return blk->instrs.size(); //NOTE(mgroshev): awful hardcode
     }
     uint64_t executed = 0;
     uint64_t idx = 0;
@@ -215,11 +215,14 @@ uint64_t Hart::step() {
 
         reg_t executed_next = next_pc_;
 
-        if (next_pc_ != pc_ + 4) {
+        if ((next_pc_ != pc_ + 4)) {
             debug_cout("Control flow change detected at PC: 0x" + std::to_string(pc_) + ", next PC: 0x" + std::to_string(next_pc_));
+            // std::cout << "I am here: " << new_block.instrs.size() << std::endl;
             pc_ = executed_next;
-            new_block.valid = (new_block.instrs.size() > 0);
-            th_code_.install_bb(std::move(new_block));
+            if (new_block.instrs.size() != 0) {
+                new_block.valid = (new_block.instrs.size() > 0);
+                th_code_.install_bb(std::move(new_block));
+            }
             break;
         }
         new_block.instrs.push_back(dinstr);

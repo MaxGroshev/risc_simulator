@@ -29,9 +29,9 @@ public:
     std::vector<ExecFn> exec_fns;
 
     bool get_is_jitted() const { return is_jitted;}
-    jit::JITBasic_block jitted_bb;
+    std::unique_ptr<jit::JITBasic_block> jitted_bb;
 private:
-    void set_jitted_bb(jit::JITBasic_block&& jitted_bb_)  { 
+    void set_jitted_bb(std::unique_ptr<jit::JITBasic_block> jitted_bb_)  { 
         jitted_bb = std::move(jitted_bb_);
         is_jitted = true;
     }

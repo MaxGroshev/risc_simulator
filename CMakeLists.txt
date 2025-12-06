@@ -24,7 +24,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(MY_DEBUG)
     message(STATUS "Building in Debug mode")
 else()
-    add_compile_options(-flto)
+    # add_compile_options(-flto)
 endif ()
 
 if (DEBUG_EXECUTION)

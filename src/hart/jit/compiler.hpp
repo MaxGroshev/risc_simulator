@@ -19,15 +19,17 @@ namespace jit {
 
 class JITImpl {
 public:
-    JITBasic_block compile_bb(std::vector<DecodedInstruction> instrs, Hart* hart,uint64_t* regs, uint64_t* pc) {//probably const 
-        JITBasic_block bb{};
+    std::unique_ptr<JITBasic_block> compile_bb(std::vector<DecodedInstruction> instrs, Hart* hart) {//probably const 
+        std::unique_ptr<JITBasic_block> bb{};
 
-        jit::JITFunctionFactory<Hart> factory{hart, bb.asma64.get()};
+        jit::JITFunctionFactory<Hart> factory{hart, bb->asma64.get()};
+        // std::cout << instrs.size() << std::endl;
         for(auto&  instr : instrs) {
-            factory.compile(bb.asma64.get(), hart, instr, regs, pc);
-            // std::cout << int(instr.format) << ":" << int(instr.opcode) << std::endl;
+            std::cout << int(instr.format) << ":" << int(instr.opcode) << std::endl;
+            factory.compile(bb->asma64.get(), hart, instr);
         }
-        bb.add_code();
+        std::cout << std::endl;
+        bb->add_code();
         return bb;
     }
     
