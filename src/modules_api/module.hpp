@@ -1,7 +1,7 @@
 #ifndef MODULE_HPP
 #define MODULE_HPP
 
-#include "decode_execute_module/common.hpp"
+#include "modules_api/callbacks.hpp"
 
 class Hart;
 

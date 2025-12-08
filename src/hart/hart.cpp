@@ -2,6 +2,7 @@
 
 #include "decode_execute_module/decoder/rv32i_decoder_gen.hpp"
 #include "decode_execute_module/executer/rv32i_executer_gen.hpp"
+#include "modules_api/callbacks.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -52,19 +53,69 @@ void Hart::set_next_pc(reg_t value) {
 
 pa_t Hart::va_to_pa(va_t va, AccessType type) {
     auto tr = mmu_.translate(va, type, HartContext{.satp = csr_satp_, .prv = prv_});
+
     if (!tr.e.is_none()) {
         handle_exception(tr.e);
+    }
+
+    if (any_translate_callbacks_) {
+        if (!translate_callbacks_.empty()) {
+            TranslateHookInfo thi;
+            thi.type = type;
+            thi.va = va;
+            thi.pa = tr.pa;
+            thi.e = tr.e;
+            for (const auto &entry : translate_callbacks_) {
+                entry.fn(this, (void*)&thi, entry.owner);
+            }
+        }
     }
 
     return tr.pa;
 }
 
 reg_t Hart::load(reg_t va, int size) {
-    return mmu_.phys_read(va_to_pa(va, AccessType::Load), size);
+    pa_t pa = va_to_pa(va, AccessType::Load);
+    reg_t val = mmu_.phys_read(pa, size);
+
+    if (any_mem_access_callbacks_) {
+        if (!mem_access_callbacks_.empty()) {
+            MemAccessInfo mai;
+            mai.type = AccessType::Load;
+            mai.va = va;
+            mai.pa = pa;
+            mai.size_bytes = size;
+            mai.value = val;
+            mai.e = Exception(ExceptionCause::None);
+            for (const auto &entry : mem_access_callbacks_) {
+                entry.fn(this, (void*)&mai, entry.owner);
+            }
+        }
+    }
+
+    return val;
 }
 
 void Hart::store(reg_t va, reg_t value, int size) {
-    return mmu_.phys_write(va_to_pa(va, AccessType::Store), value, size);
+    pa_t pa = va_to_pa(va, AccessType::Store);
+    mmu_.phys_write(pa, value, size);
+
+    if (any_mem_access_callbacks_) {
+        if (!mem_access_callbacks_.empty()) {
+            MemAccessInfo mai;
+            mai.type = AccessType::Store;
+            mai.va = va;
+            mai.pa = pa;
+            mai.size_bytes = size;
+            mai.value = value;
+            mai.e = Exception(ExceptionCause::None);
+            for (const auto &entry : mem_access_callbacks_) {
+                entry.fn(this, (void*)&mai, entry.owner);
+            }
+        }
+    }
+
+    return;
 }
 
 void Hart::handle_exception(const Exception e) {
@@ -117,22 +168,28 @@ uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
 
     debug_cout("In cached block at PC: 0x" + std::to_string(pc_));
 
-    if (!block_start_callbacks_.empty()) {
-        BlockHookInfo bhe{ static_cast<uint64_t>(blk->start_pc) };
-        for (const auto &entry : block_start_callbacks_) {
-            entry.fn(this, (void*)&bhe, entry.owner);
+    if (any_block_start_callbacks_) {
+        if (!block_start_callbacks_.empty()) {
+            BlockHookInfo bhe{ static_cast<uint64_t>(blk->start_pc) };
+            for (const auto &entry : block_start_callbacks_) {
+                entry.fn(this, (void*)&bhe, entry.owner);
+            }
         }
     }
+    
     while (true) {
         if (idx >= blk_size) {
             debug_cout("Block finished at PC: 0x" + std::to_string(pc_));
-            // invoke block-end callbacks
-            if (!block_end_callbacks_.empty()) {
-                BlockHookInfo bhe{ static_cast<uint64_t>(blk->start_pc) };
-                for (const auto &entry : block_end_callbacks_) {
-                    entry.fn(this, (void*)&bhe, entry.owner);
+            
+            if (any_block_end_callbacks_) {
+                if (!block_end_callbacks_.empty()) {
+                    BlockHookInfo bhe{ static_cast<uint64_t>(blk->start_pc) };
+                    for (const auto &entry : block_end_callbacks_) {
+                        entry.fn(this, (void*)&bhe, entry.owner);
+                    }
                 }
             }
+
             pc_ = next_pc_;
             break;
         }
@@ -284,12 +341,32 @@ void Hart::register_block_start_callback(Module* owner, CallbackFn cb) {
     if (!cb) 
         return;
     block_start_callbacks_.push_back(CallbackEntry{cb, owner});
+    
+    any_block_start_callbacks_ = true;
 }
 
 void Hart::register_block_end_callback(Module* owner, CallbackFn cb) {
     if (!cb) 
         return;
     block_end_callbacks_.push_back(CallbackEntry{cb, owner});
+
+    any_block_end_callbacks_ = true;
+}
+
+void Hart::register_memory_access_callback(Module* owner, CallbackFn cb) {
+    if (!cb)
+        return;
+    mem_access_callbacks_.push_back(CallbackEntry{cb, owner});
+
+    any_mem_access_callbacks_ = true;
+}
+
+void Hart::register_translate_callback(Module* owner, CallbackFn cb) {
+    if (!cb)
+        return;
+    translate_callbacks_.push_back(CallbackEntry{cb, owner});
+
+    any_translate_callbacks_ = true;
 }
 
 void Hart::invoke_pre_callbacks(size_t idx, const DecodedInstruction& instr) {

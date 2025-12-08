@@ -1,16 +1,8 @@
 #pragma once
 
-#include <decode_execute_module/common.hpp>
 #include <hart/hart_common.hpp>
+#include "memory/access.hpp"
 #include "memory.hpp"
-
-enum class AccessType {
-    Fetch,
-    Load,
-    Store
-};
-
-
 
 const uint64_t PAGESIZE = 4096;
 const uint64_t PTESIZE  = 8; // 64-bit PTE
@@ -20,9 +12,6 @@ struct HartContext {
     reg_t satp;
     PrivilegeMode prv;
 };
-
-using va_t = reg_t;
-using pa_t = reg_t;
 
 struct TranslateResult {
     pa_t pa;

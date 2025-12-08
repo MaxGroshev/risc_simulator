@@ -6,7 +6,7 @@
 #include <memory>
 
 #include <memory/mmu.hpp>
-#include "decode_execute_module/common.hpp"
+#include "modules_api/callbacks.hpp"
 #include "decode_execute_module/instruction_opcodes_gen.hpp"
 #include "modules_api/module.hpp"
 #include "block_cache.hpp"
@@ -51,6 +51,10 @@ class Hart {
     void register_block_start_callback(Module* owner, CallbackFn cb);
     void register_block_end_callback(Module* owner, CallbackFn cb);
 
+    // Memory-related callbacks
+    void register_memory_access_callback(Module* owner, CallbackFn cb);
+    void register_translate_callback(Module* owner, CallbackFn cb);
+
     void invoke_pre_callbacks(size_t idx, const DecodedInstruction& instr);
     void invoke_post_callbacks(size_t idx, const DecodedInstruction& instr, const PostExecInfo& info);
 
@@ -81,9 +85,15 @@ private:
     std::vector<std::vector<CallbackEntry>> post_callbacks_;
     std::vector<CallbackEntry> block_start_callbacks_;
     std::vector<CallbackEntry> block_end_callbacks_;
+    std::vector<CallbackEntry> mem_access_callbacks_;
+    std::vector<CallbackEntry> translate_callbacks_;
 
     bool any_pre_callbacks_{false};
     bool any_post_callbacks_{false};
+    bool any_block_start_callbacks_{false};
+    bool any_block_end_callbacks_{false};
+    bool any_mem_access_callbacks_{false};
+    bool any_translate_callbacks_{false};
 
 private:
     pa_t va_to_pa (va_t va, AccessType type);

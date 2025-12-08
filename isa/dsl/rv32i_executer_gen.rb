@@ -41,6 +41,7 @@ class ExecuterGenerator
         #include <cstddef>
         #include "decode_execute_module/common.hpp"
         #include "../instruction_opcodes_gen.hpp"
+        #include "../../modules_api/callbacks.hpp"
 
         class Hart;
 

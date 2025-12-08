@@ -25,28 +25,4 @@ struct DecodedInstruction {
         return oss.str();
     }
 };
-
-struct PostExecInfo {
-    int32_t read_reg1; 
-    int32_t read_reg2; 
-    uint64_t read_reg1_val;
-    uint64_t read_reg2_val;
-    int32_t dest_reg; 
-    uint64_t dest_reg_val;
-    uint64_t imm_val;
-
-    PostExecInfo()
-      : read_reg1(-1), read_reg2(-1), read_reg1_val(0), read_reg2_val(0), dest_reg(-1), dest_reg_val(0), imm_val(0) {}
-
-};
-
-struct InstructionCallbackContext {
-    const DecodedInstruction* instr;
-    const PostExecInfo* info; 
-};
-
-struct BlockHookInfo {
-    uint64_t pc;
-};
-
-using reg_t = uint64_t;
+ 
