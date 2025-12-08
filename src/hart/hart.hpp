@@ -46,11 +46,14 @@ class Hart {
 
     // Memory access
     reg_t load(va_t addr, int size);
+    uint32_t fetch(va_t addr);
     void store(va_t addr, reg_t value, int size);
+
 
     // Traps
     void do_ecall();
     void handle_exception(const Exception e);
+    void handle_exception(const TranslateResult tr);
     
 #ifdef ENABLE_MODULES
     void add_module(std::shared_ptr<Module> mod);

@@ -2,7 +2,6 @@
 #include <cstdint>
 #include "decode_execute_module/common.hpp"
 #include "hart/hart_common.hpp"
-#include "memory/access.hpp"
 
 struct PostExecInfo {
     int32_t read_reg1;

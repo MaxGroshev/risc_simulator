@@ -55,7 +55,7 @@ void Machine::load_elf(const std::string& filename) {
     }
 
     /// TODO: it is rather ugly
-    hart_.set_reg(2, StackTop);
+    hart_.set_reg(2, StackBottom);
     hart_.set_halt(false);
 }
 

@@ -8,8 +8,10 @@
 #include <string>
 
 // Memory layout constants
+// Must be in sync with e2e_test/simple.ld
 constexpr size_t StackSize = 0x1000;
-constexpr va_t StackTop = 0x1000000ULL - StackSize;
+constexpr va_t StackBottom = 0x1000000ULL;
+constexpr va_t StackTop = StackBottom - StackSize;
 
 class Machine {
 public:

@@ -109,7 +109,7 @@ pa_t Hart::va_to_pa(va_t va, AccessType type) {
     auto tr = mmu_.translate(va, type, get_context_for_MMU());
 
     if (!tr.e.is_none()) {
-        handle_exception(tr.e);
+        handle_exception(tr);
     }
 
 #ifdef ENABLE_MODULES
@@ -160,6 +160,10 @@ reg_t Hart::load(reg_t va, int size) {
     return val;
 }
 
+uint32_t Hart::fetch(reg_t va) {
+    return mmu_.mem_load(va_to_pa(va, AccessType::Fetch), 4);
+}
+
 void Hart::store(reg_t va, reg_t value, int size) {
     pa_t pa = va_to_pa(va, AccessType::Store);
     mmu_.mem_store(pa, value, size);
@@ -190,6 +194,11 @@ void Hart::handle_exception(const Exception e) {
     std::abort();
 }
 
+void Hart::handle_exception(const TranslateResult tr) {
+    std::cerr << "MMU Error: " << tr.to_string() << std::endl;
+    std::cerr << "PC:" <<  std::hex << pc_ << std::dec << std::endl;
+    std::abort();
+}
 
 // NOTE(mgroshev): Need this to write in reg file from asm(jit)
 Hart::reg_t* Hart::get_reg_file_begin() {
@@ -326,7 +335,7 @@ uint64_t Hart::step() {
     uint64_t collected = 0;
 
     while (collected < max_cached_bb_size_) {
-        uint32_t raw_instr = static_cast<uint32_t>(load(pc_, 4));
+        uint32_t raw_instr = static_cast<uint32_t>(fetch(pc_));
         DecodedInstruction dinstr = riscv_sim::decoder::decode(raw_instr);
 
         debug_cout("Executing instruction with opcode " + std::to_string(static_cast<size_t>(dinstr.opcode)) + " at PC: 0x" + std::to_string(pc_));

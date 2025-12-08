@@ -68,17 +68,17 @@ TranslateResult MMU::translate(va_t va,
 
         // TODO Check Other flags
 
-        if (V == 0 || (R == 0 && W == 1)) {
-            return { .pa = 0, .e = Exception{EC::PageFault} };
+        if (V != PTE_V || (R != PTE_R && W == PTE_W)) {
+            return { .pa = 0, .e = Exception{EC::PageFault}, .faulting_addr=va, .access= type};
         }
 
         // Check if leaf PTE
-        if (R == 1 || X == 1) {
+        if (R == PTE_R || X == PTE_R) {
             break;
         }
 
         if (--level < 0) {
-            return { .pa = 0, .e = Exception{EC::PageFault} };
+            return { .pa = 0, .e = Exception{EC::PageFault}, .faulting_addr=va, .access= type};
         }
     }
 

@@ -14,6 +14,12 @@ enum class ExceptionCause{
     PageFault,
 };
 
+enum class AccessType : uint64_t {
+    Fetch,
+    Load,
+    Store
+};
+
 struct Exception {
     ExceptionCause value;
 
@@ -35,3 +41,7 @@ public:
 };
 
 using reg_t = uint64_t;
+
+// Memory related basic types
+using va_t = reg_t;
+using pa_t = reg_t;

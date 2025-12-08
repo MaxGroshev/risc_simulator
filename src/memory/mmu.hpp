@@ -1,7 +1,6 @@
 #pragma once
-
+#include <sstream>
 #include <hart/hart_common.hpp>
-#include "memory/access.hpp"
 #include "memory.hpp"
 
 using flag_t = uint64_t;
@@ -25,9 +24,6 @@ constexpr flag_t PTE_X = 1 << 3;
 
 constexpr uint64_t PTE_PPN_SHIFT = 10;
 
-using va_t = reg_t;
-using pa_t = reg_t;
-
 struct HartContext {
     pa_t root_table;
     reg_t mode;
@@ -37,6 +33,30 @@ struct HartContext {
 struct TranslateResult {
     pa_t pa;
     Exception e;
+    va_t faulting_addr;
+    AccessType access;
+
+    std::string to_string() const {
+        std::ostringstream oss;
+        oss << e.to_string();
+        oss << "\nFault type: ";
+            switch(access) {
+                case AccessType::Fetch: 
+                    oss << "Fetch";
+                    break;
+                case AccessType::Load:  
+                    oss << "Load";
+                    break;
+                case AccessType::Store: 
+                    oss << "Store";
+                    break;
+                default:
+                    oss << "Unknow";
+            }
+        
+        oss << "\nFaulting Address: " << std::hex << faulting_addr << std::dec;
+        return oss.str();
+    } 
 };
 
 

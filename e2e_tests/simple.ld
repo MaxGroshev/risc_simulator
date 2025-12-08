@@ -12,5 +12,10 @@ SECTIONS {
     .data : { *(.data) }
     _data_end = .;
 
+    _bss_start = .;
     .bss : { *(.bss) }
+    _bss_end = .;
+
+    # Must be in sync with machine/machine.hpp
+    _stack = 0x1000000 - 0x1000;
 }
