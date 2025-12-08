@@ -14,6 +14,7 @@ Hart::Hart(MMU &mmu, uint32_t cache_len) : mmu_(mmu), pc_(0), next_pc_(0), halt_
     regs_.fill(0);
 }
 
+// TODO: Replace exception with Hart Exception/handle_exception mechanism
 reg_t Hart::get_reg(uint8_t reg_num) const {
     if (reg_num == 0) 
         return 0;
@@ -32,6 +33,16 @@ void Hart::set_reg(uint8_t reg_num, reg_t value) {
         throw std::out_of_range("Invalid register number in set_reg");
 
     regs_[reg_num] = value;
+}
+
+void Hart::set_csr(uint16_t reg_num, reg_t value) {
+    if (reg_num >= (1 << 12) ) 
+        throw std::out_of_range("Invalid control register number in set_csr");
+
+    if (reg_num !=  0x180)
+        throw std::runtime_error("Unsupported control register number in set_csr");
+    
+    csr_satp_ = value;
 }
 
 reg_t Hart::get_pc() const {
@@ -80,6 +91,7 @@ void Hart::store(reg_t va, reg_t value, int size) {
 
 void Hart::handle_exception(const Exception e) {
     std::cerr << "Exception: " << e.to_string() << std::endl;
+    std::cerr << "PC:" <<  std::hex << pc_ << std::dec << std::endl;
     std::abort();
 }
 

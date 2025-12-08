@@ -799,6 +799,18 @@ void execute_ecall(const DecodedInstruction instr, Hart& hart) {
 }
 
 
+void execute_csrw(const DecodedInstruction instr, Hart& hart) {
+    // Generated from IR
+        uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    hart.set_csr(imm_val, rs1_val);
+    hart.set_reg(instr.rd, rd_val);
+}
+
+
 ExecFn execute(const DecodedInstruction instr, Hart& hart) {
     switch (instr.opcode) {
         case InstructionOpcode::LB: execute_lb(instr, hart); return &execute_lb;
@@ -851,6 +863,7 @@ ExecFn execute(const DecodedInstruction instr, Hart& hart) {
                 case InstructionOpcode::AUIPC: execute_auipc(instr, hart); return &execute_auipc;
                 case InstructionOpcode::JAL: execute_jal(instr, hart); return &execute_jal;
                 case InstructionOpcode::ECALL: execute_ecall(instr, hart); return &execute_ecall;
+                case InstructionOpcode::CSRW: execute_csrw(instr, hart); return &execute_csrw;
         default:
             hart.handle_exception(ExceptionCause::UnknowInstruction);
             return nullptr;
