@@ -2,7 +2,10 @@
 
 #include "decode_execute_module/decoder/rv32i_decoder_gen.hpp"
 #include "decode_execute_module/executer/rv32i_executer_gen.hpp"
+
+#ifdef ENABLE_MODULES
 #include "modules_api/callbacks.hpp"
+#endif
 
 #include <iostream>
 #include <stdexcept>
@@ -14,9 +17,11 @@ using ExecFn = riscv_sim::Block::ExecFn;
 Hart::Hart(MMU &mmu, uint32_t cache_len) : mmu_(mmu), pc_(0), next_pc_(0), halt_(false), block_cache_(4096), cache_len_(cache_len) {
     regs_.fill(0);
 
+#ifdef ENABLE_MODULES
     size_t opcode_count = static_cast<size_t>(InstructionOpcode::UNKNOWN) + 1;
     pre_callbacks_.resize(opcode_count);
     post_callbacks_.resize(opcode_count);
+#endif
 }
 
 reg_t Hart::get_reg(uint8_t reg_num) const {
@@ -58,6 +63,7 @@ pa_t Hart::va_to_pa(va_t va, AccessType type) {
         handle_exception(tr.e);
     }
 
+#ifdef ENABLE_MODULES
     if (any_translate_callbacks_) {
         if (!translate_callbacks_.empty()) {
             TranslateHookInfo thi;
@@ -70,6 +76,7 @@ pa_t Hart::va_to_pa(va_t va, AccessType type) {
             }
         }
     }
+#endif
 
     return tr.pa;
 }
@@ -78,6 +85,7 @@ reg_t Hart::load(reg_t va, int size) {
     pa_t pa = va_to_pa(va, AccessType::Load);
     reg_t val = mmu_.phys_read(pa, size);
 
+#ifdef ENABLE_MODULES
     if (any_mem_access_callbacks_) {
         if (!mem_access_callbacks_.empty()) {
             MemAccessInfo mai;
@@ -92,6 +100,7 @@ reg_t Hart::load(reg_t va, int size) {
             }
         }
     }
+#endif
 
     return val;
 }
@@ -100,6 +109,7 @@ void Hart::store(reg_t va, reg_t value, int size) {
     pa_t pa = va_to_pa(va, AccessType::Store);
     mmu_.phys_write(pa, value, size);
 
+#ifdef ENABLE_MODULES
     if (any_mem_access_callbacks_) {
         if (!mem_access_callbacks_.empty()) {
             MemAccessInfo mai;
@@ -114,6 +124,7 @@ void Hart::store(reg_t va, reg_t value, int size) {
             }
         }
     }
+#endif
 
     return;
 }
@@ -168,6 +179,7 @@ uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
 
     debug_cout("In cached block at PC: 0x" + std::to_string(pc_));
 
+#ifdef ENABLE_MODULES
     if (any_block_start_callbacks_) {
         if (!block_start_callbacks_.empty()) {
             BlockHookInfo bhe{ static_cast<uint64_t>(blk->start_pc) };
@@ -176,11 +188,13 @@ uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
             }
         }
     }
+#endif
     
     while (true) {
         if (idx >= blk_size) {
             debug_cout("Block finished at PC: 0x" + std::to_string(pc_));
             
+#ifdef ENABLE_MODULES
             if (any_block_end_callbacks_) {
                 if (!block_end_callbacks_.empty()) {
                     BlockHookInfo bhe{ static_cast<uint64_t>(blk->start_pc) };
@@ -189,6 +203,7 @@ uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
                     }
                 }
             }
+#endif
 
             pc_ = next_pc_;
             break;
@@ -298,6 +313,7 @@ uint64_t Hart::step() {
     return collected;
 }
 
+#ifdef ENABLE_MODULES
 void Hart::add_module(std::shared_ptr<Module> mod) {
     modules_.push_back(mod);
 }
@@ -394,3 +410,4 @@ void Hart::invoke_post_callbacks(size_t idx, const DecodedInstruction& instr, co
         entry.fn(this, (void*)&ctx, entry.owner);
     }
 }
+#endif

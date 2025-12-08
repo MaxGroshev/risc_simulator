@@ -3,7 +3,10 @@
 #include <cstddef>
 #include "decode_execute_module/common.hpp"
 #include "../instruction_opcodes_gen.hpp"
+
+#ifdef ENABLE_MODULES
 #include "../../modules_api/callbacks.hpp"
+#endif
 
 class Hart;
 
@@ -14,16 +17,19 @@ namespace riscv_sim {
 namespace executer {
 
 using ExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
-using PreExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
-using PostExecFn = void (*)(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
 
 ExecFn execute(const DecodedInstruction instr, Hart& hart);
+
+#ifdef ENABLE_MODULES
+using PreExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
+using PostExecFn = void (*)(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
 
 void ensure_pre_dispatcher_installed(size_t idx);
 void ensure_post_dispatcher_installed(size_t idx);
 
 void pre_dispatcher(const DecodedInstruction instr, Hart& hart);
 void post_dispatcher(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
+#endif // ENABLE_MODULES
 
 void execute_lb(const DecodedInstruction instr, Hart& hart);
         void execute_lh(const DecodedInstruction instr, Hart& hart);

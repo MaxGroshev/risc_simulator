@@ -6,10 +6,12 @@
 #include <memory>
 
 #include <memory/mmu.hpp>
-#include "modules_api/callbacks.hpp"
 #include "decode_execute_module/instruction_opcodes_gen.hpp"
-#include "modules_api/module.hpp"
 #include "block_cache.hpp"
+
+#ifdef ENABLE_MODULES
+#include "modules_api/module.hpp"
+#endif
 
 // @ArsenySamoylov
 //      Consider inheritance as API for ISA code generated code.
@@ -41,6 +43,7 @@ class Hart {
     void do_ecall();
     void handle_exception(const Exception e);
     
+#ifdef ENABLE_MODULES
     void add_module(std::shared_ptr<Module> mod);
 
     using CallbackFn = void (*)(Hart* hart, void* payload, Module* owner);
@@ -57,6 +60,7 @@ class Hart {
 
     void invoke_pre_callbacks(size_t idx, const DecodedInstruction& instr);
     void invoke_post_callbacks(size_t idx, const DecodedInstruction& instr, const PostExecInfo& info);
+#endif
 
 private:
     uint64_t execute_cached_block(Hart& hart, riscv_sim::Block* blk);
@@ -73,6 +77,8 @@ private:
     
     uint32_t cache_len_;
     riscv_sim::BlockCache block_cache_;
+
+#ifdef ENABLE_MODULES
     std::vector<std::shared_ptr<Module>> modules_;
 
     // per-opcode callbacks registered by modules
@@ -94,6 +100,7 @@ private:
     bool any_block_end_callbacks_{false};
     bool any_mem_access_callbacks_{false};
     bool any_translate_callbacks_{false};
+#endif
 
 private:
     pa_t va_to_pa (va_t va, AccessType type);

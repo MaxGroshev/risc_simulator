@@ -1,7 +1,10 @@
 #include "machine/machine.hpp"
-#include "modules/example_module.hpp"
 #include <iostream>
 #include <cstdint>
+
+#ifdef ENABLE_MODULES
+#include "modules/example_module.hpp"
+#endif
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
@@ -21,6 +24,7 @@ int main(int argc, char* argv[]) {
     try {
         machine.load_elf(argv[1]);
 
+#ifdef ENABLE_MODULES
         for (const auto& mod_name : modules) {
             if (mod_name == "example") {
                 auto ex = std::make_shared<ExampleModule>();
@@ -30,6 +34,7 @@ int main(int argc, char* argv[]) {
                 std::cerr << "Unknown module: " << mod_name << std::endl;
             }
         }
+#endif
         
         machine.run(max_cycles);
     } catch (const std::exception& e) {

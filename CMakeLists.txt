@@ -7,6 +7,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 option(DEBUG_EXECUTION "Enable debug execution logging" OFF)
 
+option(ENABLE_MODULES "Turn on modules (will slow down simulation)" OFF)
 
 # enable_testing()
 
@@ -29,6 +30,11 @@ endif ()
 if (DEBUG_EXECUTION)
     add_compile_definitions(DEBUG_EXECUTION)
     message(STATUS "DEBUG_EXECUTION enabled via CMake option")
+endif()
+
+if (ENABLE_MODULES)
+    add_compile_definitions(ENABLE_MODULES)
+    message(STATUS "ENABLE_MODULES enabled via CMake option")
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

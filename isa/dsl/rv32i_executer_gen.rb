@@ -41,7 +41,10 @@ class ExecuterGenerator
         #include <cstddef>
         #include "decode_execute_module/common.hpp"
         #include "../instruction_opcodes_gen.hpp"
+        
+        #ifdef ENABLE_MODULES
         #include "../../modules_api/callbacks.hpp"
+        #endif
 
         class Hart;
 
@@ -52,16 +55,19 @@ class ExecuterGenerator
         namespace executer {
 
         using ExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
-        using PreExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
-        using PostExecFn = void (*)(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
 
         ExecFn execute(const DecodedInstruction instr, Hart& hart);
+
+        #ifdef ENABLE_MODULES
+        using PreExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
+        using PostExecFn = void (*)(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
 
         void ensure_pre_dispatcher_installed(size_t idx);
         void ensure_post_dispatcher_installed(size_t idx);
 
         void pre_dispatcher(const DecodedInstruction instr, Hart& hart);
         void post_dispatcher(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
+        #endif // ENABLE_MODULES
 
         #{generate_execution_methods}
 
@@ -89,6 +95,7 @@ class ExecuterGenerator
         namespace riscv_sim {
         namespace executer {
 
+        #ifdef ENABLE_MODULES
         // number of opcodes
         static const size_t OPCODE_COUNT = static_cast<size_t>(InstructionOpcode::UNKNOWN) + 1;
 
@@ -117,10 +124,11 @@ class ExecuterGenerator
         void post_dispatcher(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info) {
           hart.invoke_post_callbacks(static_cast<size_t>(instr.opcode), instr, info);
         }
+        #endif // ENABLE_MODULES
 
         #{generate_instruction_executers}
 
-        PreExecFn execute(const DecodedInstruction instr, Hart& hart) {
+        ExecFn execute(const DecodedInstruction instr, Hart& hart) {
           switch (instr.opcode) {
             #{@instructions.map { |instr| "case InstructionOpcode::#{instr.name.upcase}: execute_#{instr.name}(instr, hart); return &execute_#{instr.name};" }.join("\n                ")}
             default:
@@ -141,16 +149,18 @@ class ExecuterGenerator
     @instructions.each do |instr_info|
       executer = <<~CPP
         void execute_#{instr_info.name}(const DecodedInstruction instr, Hart& hart) {
+          #ifdef ENABLE_MODULES
           {
             constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::#{instr_info.name.upcase});
             auto __ph = pre_handlers_vec[__idx];
             if (__ph) __ph(instr, hart);
           }
+          #endif
 
           // Generated from IR
           #{generate_cpp_from_ir(instr_info.code)}
           
-
+          #ifdef ENABLE_MODULES
           {
             constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::#{instr_info.name.upcase});
             auto __ph = post_handlers_vec[__idx];
@@ -185,6 +195,7 @@ class ExecuterGenerator
             }
 
           }
+          #endif
         }
       CPP
       executers << executer
