@@ -105,8 +105,9 @@ HartContext Hart::get_context_for_MMU() const {
         };
 }
 
-pa_t Hart::va_to_pa(va_t va, AccessType type) {
-    auto tr = mmu_.translate(va, type, get_context_for_MMU());
+template<AccessType type>
+pa_t Hart::va_to_pa(va_t va) {
+    auto tr = mmu_.translate<type>(va, get_context_for_MMU());
 
     if (!tr.e.is_none()) {
         handle_exception(tr);
@@ -137,7 +138,7 @@ pa_t Hart::satp_to_root_table(const reg_t satp) const {
 }
 
 reg_t Hart::load(reg_t va, int size) {
-    pa_t pa = va_to_pa(va, AccessType::Load);
+    pa_t pa = va_to_pa<AccessType::Load>(va);
     reg_t val = mmu_.mem_load(pa, size);
 
 #ifdef ENABLE_MODULES
@@ -161,11 +162,12 @@ reg_t Hart::load(reg_t va, int size) {
 }
 
 uint32_t Hart::fetch(reg_t va) {
-    return mmu_.mem_load(va_to_pa(va, AccessType::Fetch), 4);
+    // TODO: add hook
+    return mmu_.mem_load(va_to_pa<AccessType::Fetch>(va), 4);
 }
 
 void Hart::store(reg_t va, reg_t value, int size) {
-    pa_t pa = va_to_pa(va, AccessType::Store);
+    pa_t pa = va_to_pa<AccessType::Store>(va);
     mmu_.mem_store(pa, value, size);
 
 #ifdef ENABLE_MODULES

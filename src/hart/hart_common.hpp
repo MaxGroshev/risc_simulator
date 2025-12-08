@@ -45,3 +45,5 @@ using reg_t = uint64_t;
 // Memory related basic types
 using va_t = reg_t;
 using pa_t = reg_t;
+
+using flag_t = uint64_t;
