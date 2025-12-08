@@ -82,6 +82,7 @@ void execute_lui(const DecodedInstruction &instr, Hart& hart);
 void execute_auipc(const DecodedInstruction &instr, Hart& hart);
 void execute_jal(const DecodedInstruction &instr, Hart& hart);
 void execute_ecall(const DecodedInstruction &instr, Hart& hart);
+void execute_csrw(const DecodedInstruction &instr, Hart& hart);
 
 } // namespace executer
 } // namespace riscv_sim

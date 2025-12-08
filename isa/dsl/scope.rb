@@ -68,6 +68,10 @@ module SimInfra
         def setPc(value, op); 
             stmt op, [resolve_const(value)]
         end
+
+        def setCsr(value, rs1, op);
+            stmt op, [resolve_const(rs1), resolve_const(value)]
+        end
         
         # TODO(mgroshev): make class?
         def immHandler(); 
@@ -122,6 +126,9 @@ module SimInfra
         # pc
         def pc(); pcHandler end
         def set_pc(value); setPc(value, :setpc) end
+        # Control Register
+        def set_csr(value, rs1); setCsr(value, rs1, :setcsr) end
+
         # imm
         def imm(); immHandler end
         # if

@@ -620,6 +620,16 @@ DecodedInstruction decode_ecall(uint32_t instruction) {
     return result;
 }
 
+DecodedInstruction decode_csrw(uint32_t instruction) {
+    DecodedInstruction result;
+    result.opcode = InstructionOpcode::CSRW;
+    result.format = InstructionFormat::I;
+    result.rs1 = get_rs1(instruction);
+                result.imm = get_imm_i(instruction);
+
+    return result;
+}
+
 
 DecodedInstruction decode(uint32_t instruction) {
     DecodedInstruction result;
@@ -815,7 +825,14 @@ DecodedInstruction decode(uint32_t instruction) {
 			break;
  
 		case 115:
-			result = decode_ecall(instruction);
+			switch (get_funct3(instruction)) {
+				case 0:
+					result = decode_ecall(instruction);
+					break;
+				case 1:
+					result = decode_csrw(instruction);
+					break;
+			}
 			break;
         default:
             result.opcode = InstructionOpcode::UNKNOWN;

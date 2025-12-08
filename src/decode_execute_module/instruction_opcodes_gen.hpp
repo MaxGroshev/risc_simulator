@@ -50,6 +50,7 @@ enum class InstructionOpcode {
  AUIPC,
  JAL,
  ECALL,
+ CSRW,
     UNKNOWN
 };
 

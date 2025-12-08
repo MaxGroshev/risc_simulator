@@ -273,6 +273,7 @@ class ExecuterGenerator
     when :let then "#{indent}#{get_var_name(stmt.oprnds[0])} = #{get_var_name(stmt.oprnds[1])};"
     when :ecall then "#{indent}hart.do_ecall();"
     when :ebreak then "#{indent}hart.set_halt(true);"
+    when :setcsr then "#{indent}hart.set_csr(imm_val, rs1_val);"
     else "#{indent}// Unsupported: #{stmt.name}"
     end
   end

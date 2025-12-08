@@ -340,6 +340,11 @@ instructions:
     code: !ruby/code |
       rd[]= pc + 4; 
       set_pc(pc + imm)
+
+# TODO: This shouldn't be like this.
+#       However, we are short on time, so we are have to cut the corners =(.
+#
+# Crutches
   ecall:
     format: "J"
     opcode: 0b1110011  # 0x73
@@ -347,3 +352,11 @@ instructions:
     code: !ruby/code |
       ecall;
       rd[]= pc;
+      ecall
+
+  csrw:
+    format: "I"
+    opcode: 0b1110011 # 0x73
+    funct3: 0b001     # CSRRW
+    code: !ryby/code |
+      set_csr(imm, rs1)

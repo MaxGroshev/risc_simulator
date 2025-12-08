@@ -30,6 +30,8 @@ class Hart {
     reg_t get_reg(uint8_t reg_num) const;
     void set_reg(uint8_t reg_num, reg_t value);
 
+    void set_csr(uint16_t reg_num, reg_t value);
+
     reg_t get_pc() const;
     reg_t* get_pc_ptr();
     void set_pc(reg_t value);

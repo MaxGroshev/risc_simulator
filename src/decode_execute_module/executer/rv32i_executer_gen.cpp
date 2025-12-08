@@ -3041,11 +3041,69 @@ void execute_ecall(const DecodedInstruction &instr, Hart& hart) {
     hart.do_ecall();
     pc_val = hart.get_pc();
     rd_val = pc_val;
+    hart.do_ecall();
     hart.set_reg(instr.rd, rd_val);
   
   #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ECALL);
+    auto __ph = post_handlers_vec[__idx];
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
+  }
+  #endif
+}
+
+
+void execute_csrw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
+  {
+    constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::CSRW);
+    auto __ph = pre_handlers_vec[__idx];
+    if (__ph) __ph(instr, hart);
+  }
+  #endif
+
+  // Generated from IR
+      uint64_t rd_val;
+    uint64_t rs1_val;
+    uint64_t imm_val;
+    rs1_val = hart.get_reg(instr.rs1);
+    imm_val = static_cast<uint64_t>(instr.imm);
+    hart.set_csr(imm_val, rs1_val);
+    hart.set_reg(instr.rd, rd_val);
+  
+  #ifdef ENABLE_MODULES
+  {
+    constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::CSRW);
     auto __ph = post_handlers_vec[__idx];
 
     if (__ph) {
@@ -3134,6 +3192,7 @@ ExecFn execute(const DecodedInstruction &instr, Hart& hart) {
                 case InstructionOpcode::AUIPC: execute_auipc(instr, hart); return &execute_auipc;
                 case InstructionOpcode::JAL: execute_jal(instr, hart); return &execute_jal;
                 case InstructionOpcode::ECALL: execute_ecall(instr, hart); return &execute_ecall;
+                case InstructionOpcode::CSRW: execute_csrw(instr, hart); return &execute_csrw;
     default:
       hart.handle_exception(ExceptionCause::UnknowInstruction);
       return nullptr;
