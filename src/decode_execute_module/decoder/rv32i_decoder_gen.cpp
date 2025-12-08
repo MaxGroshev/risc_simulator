@@ -47,7 +47,7 @@ int32_t get_imm_b(uint32_t instruction) {
 }
 
 int32_t get_imm_u(uint32_t instruction) {
-    return instruction & 0xFFFFF000;
+    return (instruction & 0xFFFFF000) >> 12;
 }
 
 int32_t get_imm_j(uint32_t instruction) {
