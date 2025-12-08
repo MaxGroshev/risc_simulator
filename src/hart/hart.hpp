@@ -61,6 +61,8 @@ private:
     riscv_sim::BlockCache block_cache_;
 
 private:
-    pa_t va_to_pa (va_t va, AccessType type);
+    template<AccessType type>
+    pa_t va_to_pa (va_t va);
+    
     pa_t satp_to_root_table(const reg_t satp) const;
 };

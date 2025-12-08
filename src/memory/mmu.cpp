@@ -28,9 +28,9 @@
 constexpr va_t VPN_MASK = 0x1FF; 
 constexpr pa_t PPN_MASK = 0x1FF;
 
-TranslateResult MMU::translate(va_t va,
+TranslateResult MMU::translate_generic(va_t va,
                                  AccessType type,
-                                 const HartContext &ctx)
+                                 const HartContext ctx)
 {
     using EC = ExceptionCause;
 
@@ -99,6 +99,20 @@ TranslateResult MMU::translate(va_t va,
         (final_ppn0);
 
     pa_t pa64 = (ppn_combined << 12) | page_offset;
+
+    // Update TLB
+    uint32_t page_size;
+    switch (level) {
+        case 2: page_size = 1u << 30; break;  // 1GB
+        case 1: page_size = 1u << 21; break;  // 2MB
+        default: page_size = 1u << 12; break; // 4KB
+    }
+
+    switch (type) {
+        case AccessType::Fetch:   itlb_.insert(va, pa64, page_size); break;
+        case AccessType::Load:  dtlb_r_.insert(va, pa64, page_size); break;
+        case AccessType::Store: dtlb_w_.insert(va, pa64, page_size); break;
+    }
 
     return {
         .pa = pa64,

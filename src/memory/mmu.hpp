@@ -3,11 +3,9 @@
 #include <decode_execute_module/common.hpp>
 #include <hart/hart_common.hpp>
 #include "memory.hpp"
+#include "memory_types.hpp"
+#include "tlb.hpp"
 
-using va_t = reg_t;
-using pa_t = reg_t;
-
-using flag_t = uint64_t;
 
 // MUST BE IN SYNC WITH memory.cpp !!!
 constexpr uint64_t PAGESIZE = 4096;
@@ -34,6 +32,7 @@ struct HartContext {
     PrivilegeMode prv;
 };
 
+constexpr int TLB_SIZE = 64;
 
 
 struct TranslateResult {
@@ -68,13 +67,40 @@ struct TranslateResult {
 
 class MMU {
 public:
-    explicit MMU(Memory &m) : mem_(m) {}
+    explicit MMU(Memory &m) : 
+        mem_(m),
+        itlb_  (TLB_SIZE),
+        dtlb_r_(TLB_SIZE),
+        dtlb_w_(TLB_SIZE) 
+        {}
 
-    TranslateResult translate(va_t va, AccessType type, const HartContext &ctx);
+    template<AccessType type>
+    TranslateResult translate(va_t va, const HartContext ctx) {
+        const TLBEntry* hit = nullptr;
+
+        if constexpr (type == AccessType::Fetch)
+            hit = itlb_.lookup(va);
+        else if constexpr (type == AccessType::Load)
+            hit = dtlb_r_.lookup(va);
+        else if constexpr (type == AccessType::Store)
+            hit = dtlb_w_.lookup(va);
+
+        if (hit) {
+            pa_t pa = (hit->ppn << 12) | (va & (hit->page_size - 1));
+            return {.pa = pa, .e = Exception{ExceptionCause::None}};
+        }
+
+        return translate_generic(va, type, ctx);
+    }
     
     reg_t mem_load(pa_t pa, int size) const {return mem_.read(pa, size); };
     void mem_store(pa_t pa, reg_t value, int size) { return mem_.write(pa, value, size); };
 
 private:
     Memory &mem_;
+    TranslateResult translate_generic(va_t va, AccessType type, const HartContext ctx);
+
+    TLB itlb_;
+    TLB dtlb_r_;
+    TLB dtlb_w_;
 };
