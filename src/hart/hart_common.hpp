@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <cstdint>
 
 enum class PrivilegeMode {
     M,
@@ -11,6 +12,12 @@ enum class ExceptionCause{
     None,
     UnknowInstruction,
     PageFault,
+};
+
+enum class AccessType : uint64_t {
+    Fetch,
+    Load,
+    Store
 };
 
 struct Exception {

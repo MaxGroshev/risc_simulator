@@ -4,12 +4,6 @@
 #include <hart/hart_common.hpp>
 #include "memory.hpp"
 
-enum class AccessType {
-    Fetch,
-    Load,
-    Store
-};
-
 using va_t = reg_t;
 using pa_t = reg_t;
 
@@ -45,6 +39,30 @@ struct HartContext {
 struct TranslateResult {
     pa_t pa;
     Exception e;
+    va_t faulting_addr;
+    AccessType access;
+
+    std::string to_string() const {
+        std::ostringstream oss;
+        oss << e.to_string();
+        oss << "\nFault type: ";
+            switch(access) {
+                case AccessType::Fetch: 
+                    oss << "Fetch";
+                    break;
+                case AccessType::Load:  
+                    oss << "Load";
+                    break;
+                case AccessType::Store: 
+                    oss << "Store";
+                    break;
+                default:
+                    oss << "Unknow";
+            }
+        
+        oss << "\nFaulting Address: " << std::hex << faulting_addr << std::dec;
+        return oss.str();
+    } 
 };
 
 
