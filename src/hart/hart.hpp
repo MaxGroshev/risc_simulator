@@ -8,7 +8,7 @@
 #include <memory/mmu.hpp>
 #include "decode_execute_module/common.hpp"
 #include "decode_execute_module/instruction_opcodes_gen.hpp"
-#include "memory/memory.hpp"
+#include "modules_api/module.hpp"
 #include "block_cache.hpp"
 
 // @ArsenySamoylov
@@ -42,17 +42,17 @@ class Hart {
     void handle_exception(const Exception e);
     
     void add_module(std::shared_ptr<Module> mod);
-    void call_pre_execute(const DecodedInstruction& instr);
-    void call_post_execute(const DecodedInstruction& instr);
 
-    using RawCallbackFn = void (*)(Hart* hart, const DecodedInstruction* instr, Module* owner);
+    using CallbackFn = void (*)(Hart* hart, void* payload, Module* owner);
 
-    void register_pre_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, RawCallbackFn cb);
-    void register_post_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, RawCallbackFn cb);
+    void register_pre_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, CallbackFn cb);
+    void register_post_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, CallbackFn cb);
 
-    // Direct fast-invoke helper used by generated per-opcode handlers.
-    void invoke_pre_callbacks_by_index(size_t idx, const DecodedInstruction& instr);
-    void invoke_post_callbacks_by_index(size_t idx, const DecodedInstruction& instr);
+    void register_block_start_callback(Module* owner, CallbackFn cb);
+    void register_block_end_callback(Module* owner, CallbackFn cb);
+
+    void invoke_pre_callbacks(size_t idx, const DecodedInstruction& instr);
+    void invoke_post_callbacks(size_t idx, const DecodedInstruction& instr, const PostExecInfo& info);
 
 private:
     uint64_t execute_cached_block(Hart& hart, riscv_sim::Block* blk);
@@ -69,6 +69,21 @@ private:
     
     uint32_t cache_len_;
     riscv_sim::BlockCache block_cache_;
+    std::vector<std::shared_ptr<Module>> modules_;
+
+    // per-opcode callbacks registered by modules
+    struct CallbackEntry {
+      CallbackFn fn;
+      Module* owner;
+    };
+
+    std::vector<std::vector<CallbackEntry>> pre_callbacks_;
+    std::vector<std::vector<CallbackEntry>> post_callbacks_;
+    std::vector<CallbackEntry> block_start_callbacks_;
+    std::vector<CallbackEntry> block_end_callbacks_;
+
+    bool any_pre_callbacks_{false};
+    bool any_post_callbacks_{false};
 
 private:
     pa_t va_to_pa (va_t va, AccessType type);

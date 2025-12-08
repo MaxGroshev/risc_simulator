@@ -13,8 +13,8 @@ namespace executer {
 static const size_t OPCODE_COUNT = static_cast<size_t>(InstructionOpcode::UNKNOWN) + 1;
 
 // per-opcode handler vectors (internal). Use ensure_* functions to install dispatcher when needed.
-static std::vector<ExecFn> pre_handlers_vec(OPCODE_COUNT, nullptr);
-static std::vector<ExecFn> post_handlers_vec(OPCODE_COUNT, nullptr);
+static std::vector<PreExecFn> pre_handlers_vec(OPCODE_COUNT, nullptr);
+static std::vector<PostExecFn> post_handlers_vec(OPCODE_COUNT, nullptr);
 
 size_t opcode_count() { return OPCODE_COUNT; }
 
@@ -31,11 +31,11 @@ void ensure_post_dispatcher_installed(size_t idx) {
 }
 
 void pre_dispatcher(const DecodedInstruction instr, Hart& hart) {
-  hart.invoke_pre_callbacks_by_index(static_cast<size_t>(instr.opcode), instr);
+  hart.invoke_pre_callbacks(static_cast<size_t>(instr.opcode), instr);
 }
 
-void post_dispatcher(const DecodedInstruction instr, Hart& hart) {
-  hart.invoke_post_callbacks_by_index(static_cast<size_t>(instr.opcode), instr);
+void post_dispatcher(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info) {
+  hart.invoke_post_callbacks(static_cast<size_t>(instr.opcode), instr, info);
 }
 
 void execute_lb(const DecodedInstruction instr, Hart& hart) {
@@ -58,10 +58,40 @@ void execute_lb(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp1_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LB);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -86,10 +116,40 @@ void execute_lh(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp3_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LH);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -114,10 +174,40 @@ void execute_lw(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp5_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LW);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -142,10 +232,40 @@ void execute_ld(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp7_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LD);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -170,10 +290,40 @@ void execute_lbu(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp9_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LBU);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -198,10 +348,40 @@ void execute_lhu(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp11_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LHU);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -226,10 +406,40 @@ void execute_lwu(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp13_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LWU);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -252,10 +462,40 @@ void execute_sb(const DecodedInstruction instr, Hart& hart) {
     _tmp14_val = rs1_val + imm_val;
     hart.store(_tmp14_val, rs2_val, 1);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SB);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -278,10 +518,40 @@ void execute_sh(const DecodedInstruction instr, Hart& hart) {
     _tmp15_val = rs1_val + imm_val;
     hart.store(_tmp15_val, rs2_val, 2);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SH);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -304,10 +574,40 @@ void execute_sw(const DecodedInstruction instr, Hart& hart) {
     _tmp16_val = rs1_val + imm_val;
     hart.store(_tmp16_val, rs2_val, 4);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SW);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -330,10 +630,40 @@ void execute_sd(const DecodedInstruction instr, Hart& hart) {
     _tmp17_val = rs1_val + imm_val;
     hart.store(_tmp17_val, rs2_val, 8);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SD);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -357,10 +687,40 @@ void execute_addiw(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp18_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDIW);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -387,10 +747,40 @@ void execute_slliw(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp19_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLIW);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -417,10 +807,40 @@ void execute_srliw(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp22_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLIW);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -447,10 +867,40 @@ void execute_sraiw(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp25_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAIW);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -474,10 +924,40 @@ void execute_addw(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp28_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDW);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -501,10 +981,40 @@ void execute_subw(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp29_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SUBW);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -531,10 +1041,40 @@ void execute_sllw(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp30_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLW);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -561,10 +1101,40 @@ void execute_srlw(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp33_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLW);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -591,10 +1161,40 @@ void execute_sraw(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp36_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAW);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -617,10 +1217,40 @@ void execute_add(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp39_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADD);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -643,10 +1273,40 @@ void execute_sub(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp40_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SUB);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -669,10 +1329,40 @@ void execute_sll(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp41_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLL);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -695,10 +1385,40 @@ void execute_slt(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp42_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLT);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -721,10 +1441,40 @@ void execute_sltu(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp43_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTU);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -747,10 +1497,40 @@ void execute_xor(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp44_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::XOR);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -773,10 +1553,40 @@ void execute_srl(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp45_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRL);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -799,10 +1609,40 @@ void execute_sra(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp46_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRA);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -825,10 +1665,40 @@ void execute_or(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp47_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::OR);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -851,10 +1721,40 @@ void execute_and(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp48_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::AND);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -877,10 +1777,40 @@ void execute_addi(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp49_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDI);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -903,10 +1833,40 @@ void execute_slti(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp50_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTI);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -929,10 +1889,40 @@ void execute_sltiu(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp51_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTIU);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -955,10 +1945,40 @@ void execute_xori(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp52_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::XORI);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -981,10 +2001,40 @@ void execute_ori(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp53_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ORI);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1007,10 +2057,40 @@ void execute_andi(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp54_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ANDI);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1033,10 +2113,40 @@ void execute_slli(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp55_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLI);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1059,10 +2169,40 @@ void execute_srli(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp56_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLI);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1085,10 +2225,40 @@ void execute_srai(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp57_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAI);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1117,10 +2287,40 @@ void execute_jalr(const DecodedInstruction instr, Hart& hart) {
     hart.set_next_pc(_tmp60_val);
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::JALR);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1149,10 +2349,40 @@ void execute_beq(const DecodedInstruction instr, Hart& hart) {
         hart.set_next_pc(_tmp62_val);
     }
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BEQ);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1181,10 +2411,40 @@ void execute_bne(const DecodedInstruction instr, Hart& hart) {
         hart.set_next_pc(_tmp64_val);
     }
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BNE);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1213,10 +2473,40 @@ void execute_blt(const DecodedInstruction instr, Hart& hart) {
         hart.set_next_pc(_tmp66_val);
     }
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BLT);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1248,10 +2538,40 @@ void execute_bge(const DecodedInstruction instr, Hart& hart) {
         hart.set_next_pc(_tmp70_val);
     }
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BGE);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1280,10 +2600,40 @@ void execute_bltu(const DecodedInstruction instr, Hart& hart) {
         hart.set_next_pc(_tmp72_val);
     }
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BLTU);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1315,10 +2665,40 @@ void execute_bgeu(const DecodedInstruction instr, Hart& hart) {
         hart.set_next_pc(_tmp76_val);
     }
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BGEU);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1340,10 +2720,40 @@ void execute_lui(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp78_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LUI);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1369,10 +2779,40 @@ void execute_auipc(const DecodedInstruction instr, Hart& hart) {
     rd_val = _tmp81_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::AUIPC);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1399,10 +2839,40 @@ void execute_jal(const DecodedInstruction instr, Hart& hart) {
     hart.set_next_pc(_tmp84_val);
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::JAL);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
@@ -1416,20 +2886,51 @@ void execute_ecall(const DecodedInstruction instr, Hart& hart) {
 
   // Generated from IR
       uint64_t rd_val;
-    uint64_t rs1_val;
-    rs1_val = hart.get_reg(instr.rs1);
+    uint64_t pc_val;
     hart.do_ecall();
+    pc_val = hart.get_pc();
+    rd_val = pc_val;
     hart.set_reg(instr.rd, rd_val);
   
+
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ECALL);
     auto __ph = post_handlers_vec[__idx];
-    if (__ph) __ph(instr, hart);
+
+    if (__ph) {
+      PostExecInfo __pei;
+      try {
+        __pei.read_reg1_val = hart.get_reg(instr.rs1);
+        __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+
+      try {
+        __pei.read_reg2_val = hart.get_reg(instr.rs2);
+        __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+      } catch (...) {
+          __pei.read_reg2 = -1; // invalid
+          __pei.read_reg2_val = 0;
+      }
+
+      try {
+        __pei.dest_reg_val = hart.get_reg(instr.rd);
+        __pei.dest_reg = static_cast<int32_t>(instr.rd);
+      } catch (...) {
+          __pei.read_reg1 = -1; // invalid
+          __pei.read_reg1_val = 0;
+      }
+      __pei.imm_val = static_cast<uint64_t>(instr.imm);
+      __ph(instr, hart, __pei);
+    }
+
   }
 }
 
 
-ExecFn execute(const DecodedInstruction instr, Hart& hart) {
+PreExecFn execute(const DecodedInstruction instr, Hart& hart) {
   switch (instr.opcode) {
     case InstructionOpcode::LB: execute_lb(instr, hart); return &execute_lb;
                 case InstructionOpcode::LH: execute_lh(instr, hart); return &execute_lh;

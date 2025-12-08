@@ -564,7 +564,8 @@ DecodedInstruction decode_jal(uint32_t instruction) {
 DecodedInstruction decode_ecall(uint32_t instruction) {
     DecodedInstruction result;
     result.opcode = InstructionOpcode::ECALL;
-    result.imm = get_imm_i(instruction);
+    result.rd = get_rd(instruction);
+                result.imm = get_imm_j(instruction);
 
     return result;
 }

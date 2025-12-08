@@ -51,15 +51,16 @@ class ExecuterGenerator
         namespace executer {
 
         using ExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
+        using PreExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
+        using PostExecFn = void (*)(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
 
         ExecFn execute(const DecodedInstruction instr, Hart& hart);
-
 
         void ensure_pre_dispatcher_installed(size_t idx);
         void ensure_post_dispatcher_installed(size_t idx);
 
         void pre_dispatcher(const DecodedInstruction instr, Hart& hart);
-        void post_dispatcher(const DecodedInstruction instr, Hart& hart);
+        void post_dispatcher(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
 
         #{generate_execution_methods}
 
@@ -91,8 +92,8 @@ class ExecuterGenerator
         static const size_t OPCODE_COUNT = static_cast<size_t>(InstructionOpcode::UNKNOWN) + 1;
 
         // per-opcode handler vectors (internal). Use ensure_* functions to install dispatcher when needed.
-        static std::vector<ExecFn> pre_handlers_vec(OPCODE_COUNT, nullptr);
-        static std::vector<ExecFn> post_handlers_vec(OPCODE_COUNT, nullptr);
+        static std::vector<PreExecFn> pre_handlers_vec(OPCODE_COUNT, nullptr);
+        static std::vector<PostExecFn> post_handlers_vec(OPCODE_COUNT, nullptr);
 
         size_t opcode_count() { return OPCODE_COUNT; }
 
@@ -109,16 +110,16 @@ class ExecuterGenerator
         }
 
         void pre_dispatcher(const DecodedInstruction instr, Hart& hart) {
-          hart.invoke_pre_callbacks_by_index(static_cast<size_t>(instr.opcode), instr);
+          hart.invoke_pre_callbacks(static_cast<size_t>(instr.opcode), instr);
         }
 
-        void post_dispatcher(const DecodedInstruction instr, Hart& hart) {
-          hart.invoke_post_callbacks_by_index(static_cast<size_t>(instr.opcode), instr);
+        void post_dispatcher(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info) {
+          hart.invoke_post_callbacks(static_cast<size_t>(instr.opcode), instr, info);
         }
 
         #{generate_instruction_executers}
 
-        ExecFn execute(const DecodedInstruction instr, Hart& hart) {
+        PreExecFn execute(const DecodedInstruction instr, Hart& hart) {
           switch (instr.opcode) {
             #{@instructions.map { |instr| "case InstructionOpcode::#{instr.name.upcase}: execute_#{instr.name}(instr, hart); return &execute_#{instr.name};" }.join("\n                ")}
             default:
@@ -148,10 +149,40 @@ class ExecuterGenerator
           // Generated from IR
           #{generate_cpp_from_ir(instr_info.code)}
           
+
           {
             constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::#{instr_info.name.upcase});
             auto __ph = post_handlers_vec[__idx];
-            if (__ph) __ph(instr, hart);
+
+            if (__ph) {
+              PostExecInfo __pei;
+              try {
+                __pei.read_reg1_val = hart.get_reg(instr.rs1);
+                __pei.read_reg1 = static_cast<int32_t>(instr.rs1);
+              } catch (...) {
+                  __pei.read_reg1 = -1; // invalid
+                  __pei.read_reg1_val = 0;
+              }
+
+              try {
+                __pei.read_reg2_val = hart.get_reg(instr.rs2);
+                __pei.read_reg2 = static_cast<int32_t>(instr.rs2);
+              } catch (...) {
+                  __pei.read_reg2 = -1; // invalid
+                  __pei.read_reg2_val = 0;
+              }
+
+              try {
+                __pei.dest_reg_val = hart.get_reg(instr.rd);
+                __pei.dest_reg = static_cast<int32_t>(instr.rd);
+              } catch (...) {
+                  __pei.read_reg1 = -1; // invalid
+                  __pei.read_reg1_val = 0;
+              }
+              __pei.imm_val = static_cast<uint64_t>(instr.imm);
+              __ph(instr, hart, __pei);
+            }
+
           }
         }
       CPP

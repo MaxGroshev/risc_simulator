@@ -13,15 +13,16 @@ namespace riscv_sim {
 namespace executer {
 
 using ExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
+using PreExecFn = void (*)(const DecodedInstruction instr, Hart& hart);
+using PostExecFn = void (*)(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
 
 ExecFn execute(const DecodedInstruction instr, Hart& hart);
-
 
 void ensure_pre_dispatcher_installed(size_t idx);
 void ensure_post_dispatcher_installed(size_t idx);
 
 void pre_dispatcher(const DecodedInstruction instr, Hart& hart);
-void post_dispatcher(const DecodedInstruction instr, Hart& hart);
+void post_dispatcher(const DecodedInstruction instr, Hart& hart, const PostExecInfo& info);
 
 void execute_lb(const DecodedInstruction instr, Hart& hart);
         void execute_lh(const DecodedInstruction instr, Hart& hart);

@@ -15,10 +15,11 @@ public:
 
     ~ExampleModule();
 
-    void handle_addi(Hart& hart, const DecodedInstruction& instr);
-    void handle_sub(Hart& hart, const DecodedInstruction& instr);
-
     std::unordered_map<InstructionOpcode, uint64_t> stats_;
+
+    std::unordered_map<int32_t, uint64_t> reg_freq_;
+
+    std::unordered_map<uint64_t, uint64_t> block_stats_;
 };
 
 #endif // EXAMPLE_MODULE_HPP

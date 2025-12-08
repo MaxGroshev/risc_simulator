@@ -116,9 +116,23 @@ uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
     const size_t blk_size = blk->instrs.size();
 
     debug_cout("In cached block at PC: 0x" + std::to_string(pc_));
+
+    if (!block_start_callbacks_.empty()) {
+        BlockHookInfo bhe{ static_cast<uint64_t>(blk->start_pc) };
+        for (const auto &entry : block_start_callbacks_) {
+            entry.fn(this, (void*)&bhe, entry.owner);
+        }
+    }
     while (true) {
         if (idx >= blk_size) {
             debug_cout("Block finished at PC: 0x" + std::to_string(pc_));
+            // invoke block-end callbacks
+            if (!block_end_callbacks_.empty()) {
+                BlockHookInfo bhe{ static_cast<uint64_t>(blk->start_pc) };
+                for (const auto &entry : block_end_callbacks_) {
+                    entry.fn(this, (void*)&bhe, entry.owner);
+                }
+            }
             pc_ = next_pc_;
             break;
         }
@@ -184,6 +198,8 @@ uint64_t Hart::step() {
         uint32_t raw_instr = static_cast<uint32_t>(load(pc_, 4));
         DecodedInstruction dinstr = riscv_sim::decoder::decode(raw_instr);
 
+        debug_cout("Executing instruction with opcode " + std::to_string(static_cast<size_t>(dinstr.opcode)) + " at PC: 0x" + std::to_string(pc_));
+
         next_pc_ = pc_ + 4;
 
         ExecFn fn = riscv_sim::executer::execute(dinstr, *this);
@@ -229,21 +245,16 @@ void Hart::add_module(std::shared_ptr<Module> mod) {
     modules_.push_back(mod);
 }
 
-void Hart::call_pre_execute(const DecodedInstruction& instr) {
-    // legacy wrapper retained for compatibility
-    invoke_pre_callbacks_by_index(static_cast<size_t>(instr.opcode), instr);
-}
+void Hart::register_pre_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, CallbackFn cb) {
+    if (!cb) 
+        return;
 
-void Hart::call_post_execute(const DecodedInstruction& instr) {
-    invoke_post_callbacks_by_index(static_cast<size_t>(instr.opcode), instr);
-}
-
-void Hart::register_pre_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, RawCallbackFn cb) {
-    if (!cb) return;
     for (auto op : ops) {
         size_t idx = static_cast<size_t>(op);
-        if (idx >= pre_callbacks_.size()) continue;
-        pre_callbacks_[idx].push_back(RawCallbackEntry{cb, owner});
+        if (idx >= pre_callbacks_.size()) 
+            continue;
+
+        pre_callbacks_[idx].push_back(CallbackEntry{cb, owner});
 
         // Ensure generated executor has a dispatcher installed for this opcode index.
         riscv_sim::executer::ensure_pre_dispatcher_installed(idx);
@@ -251,33 +262,58 @@ void Hart::register_pre_execute_callback(Module* owner, const std::vector<Instru
     any_pre_callbacks_ = true;
 }
 
-void Hart::register_post_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, RawCallbackFn cb) {
-    if (!cb) return;
+void Hart::register_post_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, CallbackFn cb) {
+    if (!cb) 
+        return;
+
     for (auto op : ops) {
         size_t idx = static_cast<size_t>(op);
-        if (idx >= post_callbacks_.size()) continue;
-        post_callbacks_[idx].push_back(RawCallbackEntry{cb, owner});
+        if (idx >= post_callbacks_.size()) 
+            continue;
+
+        post_callbacks_[idx].push_back(CallbackEntry{cb, owner});
 
         // Ensure generated executor has a dispatcher installed for this opcode index.
         riscv_sim::executer::ensure_post_dispatcher_installed(idx);
     }
+
     any_post_callbacks_ = true;
 }
 
-void Hart::invoke_pre_callbacks_by_index(size_t idx, const DecodedInstruction& instr) {
-    if (idx >= pre_callbacks_.size()) return;
+void Hart::register_block_start_callback(Module* owner, CallbackFn cb) {
+    if (!cb) 
+        return;
+    block_start_callbacks_.push_back(CallbackEntry{cb, owner});
+}
+
+void Hart::register_block_end_callback(Module* owner, CallbackFn cb) {
+    if (!cb) 
+        return;
+    block_end_callbacks_.push_back(CallbackEntry{cb, owner});
+}
+
+void Hart::invoke_pre_callbacks(size_t idx, const DecodedInstruction& instr) {
+    if (idx >= pre_callbacks_.size())
+        return;
     auto &vec = pre_callbacks_[idx];
-    if (vec.empty()) return;
+    if (vec.empty()) 
+        return;
+
     for (const auto &entry : vec) {
-        entry.fn(this, &instr, entry.owner);
+        entry.fn(this, (void*)&instr, entry.owner);
     }
 }
 
-void Hart::invoke_post_callbacks_by_index(size_t idx, const DecodedInstruction& instr) {
-    if (idx >= post_callbacks_.size()) return;
+void Hart::invoke_post_callbacks(size_t idx, const DecodedInstruction& instr, const PostExecInfo& info) {
+    if (idx >= post_callbacks_.size()) 
+        return;
+
     auto &vec = post_callbacks_[idx];
-    if (vec.empty()) return;
+    if (vec.empty()) 
+        return;
+
+    InstructionCallbackContext ctx{ &instr, &info };
     for (const auto &entry : vec) {
-        entry.fn(this, &instr, entry.owner);
+        entry.fn(this, (void*)&ctx, entry.owner);
     }
 }

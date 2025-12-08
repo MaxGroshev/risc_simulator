@@ -257,7 +257,7 @@ instructions:
       rd[]= pc + 4; 
       set_pc(pc + imm)
   ecall:
-    format: "I"
+    format: "J"
     opcode: 0b1110011  # 0x73
     funct3: 0b000
     code: !ruby/code |

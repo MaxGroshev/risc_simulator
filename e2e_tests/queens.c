@@ -17,14 +17,14 @@ int is_safe(long row, long col, long* board) {
 
 void solve(long row, long* board, unsigned long* count) {
     // print_u64(0xDEAD);
-    if (row == 8) {
+    if (row == 10) {
         (*count)++;
         // print_u64(*count);
         return;
     }
     // print_u64(0xDEAD);
 
-    for (long long col = 0; col < 8; col++) 
+    for (long long col = 0; col < 10; col++) 
     {
         // print_u64(0xBEAF);
         if (is_safe(row, col, board)) {
@@ -37,7 +37,7 @@ void solve(long row, long* board, unsigned long* count) {
 }
 
 int main() {
-    long board[8] = {0};
+    long board[10] = {0};
     unsigned long solution_count = 0;
 
     solve(0, board, &solution_count);
