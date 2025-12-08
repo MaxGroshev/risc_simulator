@@ -6,6 +6,7 @@ add_subdirectory(decode_execute_module)
 add_subdirectory(hart)
 add_subdirectory(memory)
 add_subdirectory(machine)
+add_subdirectory(modules)
 
 target_link_libraries(${PROJECT_NAME} 
    machine

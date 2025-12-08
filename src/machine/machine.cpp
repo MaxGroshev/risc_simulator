@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <cstring>
 #include <chrono>
+#include <memory>
+#include "modules/example_module.hpp"
 
 static void ehdr_sanity_check(const Elf64_Ehdr &ehdr) {
     if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F')

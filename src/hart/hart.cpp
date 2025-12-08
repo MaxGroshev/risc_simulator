@@ -1,16 +1,21 @@
 #include "hart.hpp"
-#include <decode_execute_module/decoder/rv32i_decoder_gen.hpp>
-#include <decode_execute_module/executer/rv32i_executer_gen.hpp>
+
+#include "decode_execute_module/decoder/rv32i_decoder_gen.hpp"
+#include "decode_execute_module/executer/rv32i_executer_gen.hpp"
 
 #include <iostream>
 #include <stdexcept>
-
-using ExecFn = riscv_sim::Block::ExecFn;
+#include <functional>
+#include <cassert>
 
 using ExecFn = riscv_sim::Block::ExecFn;
 
 Hart::Hart(MMU &mmu, uint32_t cache_len) : mmu_(mmu), pc_(0), next_pc_(0), halt_(false), block_cache_(4096), cache_len_(cache_len) {
     regs_.fill(0);
+
+    size_t opcode_count = static_cast<size_t>(InstructionOpcode::UNKNOWN) + 1;
+    pre_callbacks_.resize(opcode_count);
+    post_callbacks_.resize(opcode_count);
 }
 
 reg_t Hart::get_reg(uint8_t reg_num) const {
@@ -218,4 +223,61 @@ uint64_t Hart::step() {
     }
 
     return collected;
+}
+
+void Hart::add_module(std::shared_ptr<Module> mod) {
+    modules_.push_back(mod);
+}
+
+void Hart::call_pre_execute(const DecodedInstruction& instr) {
+    // legacy wrapper retained for compatibility
+    invoke_pre_callbacks_by_index(static_cast<size_t>(instr.opcode), instr);
+}
+
+void Hart::call_post_execute(const DecodedInstruction& instr) {
+    invoke_post_callbacks_by_index(static_cast<size_t>(instr.opcode), instr);
+}
+
+void Hart::register_pre_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, RawCallbackFn cb) {
+    if (!cb) return;
+    for (auto op : ops) {
+        size_t idx = static_cast<size_t>(op);
+        if (idx >= pre_callbacks_.size()) continue;
+        pre_callbacks_[idx].push_back(RawCallbackEntry{cb, owner});
+
+        // Ensure generated executor has a dispatcher installed for this opcode index.
+        riscv_sim::executer::ensure_pre_dispatcher_installed(idx);
+    }
+    any_pre_callbacks_ = true;
+}
+
+void Hart::register_post_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, RawCallbackFn cb) {
+    if (!cb) return;
+    for (auto op : ops) {
+        size_t idx = static_cast<size_t>(op);
+        if (idx >= post_callbacks_.size()) continue;
+        post_callbacks_[idx].push_back(RawCallbackEntry{cb, owner});
+
+        // Ensure generated executor has a dispatcher installed for this opcode index.
+        riscv_sim::executer::ensure_post_dispatcher_installed(idx);
+    }
+    any_post_callbacks_ = true;
+}
+
+void Hart::invoke_pre_callbacks_by_index(size_t idx, const DecodedInstruction& instr) {
+    if (idx >= pre_callbacks_.size()) return;
+    auto &vec = pre_callbacks_[idx];
+    if (vec.empty()) return;
+    for (const auto &entry : vec) {
+        entry.fn(this, &instr, entry.owner);
+    }
+}
+
+void Hart::invoke_post_callbacks_by_index(size_t idx, const DecodedInstruction& instr) {
+    if (idx >= post_callbacks_.size()) return;
+    auto &vec = post_callbacks_[idx];
+    if (vec.empty()) return;
+    for (const auto &entry : vec) {
+        entry.fn(this, &instr, entry.owner);
+    }
 }

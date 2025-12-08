@@ -2,11 +2,13 @@
 
 #include <cstdint>
 #include <array>
+#include <vector>
+#include <memory>
 
 #include <memory/mmu.hpp>
-#include <decode_execute_module/common.hpp>
-
-#include "hart_common.hpp"
+#include "decode_execute_module/common.hpp"
+#include "decode_execute_module/instruction_opcodes_gen.hpp"
+#include "memory/memory.hpp"
 #include "block_cache.hpp"
 
 // @ArsenySamoylov
@@ -14,6 +16,8 @@
 //      
 //      This way we can encapsulate function like set_pc, get_pc, do_ecall, handle_unknow_instruction
 //      as protected methods.
+
+
 class Hart {
   public:
     Hart(MMU&, uint32_t cache_len = 1024);
@@ -37,6 +41,19 @@ class Hart {
     void do_ecall();
     void handle_exception(const Exception e);
     
+    void add_module(std::shared_ptr<Module> mod);
+    void call_pre_execute(const DecodedInstruction& instr);
+    void call_post_execute(const DecodedInstruction& instr);
+
+    using RawCallbackFn = void (*)(Hart* hart, const DecodedInstruction* instr, Module* owner);
+
+    void register_pre_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, RawCallbackFn cb);
+    void register_post_execute_callback(Module* owner, const std::vector<InstructionOpcode>& ops, RawCallbackFn cb);
+
+    // Direct fast-invoke helper used by generated per-opcode handlers.
+    void invoke_pre_callbacks_by_index(size_t idx, const DecodedInstruction& instr);
+    void invoke_post_callbacks_by_index(size_t idx, const DecodedInstruction& instr);
+
 private:
     uint64_t execute_cached_block(Hart& hart, riscv_sim::Block* blk);
 
