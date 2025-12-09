@@ -65,8 +65,12 @@ void Hart::set_reg(uint8_t reg_num, reg_t value) {
     if (reg_num == 0) 
         return;
 
-    if (reg_num >= 32) 
-        throw std::out_of_range("Invalid register number in set_reg");
+    if (reg_num >= 32) { 
+        std::ostringstream oss;
+        oss << "Invalid register number in set_reg: " << std::hex << uint64_t(reg_num) << "\n"; 
+        oss << "PC:" << std::hex << pc_ << "\n";
+        throw std::out_of_range(oss.str());
+    }
 
     regs_[reg_num] = value;
 }
