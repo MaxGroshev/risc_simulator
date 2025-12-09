@@ -8,7 +8,10 @@ set(ASMJIT_DIR "third_party/asmjit")
 
 option(DEBUG_EXECUTION "Enable debug execution logging" OFF)
 
+option(ENABLE_MODULES "Turn on modules (will slow down simulation)" OFF)
+
 set (CMAKE_CXX_STANDARD 17)
+
 # enable_testing()
 
 # include(FetchContent)
@@ -30,6 +33,11 @@ endif ()
 if (DEBUG_EXECUTION)
     add_compile_definitions(DEBUG_EXECUTION)
     message(STATUS "DEBUG_EXECUTION enabled via CMake option")
+endif()
+
+if (ENABLE_MODULES)
+    add_compile_definitions(ENABLE_MODULES)
+    message(STATUS "ENABLE_MODULES enabled via CMake option")
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

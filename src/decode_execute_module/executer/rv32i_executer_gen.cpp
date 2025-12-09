@@ -9,6 +9,7 @@
 namespace riscv_sim {
 namespace executer {
 
+#ifdef ENABLE_MODULES
 // number of opcodes
 static const size_t OPCODE_COUNT = static_cast<size_t>(InstructionOpcode::UNKNOWN) + 1;
 
@@ -37,13 +38,16 @@ void pre_dispatcher(const DecodedInstruction &instr, Hart& hart) {
 void post_dispatcher(const DecodedInstruction &instr, Hart& hart, const PostExecInfo& info) {
   hart.invoke_post_callbacks(static_cast<size_t>(instr.opcode), instr, info);
 }
+#endif // ENABLE_MODULES
 
 void execute_lb(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LB);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -58,7 +62,7 @@ void execute_lb(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp1_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LB);
     auto __ph = post_handlers_vec[__idx];
@@ -93,15 +97,18 @@ void execute_lb(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_lh(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LH);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -116,7 +123,7 @@ void execute_lh(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp3_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LH);
     auto __ph = post_handlers_vec[__idx];
@@ -151,15 +158,18 @@ void execute_lh(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_lw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LW);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -174,7 +184,7 @@ void execute_lw(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp5_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LW);
     auto __ph = post_handlers_vec[__idx];
@@ -209,15 +219,18 @@ void execute_lw(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_ld(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LD);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -232,7 +245,7 @@ void execute_ld(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp7_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LD);
     auto __ph = post_handlers_vec[__idx];
@@ -267,15 +280,18 @@ void execute_ld(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_lbu(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LBU);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -290,7 +306,7 @@ void execute_lbu(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp9_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LBU);
     auto __ph = post_handlers_vec[__idx];
@@ -325,15 +341,18 @@ void execute_lbu(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_lhu(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LHU);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -348,7 +367,7 @@ void execute_lhu(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp11_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LHU);
     auto __ph = post_handlers_vec[__idx];
@@ -383,15 +402,18 @@ void execute_lhu(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_lwu(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LWU);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -406,7 +428,7 @@ void execute_lwu(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp13_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LWU);
     auto __ph = post_handlers_vec[__idx];
@@ -441,15 +463,18 @@ void execute_lwu(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sb(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SB);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rs1_val;
@@ -462,7 +487,7 @@ void execute_sb(const DecodedInstruction &instr, Hart& hart) {
     _tmp14_val = rs1_val + imm_val;
     hart.store(_tmp14_val, rs2_val, 1);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SB);
     auto __ph = post_handlers_vec[__idx];
@@ -497,15 +522,18 @@ void execute_sb(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sh(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SH);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rs1_val;
@@ -518,7 +546,7 @@ void execute_sh(const DecodedInstruction &instr, Hart& hart) {
     _tmp15_val = rs1_val + imm_val;
     hart.store(_tmp15_val, rs2_val, 2);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SH);
     auto __ph = post_handlers_vec[__idx];
@@ -553,15 +581,18 @@ void execute_sh(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SW);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rs1_val;
@@ -574,7 +605,7 @@ void execute_sw(const DecodedInstruction &instr, Hart& hart) {
     _tmp16_val = rs1_val + imm_val;
     hart.store(_tmp16_val, rs2_val, 4);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SW);
     auto __ph = post_handlers_vec[__idx];
@@ -609,15 +640,18 @@ void execute_sw(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sd(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SD);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rs1_val;
@@ -630,7 +664,7 @@ void execute_sd(const DecodedInstruction &instr, Hart& hart) {
     _tmp17_val = rs1_val + imm_val;
     hart.store(_tmp17_val, rs2_val, 8);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SD);
     auto __ph = post_handlers_vec[__idx];
@@ -665,15 +699,18 @@ void execute_sd(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_addiw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDIW);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -687,7 +724,7 @@ void execute_addiw(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp18_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDIW);
     auto __ph = post_handlers_vec[__idx];
@@ -722,15 +759,18 @@ void execute_addiw(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_slliw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLIW);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -747,7 +787,7 @@ void execute_slliw(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp19_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLIW);
     auto __ph = post_handlers_vec[__idx];
@@ -782,15 +822,18 @@ void execute_slliw(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_srliw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLIW);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -807,7 +850,7 @@ void execute_srliw(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp22_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLIW);
     auto __ph = post_handlers_vec[__idx];
@@ -842,15 +885,18 @@ void execute_srliw(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sraiw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAIW);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -867,7 +913,7 @@ void execute_sraiw(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp25_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAIW);
     auto __ph = post_handlers_vec[__idx];
@@ -902,15 +948,18 @@ void execute_sraiw(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_addw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDW);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -924,7 +973,7 @@ void execute_addw(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp28_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDW);
     auto __ph = post_handlers_vec[__idx];
@@ -959,15 +1008,18 @@ void execute_addw(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_subw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SUBW);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -981,7 +1033,7 @@ void execute_subw(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp29_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SUBW);
     auto __ph = post_handlers_vec[__idx];
@@ -1016,15 +1068,18 @@ void execute_subw(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sllw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLW);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1041,7 +1096,7 @@ void execute_sllw(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp30_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLW);
     auto __ph = post_handlers_vec[__idx];
@@ -1076,15 +1131,18 @@ void execute_sllw(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_srlw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLW);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1101,7 +1159,7 @@ void execute_srlw(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp33_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLW);
     auto __ph = post_handlers_vec[__idx];
@@ -1136,15 +1194,18 @@ void execute_srlw(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sraw(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAW);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1161,7 +1222,7 @@ void execute_sraw(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp36_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAW);
     auto __ph = post_handlers_vec[__idx];
@@ -1196,15 +1257,18 @@ void execute_sraw(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_add(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADD);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1217,7 +1281,7 @@ void execute_add(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp39_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADD);
     auto __ph = post_handlers_vec[__idx];
@@ -1252,15 +1316,18 @@ void execute_add(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sub(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SUB);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1273,7 +1340,7 @@ void execute_sub(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp40_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SUB);
     auto __ph = post_handlers_vec[__idx];
@@ -1308,15 +1375,18 @@ void execute_sub(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sll(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLL);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1329,7 +1399,7 @@ void execute_sll(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp41_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLL);
     auto __ph = post_handlers_vec[__idx];
@@ -1364,15 +1434,18 @@ void execute_sll(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_slt(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLT);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1385,7 +1458,7 @@ void execute_slt(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp42_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLT);
     auto __ph = post_handlers_vec[__idx];
@@ -1420,15 +1493,18 @@ void execute_slt(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sltu(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTU);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1441,7 +1517,7 @@ void execute_sltu(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp43_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTU);
     auto __ph = post_handlers_vec[__idx];
@@ -1476,15 +1552,18 @@ void execute_sltu(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_xor(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::XOR);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1497,7 +1576,7 @@ void execute_xor(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp44_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::XOR);
     auto __ph = post_handlers_vec[__idx];
@@ -1532,15 +1611,18 @@ void execute_xor(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_srl(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRL);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1553,7 +1635,7 @@ void execute_srl(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp45_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRL);
     auto __ph = post_handlers_vec[__idx];
@@ -1588,15 +1670,18 @@ void execute_srl(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sra(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRA);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1609,7 +1694,7 @@ void execute_sra(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp46_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRA);
     auto __ph = post_handlers_vec[__idx];
@@ -1644,15 +1729,18 @@ void execute_sra(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_or(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::OR);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1665,7 +1753,7 @@ void execute_or(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp47_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::OR);
     auto __ph = post_handlers_vec[__idx];
@@ -1700,15 +1788,18 @@ void execute_or(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_and(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::AND);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1721,7 +1812,7 @@ void execute_and(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp48_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::AND);
     auto __ph = post_handlers_vec[__idx];
@@ -1756,15 +1847,18 @@ void execute_and(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_addi(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDI);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1777,7 +1871,7 @@ void execute_addi(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp49_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ADDI);
     auto __ph = post_handlers_vec[__idx];
@@ -1812,15 +1906,18 @@ void execute_addi(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_slti(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTI);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1833,7 +1930,7 @@ void execute_slti(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp50_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTI);
     auto __ph = post_handlers_vec[__idx];
@@ -1868,15 +1965,18 @@ void execute_slti(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_sltiu(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTIU);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1889,7 +1989,7 @@ void execute_sltiu(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp51_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLTIU);
     auto __ph = post_handlers_vec[__idx];
@@ -1924,15 +2024,18 @@ void execute_sltiu(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_xori(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::XORI);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -1945,7 +2048,7 @@ void execute_xori(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp52_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::XORI);
     auto __ph = post_handlers_vec[__idx];
@@ -1980,15 +2083,18 @@ void execute_xori(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_ori(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ORI);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -2001,7 +2107,7 @@ void execute_ori(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp53_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ORI);
     auto __ph = post_handlers_vec[__idx];
@@ -2036,15 +2142,18 @@ void execute_ori(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_andi(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ANDI);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -2057,7 +2166,7 @@ void execute_andi(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp54_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ANDI);
     auto __ph = post_handlers_vec[__idx];
@@ -2092,15 +2201,18 @@ void execute_andi(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_slli(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLI);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -2113,7 +2225,7 @@ void execute_slli(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp55_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SLLI);
     auto __ph = post_handlers_vec[__idx];
@@ -2148,15 +2260,18 @@ void execute_slli(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_srli(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLI);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -2169,7 +2284,7 @@ void execute_srli(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp56_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRLI);
     auto __ph = post_handlers_vec[__idx];
@@ -2204,15 +2319,18 @@ void execute_srli(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_srai(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAI);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -2225,7 +2343,7 @@ void execute_srai(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp57_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::SRAI);
     auto __ph = post_handlers_vec[__idx];
@@ -2260,15 +2378,18 @@ void execute_srai(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_jalr(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::JALR);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -2287,7 +2408,7 @@ void execute_jalr(const DecodedInstruction &instr, Hart& hart) {
     hart.set_next_pc(_tmp60_val);
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::JALR);
     auto __ph = post_handlers_vec[__idx];
@@ -2322,15 +2443,18 @@ void execute_jalr(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_beq(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BEQ);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rs1_val;
@@ -2349,7 +2473,7 @@ void execute_beq(const DecodedInstruction &instr, Hart& hart) {
         hart.set_next_pc(_tmp62_val);
     }
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BEQ);
     auto __ph = post_handlers_vec[__idx];
@@ -2384,15 +2508,18 @@ void execute_beq(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_bne(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BNE);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rs1_val;
@@ -2411,7 +2538,7 @@ void execute_bne(const DecodedInstruction &instr, Hart& hart) {
         hart.set_next_pc(_tmp64_val);
     }
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BNE);
     auto __ph = post_handlers_vec[__idx];
@@ -2446,15 +2573,18 @@ void execute_bne(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_blt(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BLT);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rs1_val;
@@ -2473,7 +2603,7 @@ void execute_blt(const DecodedInstruction &instr, Hart& hart) {
         hart.set_next_pc(_tmp66_val);
     }
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BLT);
     auto __ph = post_handlers_vec[__idx];
@@ -2508,15 +2638,18 @@ void execute_blt(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_bge(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BGE);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rs1_val;
@@ -2538,7 +2671,7 @@ void execute_bge(const DecodedInstruction &instr, Hart& hart) {
         hart.set_next_pc(_tmp70_val);
     }
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BGE);
     auto __ph = post_handlers_vec[__idx];
@@ -2573,15 +2706,18 @@ void execute_bge(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_bltu(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BLTU);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rs1_val;
@@ -2600,7 +2736,7 @@ void execute_bltu(const DecodedInstruction &instr, Hart& hart) {
         hart.set_next_pc(_tmp72_val);
     }
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BLTU);
     auto __ph = post_handlers_vec[__idx];
@@ -2635,15 +2771,18 @@ void execute_bltu(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_bgeu(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BGEU);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rs1_val;
@@ -2665,7 +2804,7 @@ void execute_bgeu(const DecodedInstruction &instr, Hart& hart) {
         hart.set_next_pc(_tmp76_val);
     }
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::BGEU);
     auto __ph = post_handlers_vec[__idx];
@@ -2700,15 +2839,18 @@ void execute_bgeu(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_lui(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LUI);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -2720,7 +2862,7 @@ void execute_lui(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp78_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::LUI);
     auto __ph = post_handlers_vec[__idx];
@@ -2755,15 +2897,18 @@ void execute_lui(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_auipc(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::AUIPC);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -2779,7 +2924,7 @@ void execute_auipc(const DecodedInstruction &instr, Hart& hart) {
     rd_val = _tmp81_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::AUIPC);
     auto __ph = post_handlers_vec[__idx];
@@ -2814,15 +2959,18 @@ void execute_auipc(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_jal(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::JAL);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -2839,7 +2987,7 @@ void execute_jal(const DecodedInstruction &instr, Hart& hart) {
     hart.set_next_pc(_tmp84_val);
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::JAL);
     auto __ph = post_handlers_vec[__idx];
@@ -2874,15 +3022,18 @@ void execute_jal(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
 void execute_ecall(const DecodedInstruction &instr, Hart& hart) {
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ECALL);
     auto __ph = pre_handlers_vec[__idx];
     if (__ph) __ph(instr, hart);
   }
+  #endif
 
   // Generated from IR
       uint64_t rd_val;
@@ -2892,7 +3043,7 @@ void execute_ecall(const DecodedInstruction &instr, Hart& hart) {
     rd_val = pc_val;
     hart.set_reg(instr.rd, rd_val);
   
-
+  #ifdef ENABLE_MODULES
   {
     constexpr size_t __idx = static_cast<size_t>(InstructionOpcode::ECALL);
     auto __ph = post_handlers_vec[__idx];
@@ -2927,10 +3078,11 @@ void execute_ecall(const DecodedInstruction &instr, Hart& hart) {
     }
 
   }
+  #endif
 }
 
 
-PreExecFn execute(const DecodedInstruction &instr, Hart& hart) {
+ExecFn execute(const DecodedInstruction &instr, Hart& hart) {
   switch (instr.opcode) {
     case InstructionOpcode::LB: execute_lb(instr, hart); return &execute_lb;
                 case InstructionOpcode::LH: execute_lh(instr, hart); return &execute_lh;

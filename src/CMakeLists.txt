@@ -7,7 +7,12 @@ add_subdirectory(decode_execute_module)
 add_subdirectory(hart)
 add_subdirectory(memory)
 add_subdirectory(machine)
-add_subdirectory(modules)
+
+if(ENABLE_MODULES)
+    add_subdirectory(modules)
+else()
+    message(STATUS "ENABLE_MODULES is OFF — skipping modules subdirectory")
+endif()
 
 target_link_libraries(${PROJECT_NAME} 
     machine

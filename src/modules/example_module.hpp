@@ -20,6 +20,11 @@ public:
     std::unordered_map<int32_t, uint64_t> reg_freq_;
 
     std::unordered_map<uint64_t, uint64_t> block_stats_;
+
+    // Memory statistics
+    uint64_t load_count_ = 0;
+    uint64_t store_count_ = 0;
+    std::unordered_map<int, uint64_t> mem_size_counts_;
 };
 
 #endif // EXAMPLE_MODULE_HPP

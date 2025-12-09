@@ -3,6 +3,7 @@
 
 #include "decode_execute_module/instruction_opcodes_gen.hpp"
 #include "hart/hart.hpp"
+#include "modules_api/callbacks.hpp"
 
 static void example_pre_cb(Hart* /*hart*/, void* payload, Module* owner) {
     auto instr = static_cast<const DecodedInstruction*>(payload);
@@ -31,6 +32,24 @@ static void example_block_start_cb(Hart* /*hart*/, void* payload, Module* owner)
     mod->block_stats_[bhe->pc]++;
 }
 
+static void example_mem_cb(Hart* /*hart*/, void* payload, Module* owner) {
+    auto mai = static_cast<const MemAccessInfo*>(payload);
+    if (!mai) return;
+    auto mod = static_cast<ExampleModule*>(owner);
+    if (mai->type == AccessType::Load) {
+        mod->load_count_++;
+    } else if (mai->type == AccessType::Store) {
+        mod->store_count_++;
+    }
+    mod->mem_size_counts_[mai->size_bytes]++;
+}
+
+static void example_translate_cb(Hart* /*hart*/, void* payload, Module* owner) {
+    auto thi = static_cast<const TranslateHookInfo*>(payload);
+    if (!thi) return;
+    // For now, we don't collect specific translate stats, but keep hook for future use.
+}
+
 void ExampleModule::register_callbacks(Hart& hart) {
     std::vector<InstructionOpcode> ops = {
         InstructionOpcode::ADD, InstructionOpcode::ADDW, InstructionOpcode::ADDI,
@@ -46,6 +65,10 @@ void ExampleModule::register_callbacks(Hart& hart) {
     hart.register_post_execute_callback(this, ops, &example_post_cb);
 
     hart.register_block_start_callback(this, &example_block_start_cb);
+
+    // Register memory hooks
+    hart.register_memory_access_callback(this, &example_mem_cb);
+    hart.register_translate_callback(this, &example_translate_cb);
 }
 
 ExampleModule::~ExampleModule() {
@@ -62,5 +85,13 @@ ExampleModule::~ExampleModule() {
     std::cout << "Basic block execution counts:\n";
     for (auto &p : block_stats_) {
         std::cout << "  block " << p.first << ": " << p.second << "\n";
+    }
+
+    std::cout << "Memory access stats:\n";
+    std::cout << "  loads: " << load_count_ << "\n";
+    std::cout << "  stores: " << store_count_ << "\n";
+    std::cout << "  size counts:\n";
+    for (auto &p : mem_size_counts_) {
+        std::cout << "    " << p.first << " bytes: " << p.second << "\n";
     }
 }

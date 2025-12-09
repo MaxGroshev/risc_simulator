@@ -32,3 +32,5 @@ public:
     return value == ExceptionCause::None;
     }
 };
+
+using reg_t = uint64_t;
