@@ -58,6 +58,7 @@ public:
 private:
     void compile_bb(const Block* blk) {
         auto compiled_bb = jitter.compile_bb(blk->instrs, hart);
+        std::cerr << "JIT: compiled BB at PC: 0x" << std::hex << blk->start_pc << std::dec << std::endl;
         const_cast<Block*>(blk)->set_jitted_bb(std::move(compiled_bb));// UGLY!!!
     }
 

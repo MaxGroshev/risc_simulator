@@ -18,12 +18,21 @@ class JITImpl {
 public:
     std::unique_ptr<JITBasic_block> compile_bb(std::vector<DecodedInstruction> instrs, Hart* hart) const {
         std::unique_ptr<JITBasic_block> bb = std::make_unique<JITBasic_block>();
+#if defined(__x86_64__)
+        jit::JITFunctionFactory<Hart> factory{hart, bb->asmx86.get()};
+        for(auto&  instr : instrs) {
+            // std::cout << int(instr.format) << ":" << int(instr.opcode) << std::endl;
+            factory.compile(bb->asmx86.get(), hart, instr);
+        }
+#else
         jit::JITFunctionFactory<Hart> factory{hart, bb->asma64.get()};
         for(auto&  instr : instrs) {
             // std::cout << int(instr.format) << ":" << int(instr.opcode) << std::endl;
             factory.compile(bb->asma64.get(), hart, instr);
         }
+#endif
         bb->add_code();
+        // bb->dump();
         return bb;
     }
 };

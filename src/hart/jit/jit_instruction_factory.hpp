@@ -6,6 +6,7 @@
 #include <optional>
 
 #include <asmjit/a64.h> 
+#include <asmjit/x86.h> 
 
 #include "decode_execute_module/instruction_opcodes_gen.hpp"
 #include "decode_execute_module/common.hpp"
@@ -15,6 +16,10 @@ class Hart;
 namespace jit {    
 
 using namespace asmjit;
+
+// Trampoline function declarations (defined in trampolines.cpp)
+uint64_t memread_trampoline(Hart* hart, uint64_t addr, int size);
+void memwrite_trampoline(Hart* hart, uint64_t addr, uint64_t value, int size);
 
 template<class Hart>
 class JITFunctionFactory {
@@ -725,11 +730,9 @@ class JITFunctionFactory {
 
 public:
     JITFunctionFactory(Hart* hart, a64::Assembler* asma64) {
-        mem_read_fn memread = &Hart::load;
-        memcpy(&memread_func_ptr, &memread, sizeof(memread_func_ptr));
-
-        mem_write_fn memwrite = &Hart::store;
-        memcpy(&memwrite_func_ptr, &memwrite, sizeof(memwrite_func_ptr));
+        // Use trampoline functions (plain function pointers) to avoid C++ pointer-to-member ABI issues
+        memread_func_ptr = (uintptr_t)&::jit::memread_trampoline;
+        memwrite_func_ptr = (uintptr_t)&::jit::memwrite_trampoline;
 
         hart_ptr = (uintptr_t)hart;
         regs_ptr = (uintptr_t)hart->get_reg_file_begin();
@@ -737,6 +740,22 @@ public:
 
         asma64->mov(pc_, pc_ptr);
         asma64->mov(regs_beg_, regs_ptr);
+    }
+
+    // x86 constructor
+    JITFunctionFactory(Hart* hart, asmjit::x86::Assembler* asmx86) {
+        // Use trampoline functions (plain function pointers) to avoid C++ pointer-to-member ABI issues
+        memread_func_ptr = (uintptr_t)&::jit::memread_trampoline;
+        memwrite_func_ptr = (uintptr_t)&::jit::memwrite_trampoline;
+
+        hart_ptr = (uintptr_t)hart;
+        regs_ptr = (uintptr_t)hart->get_reg_file_begin();
+        pc_ptr   = (uintptr_t)hart->get_pc_ptr();
+
+        // Move constants into chosen registers
+        asmx86->mov(pc_x86_, pc_ptr);
+        asmx86->mov(regs_beg_x86_, regs_ptr);
+        std::cerr << "JIT x86: memread_func_ptr=0x" << std::hex << memread_func_ptr << " memwrite_func_ptr=0x" << memwrite_func_ptr << " hart_ptr=0x" << hart_ptr << std::dec << std::endl;
     }
     
     void compile(a64::Assembler* asma64, Hart* hart, DecodedInstruction& instr) {
@@ -795,15 +814,120 @@ public:
                 assert("unknown instr");
         }
     }
+
+    // x86 compile
+    void compile(asmjit::x86::Assembler* asmx86, Hart* hart, DecodedInstruction& instr) {
+        assert(asmx86 != nullptr);
+        using namespace asmjit::x86;
+        switch (instr.opcode) {
+            case InstructionOpcode::ADD:   add_x86(asmx86, hart, instr); break;
+            case InstructionOpcode::SUB:   sub_x86(asmx86, hart, instr); break;
+            case InstructionOpcode::ADDI:  addi_x86(asmx86, hart, instr); break;
+            case InstructionOpcode::LD:    ld_x86(asmx86, hart, instr); break;
+            case InstructionOpcode::SLLI:  slli_x86(asmx86, hart, instr); break;
+            case InstructionOpcode::SD:    sd_x86(asmx86, hart, instr); break;
+            default:
+                // Fallback: unknown instruction - trap for now
+                std::cout << "Unsupported op for x86 JIT" << std::endl;
+                assert("unknown instr for x86");
+        }
+    }
 private: 
-    using mem_read_fn  = uint64_t (Hart::*)(uint64_t, int);     //mem_access_func_signature
-    using mem_write_fn = void     (Hart::*)(uint64_t, uint64_t, int); //mem_access_func_signature
+    // Use plain function pointer trampolines to avoid pointer-to-member ABI complexities
+    using mem_read_fn  = uint64_t (*)(Hart*, uint64_t, int);
+    using mem_write_fn = void     (*)(Hart*, uint64_t, uint64_t, int);
+
+    // AArch64 registers used in original implementation
     a64::Gp   pc_       = a64::x28;
     a64::Gp   regs_beg_ = a64::x27;
+
+    // x86-64 registers for JIT
+    asmjit::x86::Gp pc_x86_ = asmjit::x86::r13;
+    asmjit::x86::Gp regs_beg_x86_ = asmjit::x86::r12;
+
     uintptr_t memread_func_ptr;
     uintptr_t memwrite_func_ptr;
     uintptr_t hart_ptr;
     uintptr_t regs_ptr;
     uintptr_t pc_ptr;
+
+    // --- x86 implementations for common operations ---
+    void increase_pc(asmjit::x86::Assembler* asmx86) {
+        using namespace asmjit::x86;
+        // rax will be used as a temporary here
+        asmx86->mov(rax, asmjit::x86::ptr(pc_x86_));
+        asmx86->add(rax, 4);
+        asmx86->mov(asmjit::x86::ptr(pc_x86_), rax);
+    }
+
+    void add_x86(asmjit::x86::Assembler* asmx86, Hart* hart, DecodedInstruction& instr) {
+        using namespace asmjit::x86;
+        // rax <- regs[rs1]
+        asmx86->mov(rax, ptr(regs_beg_x86_, instr.rs1 * 8));
+        // rdx <- regs[rs2]
+        asmx86->mov(rdx, ptr(regs_beg_x86_, instr.rs2 * 8));
+        asmx86->add(rax, rdx);
+        asmx86->mov(ptr(regs_beg_x86_, instr.rd * 8), rax);
+        increase_pc(asmx86);
+    }
+
+    void sub_x86(asmjit::x86::Assembler* asmx86, Hart* hart, DecodedInstruction& instr) {
+        using namespace asmjit::x86;
+        asmx86->mov(rax, ptr(regs_beg_x86_, instr.rs1 * 8));
+        asmx86->mov(rdx, ptr(regs_beg_x86_, instr.rs2 * 8));
+        asmx86->sub(rax, rdx);
+        asmx86->mov(ptr(regs_beg_x86_, instr.rd * 8), rax);
+        increase_pc(asmx86);
+    }
+
+    void addi_x86(asmjit::x86::Assembler* asmx86, Hart* hart, DecodedInstruction& instr) {
+        using namespace asmjit::x86;
+        asmx86->mov(rax, ptr(regs_beg_x86_, instr.rs1 * 8));
+        asmx86->add(rax, (int64_t)instr.imm);
+        asmx86->mov(ptr(regs_beg_x86_, instr.rd * 8), rax);
+        increase_pc(asmx86);
+    }
+
+    void slli_x86(asmjit::x86::Assembler* asmx86, Hart* hart, DecodedInstruction& instr) {
+        using namespace asmjit::x86;
+        asmx86->mov(rax, ptr(regs_beg_x86_, instr.rs1 * 8));
+        asmx86->shl(rax, (unsigned)instr.imm);
+        asmx86->mov(ptr(regs_beg_x86_, instr.rd * 8), rax);
+        increase_pc(asmx86);
+    }
+
+    void ld_x86(asmjit::x86::Assembler* asmx86, Hart* hart, DecodedInstruction& instr) {
+        using namespace asmjit::x86;
+        // addr = regs[rs1] + imm
+        asmx86->mov(rax, ptr(regs_beg_x86_, instr.rs1 * 8));
+        if (instr.imm != 0)
+            asmx86->add(rax, (int64_t)instr.imm);
+        // prepare call: rdi = hart_ptr, rsi = addr, rdx = size
+        asmx86->mov(rdi, (uint64_t)hart_ptr);
+        asmx86->mov(rsi, rax);
+        asmx86->mov(rdx, 8);
+        asmx86->mov(rax, (uint64_t)memread_func_ptr);
+        asmx86->call(rax);
+        // result in rax
+        asmx86->mov(ptr(regs_beg_x86_, instr.rd * 8), rax);
+        increase_pc(asmx86);
+    }
+
+    void sd_x86(asmjit::x86::Assembler* asmx86, Hart* hart, DecodedInstruction& instr) {
+        using namespace asmjit::x86;
+        // addr = regs[rs1] + imm
+        asmx86->mov(rax, ptr(regs_beg_x86_, instr.rs1 * 8));
+        if (instr.imm != 0)
+            asmx86->add(rax, (int64_t)instr.imm);
+        // value in rdx
+        asmx86->mov(rdx, ptr(regs_beg_x86_, instr.rs2 * 8));
+        // prepare call: rdi = hart_ptr, rsi = addr, rdx = value, rcx = size
+        asmx86->mov(rdi, (uint64_t)hart_ptr);
+        asmx86->mov(rsi, rax); // addr
+        asmx86->mov(rcx, 8);    // size
+        asmx86->mov(rax, (uint64_t)memwrite_func_ptr);
+        asmx86->call(rax);
+        increase_pc(asmx86);
+    }
 };
 }

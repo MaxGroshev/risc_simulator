@@ -2,7 +2,8 @@ set(HART_SRC
     hart.cpp)
 
 set(JIT_SRC 
-    jit/naive_cache.cpp)
+    jit/naive_cache.cpp
+    jit/trampolines.cpp)
 
 add_library(hart 
             ${HART_SRC}

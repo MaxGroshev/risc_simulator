@@ -146,6 +146,7 @@ uint32_t Hart::fetch(reg_t va) {
 }
 
 void Hart::store(reg_t va, reg_t value, int size) {
+    // std::cerr << "Hart::store called: va=0x" << std::hex << va << " value=0x" << value << " size=" << std::dec << size << std::endl;
     pa_t pa = va_to_pa<AccessType::Store>(va);
     mmu_.mem_store(pa, value, size);
 
