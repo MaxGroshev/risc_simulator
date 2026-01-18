@@ -22,7 +22,9 @@ public:
     size_t capacity() const { return slots_.size(); }
 
 private:
-    size_t index_for(uint32_t start_pc) const;
+    __attribute__((always_inline)) inline size_t index_for(uint32_t start_pc) const {
+        return static_cast<size_t>((start_pc / 4) & static_cast<uint32_t>(mask_));
+    }
 
     std::vector<Block> slots_;
     size_t mask_;

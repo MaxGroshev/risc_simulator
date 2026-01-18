@@ -22,7 +22,7 @@ struct prog_config_t final {
         fs::path input_file;
         fs::path stat_file;
         std::optional<std::string> module_name = std::nullopt;
-        fs::path config_file = "../config/configx86.conf";
+        fs::path config_file = "./config/configx86.conf";
 
         boost::program_options::options_description set_option_description() {
             using namespace boost::program_options;

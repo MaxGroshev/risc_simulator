@@ -73,8 +73,12 @@ public:
 
     template<AccessType type>
     TranslateResult translate(va_t va, const HartContext ctx) {
+        
+        if (ctx.mode == 0) {
+            return { .pa = va, .e = Exception{ExceptionCause::None} };
+        }
+        
         const TLBEntry* hit = nullptr;
-
         if constexpr (type == AccessType::Fetch)
             hit = itlb_.lookup(va);
         else if constexpr (type == AccessType::Load)

@@ -50,31 +50,6 @@ Hart::Hart(MMU &mmu, uint32_t cache_len) : mmu_(mmu), pc_(0),
 #endif
 }
 
-// TODO: Replace exception with Hart Exception/handle_exception mechanism
-Hart::reg_t Hart::get_reg(uint8_t reg_num) const {
-    if (reg_num == 0) 
-        return 0;
-
-    if (reg_num >= 32) 
-        throw std::out_of_range("Invalid register number in get_reg");
-
-    return regs_[reg_num];
-}
-
-void Hart::set_reg(uint8_t reg_num, reg_t value) {
-    if (reg_num == 0) 
-        return;
-
-    if (reg_num >= 32) { 
-        std::ostringstream oss;
-        oss << "Invalid register number in set_reg: " << std::hex << uint64_t(reg_num) << "\n"; 
-        oss << "PC:" << std::hex << pc_ << "\n";
-        throw std::out_of_range(oss.str());
-    }
-
-    regs_[reg_num] = value;
-}
-
 void Hart::set_csr(uint16_t reg_num, reg_t value) {
     if (reg_num >= (1 << 12) ) 
         throw std::out_of_range("Invalid control register number in set_csr");
@@ -251,6 +226,9 @@ uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
     uint64_t idx = 0;
     const size_t blk_size = blk->instrs.size();
 
+    auto* fn_ptr = blk->exec_fns.data();
+    auto* instrs_ptr = blk->instrs.data();
+
     debug_cout("In cached block at PC: 0x" + std::to_string(pc_));
 
 #ifdef ENABLE_MODULES
@@ -283,22 +261,12 @@ uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
             break;
         }
 
-        ExecFn fn = nullptr;
-        if (idx < blk->exec_fns.size()) {
-            fn = blk->exec_fns[idx];
-        }
-
-        const DecodedInstruction dinstr = blk->instrs[idx];
+        ExecFn fn = fn_ptr[idx];
+        const DecodedInstruction& dinstr = instrs_ptr[idx];
 
         next_pc_ = pc_ + 4;
 
-        if (fn) {
-            debug_cout("Executing cached instruction at PC: 0x" + std::to_string(pc_));
-            fn(dinstr, *this);
-        } else {
-            std::cerr << "Executing uncached instruction (How it happenned?) at PC: 0x" << std::hex << pc_ << std::dec << std::endl;
-            riscv_sim::executer::execute(dinstr, *this);
-        }
+        fn(dinstr, *this);
 
         executed++;
 
@@ -330,7 +298,7 @@ uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
 uint64_t Hart::step() {
     riscv_sim::Block* blk = th_code_.lookup(pc_);
 
-    if (blk && blk->valid && blk->start_pc == pc_) {
+    if (blk) {
         return execute_cached_block(*this, blk);
     }
 
@@ -368,6 +336,7 @@ uint64_t Hart::step() {
             th_code_.install_bb_if_valid(std::move(new_block));
             break;
         }
+        
         new_block.instrs.push_back(dinstr);
         new_block.exec_fns.push_back(fn);
         pc_ = next_pc_;

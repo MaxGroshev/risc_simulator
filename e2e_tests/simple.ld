@@ -16,6 +16,5 @@ SECTIONS {
     .bss : { *(.bss) }
     _bss_end = .;
 
-    # Must be in sync with machine/machine.hpp
     _stack = 0x1000000 - 0x1000;
 }

@@ -15,14 +15,10 @@ naive_cache::naive_cache(size_t cache_entries) {
     mask_ = cache_entries - 1;
 }
 
-size_t naive_cache::index_for(uint32_t start_pc) const {
-    return static_cast<size_t>((start_pc / 4) & static_cast<uint32_t>(mask_));
-}
-
 Block* naive_cache::lookup(uint32_t pc) {
     size_t idx = index_for(pc);
     Block& b = slots_[idx];
-    if (b.valid && b.start_pc == pc) {
+    if (b.valid) {
         return &b;
     }
     return nullptr;

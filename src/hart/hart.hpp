@@ -27,8 +27,37 @@ class Hart {
     Hart(MMU&, sim_config_t& sim_conf);
     Hart(MMU&, uint32_t cache_len = 1024);
 
-    reg_t get_reg(uint8_t reg_num) const;
-    void set_reg(uint8_t reg_num, reg_t value);
+    __attribute__((always_inline)) reg_t get_reg(uint8_t reg_num) const {
+        if (reg_num == 0)
+            return 0;
+
+#ifdef DEBUG_EXECUTION
+        if (reg_num >= 32) [[unlikely]] { 
+            std::ostringstream oss;
+            oss << "Invalid register number in get_reg: " << std::hex << uint64_t(reg_num) << "\n"; 
+            oss << "PC:" << std::hex << pc_ << "\n";
+            throw std::out_of_range(oss.str());
+        }
+#endif
+
+        return regs_[reg_num];
+    }
+
+    __attribute__((always_inline)) void set_reg(uint8_t reg_num, reg_t value) {
+        if (reg_num == 0)
+            return;
+
+#ifdef DEBUG_EXECUTION
+        if (reg_num >= 32) [[unlikely]] { 
+            std::ostringstream oss;
+            oss << "Invalid register number in set_reg: " << std::hex << uint64_t(reg_num) << "\n"; 
+            oss << "PC:" << std::hex << pc_ << "\n";
+            throw std::out_of_range(oss.str());
+        }
+#endif
+
+        regs_[reg_num] = value;
+    }
 
     void set_csr(uint16_t reg_num, reg_t value);
 
