@@ -5,6 +5,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <errno.h>
+#include <iostream>
 
 /// TODO: exceptions should be processed properly, now they are not caught
 
@@ -58,6 +59,8 @@ void Memory::write(uint64_t addr, uint64_t value, int size_bytes) {
     // if (size_bytes <= 0 || size_bytes > 8)
     //     throw std::invalid_argument("invalid write size");
 
+    // std::cerr << "Memory::write addr=0x" << std::hex << addr << " value=0x" << value << " size_bytes=" << std::dec << size_bytes << std::endl;
+
     uint64_t end = addr + static_cast<uint64_t>(size_bytes);
     // if (end > capacity_)
     //     throw std::out_of_range("memory write out of range");
@@ -81,4 +84,12 @@ void Memory::zero_init(uint64_t addr, size_t size) {
 
 size_t Memory::size() const {
     return capacity_;
+}
+
+uint8_t* Memory::data() {
+    return backing_;
+}
+
+const uint8_t* Memory::data() const {
+    return backing_;
 }

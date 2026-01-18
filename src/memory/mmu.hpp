@@ -71,6 +71,9 @@ public:
         dtlb_w_(TLB_SIZE) 
         {}
 
+    uint8_t* get_raw_ptr() { return mem_.data(); }
+    size_t get_capacity() const { return mem_.size(); }
+
     template<AccessType type>
     TranslateResult translate(va_t va, const HartContext ctx) {
         

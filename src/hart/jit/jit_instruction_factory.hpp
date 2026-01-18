@@ -755,7 +755,19 @@ public:
         // Move constants into chosen registers
         asmx86->mov(pc_x86_, pc_ptr);
         asmx86->mov(regs_beg_x86_, regs_ptr);
-        std::cerr << "JIT x86: memread_func_ptr=0x" << std::hex << memread_func_ptr << " memwrite_func_ptr=0x" << memwrite_func_ptr << " hart_ptr=0x" << hart_ptr << std::dec << std::endl;
+
+        // Detect if paging is disabled (identity mapping) and enable direct memory access fast-path
+        direct_mem_access_ = hart->is_paging_disabled();
+        // std::cerr << "JIT x86: paging_disabled=" << (direct_mem_access_ ? 1 : 0) << std::endl;
+        if (direct_mem_access_) {
+            mem_backing_ptr_ = hart->get_memory_ptr();
+            mem_backing_size_ = hart->get_memory_size();
+            // Place base pointer to memory in r11 for fast addressing
+            asmx86->mov(mem_base_x86_, (uint64_t)mem_backing_ptr_);
+            // std::cerr << "JIT x86: Direct memory access enabled. mem_base=0x" << std::hex << (uintptr_t)mem_backing_ptr_ << std::dec << std::endl;
+        }
+
+        // std::cerr << "JIT x86: memread_func_ptr=0x" << std::hex << memread_func_ptr << " memwrite_func_ptr=0x" << memwrite_func_ptr << " hart_ptr=0x" << hart_ptr << std::dec << std::endl;
     }
     
     void compile(a64::Assembler* asma64, Hart* hart, DecodedInstruction& instr) {
@@ -847,6 +859,12 @@ private:
 
     uintptr_t memread_func_ptr;
     uintptr_t memwrite_func_ptr;
+
+    // fast-path for no-paging mode
+    bool direct_mem_access_ = false;
+    uint8_t* mem_backing_ptr_ = nullptr;
+    size_t mem_backing_size_ = 0;
+    asmjit::x86::Gp mem_base_x86_ = asmjit::x86::r11; // holds base of physical memory
     uintptr_t hart_ptr;
     uintptr_t regs_ptr;
     uintptr_t pc_ptr;
@@ -902,14 +920,25 @@ private:
         asmx86->mov(rax, ptr(regs_beg_x86_, instr.rs1 * 8));
         if (instr.imm != 0)
             asmx86->add(rax, (int64_t)instr.imm);
-        // prepare call: rdi = hart_ptr, rsi = addr, rdx = size
-        asmx86->mov(rdi, (uint64_t)hart_ptr);
-        asmx86->mov(rsi, rax);
-        asmx86->mov(rdx, 8);
-        asmx86->mov(rax, (uint64_t)memread_func_ptr);
-        asmx86->call(rax);
-        // result in rax
-        asmx86->mov(ptr(regs_beg_x86_, instr.rd * 8), rax);
+
+        if (direct_mem_access_) {
+            // rax = physical address
+            // use r10 as temp address = mem_base + rax
+            asmx86->lea(r10, ptr(mem_base_x86_, rax));
+            // load 8 bytes
+            asmx86->mov(rax, ptr(r10));
+            asmx86->mov(ptr(regs_beg_x86_, instr.rd * 8), rax);
+        } else {
+            // prepare call: rdi = hart_ptr, rsi = addr, rdx = size
+            asmx86->mov(rdi, (uint64_t)hart_ptr);
+            asmx86->mov(rsi, rax);
+            asmx86->mov(rdx, 8);
+            asmx86->mov(rax, (uint64_t)memread_func_ptr);
+            asmx86->call(rax);
+            // result in rax
+            asmx86->mov(ptr(regs_beg_x86_, instr.rd * 8), rax);
+        }
+
         increase_pc(asmx86);
     }
 
@@ -921,12 +950,20 @@ private:
             asmx86->add(rax, (int64_t)instr.imm);
         // value in rdx
         asmx86->mov(rdx, ptr(regs_beg_x86_, instr.rs2 * 8));
-        // prepare call: rdi = hart_ptr, rsi = addr, rdx = value, rcx = size
-        asmx86->mov(rdi, (uint64_t)hart_ptr);
-        asmx86->mov(rsi, rax); // addr
-        asmx86->mov(rcx, 8);    // size
-        asmx86->mov(rax, (uint64_t)memwrite_func_ptr);
-        asmx86->call(rax);
+
+        if (direct_mem_access_) {
+            // write directly: [mem_base + addr] = value
+            asmx86->lea(r10, ptr(mem_base_x86_, rax));
+            asmx86->mov(ptr(r10), rdx);
+        } else {
+            // prepare call: rdi = hart_ptr, rsi = addr, rdx = value, rcx = size
+            asmx86->mov(rdi, (uint64_t)hart_ptr);
+            asmx86->mov(rsi, rax); // addr
+            asmx86->mov(rcx, 8);    // size
+            asmx86->mov(rax, (uint64_t)memwrite_func_ptr);
+            asmx86->call(rax);
+        }
+
         increase_pc(asmx86);
     }
 };

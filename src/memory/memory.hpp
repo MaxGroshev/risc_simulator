@@ -17,6 +17,9 @@ public:
 
     size_t size() const;
 
+    uint8_t* data();
+    const uint8_t* data() const;
+
 private:
     uint8_t* backing_ = nullptr;
     size_t capacity_ = 0;

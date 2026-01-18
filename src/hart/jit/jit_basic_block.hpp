@@ -44,7 +44,7 @@ public:
         asma64->ret(a64::x29);
 #endif
         rt->add(&executer, code.get());
-        printf("JIT exec addr: %p\n", (void*)executer);
+        // printf("JIT exec addr: %p\n", (void*)executer);
         // dump();
     }
 

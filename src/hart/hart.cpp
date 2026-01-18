@@ -84,6 +84,18 @@ HartContext Hart::get_context_for_MMU() const {
         };
 }
 
+uint8_t* Hart::get_memory_ptr() {
+    return mmu_.get_raw_ptr();
+}
+
+size_t Hart::get_memory_size() const {
+    return mmu_.get_capacity();
+}
+
+bool Hart::is_paging_disabled() const {
+    return ((csr_satp_ >> 60) & 0xF) == 0;
+}
+
 template<AccessType type>
 pa_t Hart::va_to_pa(va_t va) {
     auto tr = mmu_.translate<type>(va, get_context_for_MMU());

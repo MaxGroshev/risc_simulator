@@ -186,7 +186,8 @@ fi
 
 if [ "$PROFILING" = "on" ]; then
   [ ! -d "FlameGraph" ] && git clone https://github.com/brendangregg/FlameGraph.git
-  perf record -g --call-graph dwarf $SIM_CMD
+  sudo perf record -g --call-graph dwarf $SIM_CMD
+  sudo chown -R $USER:$USER perf.data
   perf script > out.perf
   ./FlameGraph/stackcollapse-perf.pl out.perf > out.folded
   ./FlameGraph/flamegraph.pl out.folded > flamegraph.svg

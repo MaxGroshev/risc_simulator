@@ -104,7 +104,10 @@ class Hart {
 #endif
 
     HartContext get_context_for_MMU() const;
-    
+
+    uint8_t* get_memory_ptr();
+    size_t get_memory_size() const;
+    bool is_paging_disabled() const;    
 private:
 
     uint64_t execute_cached_block(Hart& hart, riscv_sim::Block* blk);
