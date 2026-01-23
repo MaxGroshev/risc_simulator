@@ -9,6 +9,9 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <unordered_map>
+#include <unordered_set>
+#include <algorithm>
 
 #ifdef DEBUG_EXECUTION
 static inline void debug_cout(const std::string& msg) {
@@ -60,12 +63,26 @@ void Hart::set_csr(uint16_t reg_num, reg_t value) {
     csr_satp_ = value;
 }
 
+Hart::reg_t Hart::get_csr(uint16_t reg_num) const {
+    if (reg_num >= (1 << 12) ) 
+        throw std::out_of_range("Invalid control register number in get_csr");
+
+    if (reg_num !=  0x180)
+        throw std::runtime_error("Unsupported control register number in get_csr");
+
+    return csr_satp_;
+}
+
 Hart::reg_t Hart::get_pc() const {
     return pc_;
 }
 
 Hart::reg_t* Hart::get_pc_ptr() {
     return &(this->pc_);
+}
+
+uint64_t* Hart::get_instr_counter_ptr() {
+    return &instr_counter_;
 }
 
 void Hart::set_pc(reg_t value) {
@@ -199,6 +216,211 @@ Hart::reg_t* Hart::get_reg_file_begin() {
     return regs_.data();
 }
 
+void Hart::set_exec_ranges(std::vector<CodeRange> ranges) {
+    exec_ranges_ = std::move(ranges);
+}
+
+bool Hart::predecode_and_jit_if_small() {
+    if (!th_code_.is_jit_enabled() || exec_ranges_.empty()) {
+        return false;
+    }
+
+    std::vector<uint64_t> worklist;
+    std::unordered_set<uint64_t> seen_entries;
+    std::vector<riscv_sim::Block> blocks;
+    size_t total_instrs = 0;
+
+    worklist.push_back(pc_);
+
+    while (!worklist.empty()) {
+        uint64_t entry_pc = worklist.back();
+        worklist.pop_back();
+
+        if (!is_exec_pc(entry_pc) || seen_entries.count(entry_pc) != 0) {
+            continue;
+        }
+        seen_entries.insert(entry_pc);
+
+        riscv_sim::Block blk;
+        std::vector<uint64_t> call_targets;
+        if (!build_function_block(entry_pc, blk, call_targets)) {
+            continue;
+        }
+
+        total_instrs += blk.instrs.size();
+        blocks.push_back(std::move(blk));
+
+        for (auto target : call_targets) {
+            if (seen_entries.count(target) == 0) {
+                worklist.push_back(target);
+            }
+        }
+    }
+
+    const size_t capacity = th_code_.cache_capacity();
+    if (capacity == 0 || blocks.size() > capacity) {
+        return false;
+    }
+
+    const size_t max_instrs = capacity * max_cached_bb_size_;
+    if (total_instrs > max_instrs) {
+        return false;
+    }
+
+    for (auto& blk : blocks) {
+        th_code_.install_and_jit(std::move(blk));
+    }
+
+    return true;
+}
+
+bool Hart::ensure_jit_function(uint64_t entry_pc) {
+    if (!th_code_.is_jit_enabled()) {
+        return false;
+    }
+
+    if (auto* blk = th_code_.lookup(entry_pc); blk && blk->get_is_jitted()) {
+        return true;
+    }
+
+    riscv_sim::Block blk;
+    std::vector<uint64_t> call_targets;
+    if (!build_function_block(entry_pc, blk, call_targets)) {
+        return false;
+    }
+    return th_code_.install_and_jit(std::move(blk));
+}
+
+void Hart::execute_jitted_function(uint64_t entry_pc) {
+    if (auto* blk = th_code_.lookup(entry_pc); blk && blk->get_is_jitted()) {
+        blk->jitted_bb->execute();
+    }
+}
+
+void Hart::run_until_pc(uint64_t target_pc) {
+    while (!halt_ && pc_ != target_pc) {
+        step();
+    }
+}
+
+bool Hart::build_function_block(uint64_t entry_pc, riscv_sim::Block& blk, std::vector<uint64_t>& call_targets) {
+    if (!is_exec_pc(entry_pc)) {
+        return false;
+    }
+
+    std::unordered_map<uint64_t, DecodedInstruction> instrs_by_pc;
+    std::unordered_set<uint64_t> visited;
+    std::vector<uint64_t> worklist;
+
+    worklist.push_back(entry_pc);
+
+    while (!worklist.empty()) {
+        uint64_t pc = worklist.back();
+        worklist.pop_back();
+
+        if (!is_exec_pc(pc) || visited.count(pc) != 0) {
+            continue;
+        }
+        visited.insert(pc);
+
+        uint32_t raw_instr = static_cast<uint32_t>(fetch(pc));
+        DecodedInstruction dinstr = riscv_sim::decoder::decode(raw_instr);
+        instrs_by_pc.emplace(pc, dinstr);
+
+        if (dinstr.opcode == InstructionOpcode::ECALL) {
+            continue;
+        }
+
+        if (dinstr.opcode == InstructionOpcode::JAL) {
+            uint64_t target = pc + static_cast<int64_t>(dinstr.imm);
+            if (dinstr.rd != 0) {
+                if (is_exec_pc(target)) {
+                    call_targets.push_back(target);
+                }
+                worklist.push_back(pc + 4);
+            } else {
+                if (is_exec_pc(target)) {
+                    worklist.push_back(target);
+                }
+            }
+            continue;
+        }
+
+        if (dinstr.opcode == InstructionOpcode::JALR) {
+            bool is_ret = (dinstr.rd == 0 && dinstr.rs1 == 1 && dinstr.imm == 0);
+            if (is_ret) {
+                continue;
+            }
+            if (dinstr.rd != 0) {
+                worklist.push_back(pc + 4);
+            }
+            continue;
+        }
+
+        if (dinstr.format == InstructionFormat::B) {
+            uint64_t target = pc + static_cast<int64_t>(dinstr.imm);
+            if (is_exec_pc(target)) {
+                worklist.push_back(target);
+            }
+            worklist.push_back(pc + 4);
+            continue;
+        }
+
+        worklist.push_back(pc + 4);
+    }
+
+    if (instrs_by_pc.empty()) {
+        return false;
+    }
+
+    std::vector<uint64_t> pcs;
+    pcs.reserve(instrs_by_pc.size());
+    for (const auto& kv : instrs_by_pc) {
+        pcs.push_back(kv.first);
+    }
+    std::sort(pcs.begin(), pcs.end());
+
+    auto start_it = std::find(pcs.begin(), pcs.end(), entry_pc);
+    if (start_it == pcs.end()) {
+        return false;
+    }
+
+    std::vector<uint64_t> ordered;
+    ordered.reserve(pcs.size());
+    ordered.push_back(entry_pc);
+    for (auto it = std::next(start_it); it != pcs.end(); ++it) {
+        ordered.push_back(*it);
+    }
+    for (auto it = pcs.begin(); it != start_it; ++it) {
+        ordered.push_back(*it);
+    }
+
+    blk.start_pc = static_cast<uint32_t>(entry_pc);
+    blk.valid = true;
+    blk.is_function_block = true;
+    blk.instrs.clear();
+    blk.exec_fns.clear();
+    blk.instr_pcs.clear();
+    blk.instrs.reserve(ordered.size());
+    blk.instr_pcs.reserve(ordered.size());
+
+    for (auto pc : ordered) {
+        blk.instr_pcs.push_back(pc);
+        blk.instrs.push_back(instrs_by_pc[pc]);
+    }
+
+    return true;
+}
+
+bool Hart::is_exec_pc(uint64_t pc) const {
+    for (const auto& range : exec_ranges_) {
+        if (pc >= range.start && pc < range.end) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Hart::do_ecall() {
     set_halt(true);
     // reg_t syscall_num = get_reg(17); // a7
@@ -232,6 +454,11 @@ bool Hart::is_halt() const {
 uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
     if(blk->get_is_jitted()) {  
         // blk->jitted_bb.dump();
+        if (blk->is_function_block) {
+            uint64_t before = instr_counter_;
+            blk->jitted_bb->execute();
+            return instr_counter_ - before;
+        }
         blk->jitted_bb->execute();
         return blk->instrs.size();
     }
@@ -305,6 +532,7 @@ uint64_t Hart::execute_cached_block(Hart& hart, riscv_sim::Block* blk) {
 
         break;
     }
+    instr_counter_ += executed;
     return executed;
 }
 
@@ -313,6 +541,18 @@ uint64_t Hart::step() {
 
     if (blk) {
         return execute_cached_block(*this, blk);
+    }
+
+    if (th_code_.is_jit_enabled()) {
+        riscv_sim::Block jit_block;
+        std::vector<uint64_t> call_targets;
+        if (build_function_block(pc_, jit_block, call_targets)) {
+            if (th_code_.install_and_jit(std::move(jit_block))) {
+                if (auto* jitted_blk = th_code_.lookup(pc_)) {
+                    return execute_cached_block(*this, jitted_blk);
+                }
+            }
+        }
     }
 
     riscv_sim::Block new_block;
@@ -362,6 +602,7 @@ uint64_t Hart::step() {
         }
     }
 
+    instr_counter_ += collected;
     return collected;
 }
 

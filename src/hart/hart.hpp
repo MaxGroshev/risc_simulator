@@ -60,11 +60,13 @@ class Hart {
     }
 
     void set_csr(uint16_t reg_num, reg_t value);
+    reg_t get_csr(uint16_t reg_num) const;
 
     reg_t get_pc() const;
     reg_t* get_pc_ptr();
     void set_pc(reg_t value);
     void set_next_pc(reg_t value);
+    uint64_t* get_instr_counter_ptr();
 
     uint64_t step();
     
@@ -72,6 +74,16 @@ class Hart {
     bool is_halt() const;
 
     reg_t* get_reg_file_begin();
+
+    struct CodeRange {
+        uint64_t start;
+        uint64_t end;
+    };
+    void set_exec_ranges(std::vector<CodeRange> ranges);
+    bool predecode_and_jit_if_small();
+    bool ensure_jit_function(uint64_t entry_pc);
+    void execute_jitted_function(uint64_t entry_pc);
+    void run_until_pc(uint64_t target_pc);
 
     // Memory access
     reg_t load(va_t addr, int size);
@@ -111,6 +123,8 @@ class Hart {
 private:
 
     uint64_t execute_cached_block(Hart& hart, riscv_sim::Block* blk);
+    bool build_function_block(uint64_t entry_pc, riscv_sim::Block& blk, std::vector<uint64_t>& call_targets);
+    bool is_exec_pc(uint64_t pc) const;
 
     reg_t pc_;
     MMU &mmu_;
@@ -120,9 +134,11 @@ private:
     
     reg_t csr_satp_;
     PrivilegeMode prv_;
+    std::vector<CodeRange> exec_ranges_;
 
     uint32_t max_cached_bb_size_;
     riscv_sim::ThreadedCode<Hart> th_code_;
+    uint64_t instr_counter_{0};
 
 #ifdef ENABLE_MODULES
     std::vector<std::shared_ptr<Module>> modules_;

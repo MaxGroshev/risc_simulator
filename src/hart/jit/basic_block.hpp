@@ -21,6 +21,8 @@ public:
     uint32_t start_pc = 0;
     bool     valid    = false;
     std::vector<DecodedInstruction> instrs;
+    std::vector<uint64_t> instr_pcs;
+    bool is_function_block = false;
 
     using ExecFn = void (*)(const DecodedInstruction &instr, Hart& hart);
     std::vector<ExecFn> exec_fns;

@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <chrono>
-#include <memory>
+#include <vector>
 #include "modules/example_module.hpp"
 
 static void ehdr_sanity_check(const Elf64_Ehdr &ehdr) {
@@ -38,6 +38,7 @@ void Machine::load_elf(const std::string& filename) {
     hart_.set_pc(ehdr.e_entry);
 
     file.seekg(ehdr.e_phoff);
+    std::vector<Hart::CodeRange> exec_ranges;
     for (int i = 0; i < ehdr.e_phnum; ++i) {
         Elf64_Phdr phdr;
         file.read(reinterpret_cast<char*>(&phdr), sizeof(phdr));
@@ -51,12 +52,20 @@ void Machine::load_elf(const std::string& filename) {
             if (phdr.p_memsz > phdr.p_filesz) {
                 memory_.zero_init(phdr.p_vaddr + phdr.p_filesz, phdr.p_memsz - phdr.p_filesz);
             }
+            if (phdr.p_flags & PF_X) {
+                exec_ranges.push_back(Hart::CodeRange{
+                    phdr.p_vaddr,
+                    phdr.p_vaddr + phdr.p_memsz
+                });
+            }
         }
     }
 
     /// TODO: it is rather ugly
     hart_.set_reg(2, StackBottom);
     hart_.set_halt(false);
+    hart_.set_exec_ranges(std::move(exec_ranges));
+    hart_.predecode_and_jit_if_small();
 }
 
 void Machine::run(uint64_t max_cycles) {

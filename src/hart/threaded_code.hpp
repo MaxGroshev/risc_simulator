@@ -55,9 +55,31 @@ public:
         return bb;
     }
 
+    bool install_and_jit(Block&& blk) {
+        if (blk.instrs.empty()) {
+            return false;
+        }
+        blk.valid = true;
+        auto compiled_bb = jitter.compile_block(blk, hart);
+        if (!compiled_bb) {
+            return false;
+        }
+        blk.set_jitted_bb(std::move(compiled_bb));
+        bb_cache.install(blk.start_pc, std::move(blk));
+        return true;
+    }
+
+    size_t cache_capacity() const {
+        return bb_cache.capacity();
+    }
+
+    bool is_jit_enabled() const {
+        return use_jit;
+    }
+
 private:
     void compile_bb(const Block* blk) {
-        auto compiled_bb = jitter.compile_bb(blk->instrs, hart);
+        auto compiled_bb = jitter.compile_block(*blk, hart);
         // std::cerr << "JIT: compiled BB at PC: 0x" << std::hex << blk->start_pc << std::dec << std::endl;
         const_cast<Block*>(blk)->set_jitted_bb(std::move(compiled_bb));// UGLY!!!
     }
