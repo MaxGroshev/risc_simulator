@@ -17,7 +17,10 @@ int main(int argc, char* argv[]) {
     try {
         machine.load_elf(prog_conf.input_file);
 #ifdef ENABLE_MODULES
-        if (prog_conf.module_name.has_value() && 
+        if (sim_conf.use_jit && prog_conf.module_name.has_value()) {
+            std::cout << "Modules are disabled when JIT is enabled. Set use_jit=0 or omit --module." << std::endl;
+        }
+        else if (prog_conf.module_name.has_value() && 
             prog_conf.module_name.value() == "example") {
                 auto ex = std::make_shared<ExampleModule>();
                 ex->register_callbacks(machine.get_hart());
